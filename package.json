@@ -1,0 +1,64 @@
+{
+    "name": "delivery-system",
+    "version": "0.9.0",
+    "description": "Delivery system",
+    "main": "main.js",
+    "scripts": {
+        "electron": "electron .",
+        "server": "nodemon temporary.js",
+        "package": "electron-packager .",
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder --x64",
+        "publish": "electron-builder --x64 -p always"
+    },
+    "author": "Jaafar Mortada",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Ja3farMortada/akil.git"
+    },
+    "build": {
+        "appId": "com.binariez.Ja3farMortada.akil",
+        "productName": "Delivery System",
+        "target": "NSIS",
+        "publish": [
+            {
+                "provider": "github",
+                "owner": "Ja3farMortada",
+                "repo": "akil"
+            }
+        ]
+    },
+    "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.14.0",
+        "angular": "^1.8.0",
+        "angular-animate": "^1.8.0",
+        "angular-aria": "^1.8.0",
+        "angular-material": "^1.1.20",
+        "angular-messages": "^1.8.0",
+        "angular-route": "^1.8.0",
+        "angular-utils-pagination": "^0.11.1",
+        "animate.css": "^4.1.1",
+        "body-parser": "^1.19.0",
+        "bootstrap": "^4.5.2",
+        "chart.js": "^2.9.3",
+        "electron-log": "^4.2.4",
+        "electron-updater": "^4.3.4",
+        "express": "^4.17.1",
+        "jquery": "^3.5.1",
+        "jquery-ui": "^1.12.1",
+        "md5": "^2.2.1",
+        "moment": "^2.27.0",
+        "mysql": "^2.18.1",
+        "mysqldump": "^3.2.0",
+        "popper.js": "^1.16.1",
+        "sweetalert": "^2.1.2",
+        "update-electron-app": "^1.5.0"
+    },
+    "devDependencies": {
+        "electron": "^10.1.1",
+        "electron-builder": "^22.8.0",
+        "electron-packager": "^15.1.0",
+        "nodemon": "^2.0.4"
+    }
+}

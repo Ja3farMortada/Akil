@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>PC Garage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- load bootstrap and designs -->
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../node_modules/jquery-ui/themes/base/theme.css">
+    <link rel="stylesheet" href="../../node_modules/jquery-ui/themes/base/datepicker.css">
+    <link rel="stylesheet" href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../../node_modules/angular-material/angular-material.min.css">
+    <link rel="stylesheet" href="../../node_modules/animate.css/animate.min.css">
+
+    <!-- load global CSS file -->
+    <link rel="stylesheet" href="../design/main.css">
+
+    <!-- load mainController -->
+    <script src="../controllers/mainController.js"></script>
+
+</head>
+
+<body ng-app="mainApp" ng-controller="mainController" class="bg-smoke">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top animate__animated animate__fadeInDown select-off"
+        ng-cloak>
+        <!-- Brand nav -->
+        <span class="navbar-brand h1" style="user-select: none">
+            <img src="../assets/pcgarage.png" width="30" height="30" style="border-radius: 15%">
+            <small><samp>v{{package.version}}</samp></small>
+        </span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Main nav -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/services"><i class="fas fa-money-check"></i> Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/sell"><i class="fas fa-shopping-cart"></i> Sell</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/stock"><i class="fas fa-boxes"></i> Stock</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/history"><i class="fas fa-history"></i> History</a>
+                </li>
+                <li class="nav-item" ng-if="loggedInUser.canViewCustomers === 1">
+                    <a class="nav-link" href="#!/customers"><i class="fas fa-users"></i> Customers</a>
+                </li>
+                <li class="nav-item" ng-if="loggedInUser.canViewCustomers === 1">
+                    <a class="nav-link" href="#!/debts"><i class="fas fa-users"></i> Debts</a>
+                </li>
+                <li class="nav-item" ng-if="loggedInUser.canViewPayments === 1">
+                    <a class="nav-link" href="#!/payments"><i class="fas fa-money-bill-wave"></i> Payments</a>
+                </li>
+                <li class="nav-item" ng-if="loggedInUser.type === 'admin'">
+                    <a class="nav-link" href="#!/reports"><i class="fas fa-chart-line fa-fw"></i> Reports</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#!/reminders"><i class="fas fa-stopwatch"></i> Reminders <span
+                            class="badge badge-pill badge-danger"
+                            ng-if="remindersCount.length > 0">{{remindersCount.length}}</span></a>
+                </li>
+            </ul>
+
+            <!-- <ul class="navbar-nav mx-auto" ng-cloak>
+                <li class="nav-item pointer select-off" ng-click="getLiveRate()">
+                    <a id="liveDollarRate" class="nav-link">(Buy: {{buyPrice}}
+                        <i class="fas fa-caret-up fa-lg text-success" ng-if="trackBuy === 'up'"></i>
+                        <i class="fas fa-minus text-secondary" ng-if="trackBuy === 'equal'"></i>
+                        <i class="fas fa-caret-down fa-lg text-danger" ng-if="trackBuy === 'down'"></i>)
+                        (Sell: {{sellPrice}}
+                        <i class="fas fa-caret-up fa-lg text-success" ng-if="trackSell === 'up'"></i>
+                        <i class="fas fa-minus text-secondary" ng-if="trackSell === 'equal'"></i>
+                        <i class="fas fa-caret-down fa-lg text-danger" ng-if="trackSell === 'down'"></i>)
+
+                        <small class="form-text mt-0 text-center">{{latestUpdated}} at {{dateString}}
+                            <i class="fas fa-spinner fa-spin text-success" ng-show="checking"></i>
+
+                        </small>
+                    </a>
+                </li>
+            </ul> -->
+
+            <!-- Right nav -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
+                        data-toggle="dropdown"><i class="fas fa-user-alt fa-lg"></i> {{loggedInUser.username}}</a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item text-dark" href="#!/settings"><i class="fas fa-cog fa-lg"></i>
+                            Settings</a>
+                        <a class="dropdown-item text-dark" href="" ng-click="about()"><i
+                                class="fas fa-info-circle fa-lg"></i> About</a>
+                        <a class="dropdown-item text-dark" href="" ng-click="openUpdateModal()"><i
+                                class="fas fa-sync-alt fa-lg"></i> Check For Updates</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="" ng-click="logout()"><i
+                                class="fas fa-sign-out-alt fa-lg"></i>
+                            Logout</a>
+                    </div>
+                </li>
+            </ul>
+            <!-- <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Logout</button> -->
+        </div>
+    </nav>
+
+    <div class="bg-smoke">
+        <div ng-view>
+            <!-- here where the pages load their contents -->
+        </div>
+    </div>
+
+    <!-- bootstrap's toast templates -->
+    <div style="position: relative;">
+        <div style="position: fixed; bottom: 2rem; right: 1rem;">
+            <!-- error toast -->
+            <div id="errorToast" class="toast" role="alert" data-delay="2500">
+                <div class="toast-body bg-danger text-light">
+                    <div class="row no-gutters d-flex justify-content-betweens align-items-center">
+                        <div class="col">
+                            <i class="fas fa-times-circle fa-2x mr-3"></i>
+                        </div>
+                        <div class="col-auto">
+                            <h6 class="mb-0">An Error Has Occured!</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- success toast -->
+            <div id="successToast" class="toast" role="alert" data-delay="2500">
+                <div class="toast-body bg-success text-light">
+                    <div class="row no-gutters d-flex justify-content-betweens align-items-center">
+                        <div class="col">
+                            <i class="fas fa-check-circle fa-2x mr-3"></i>
+                        </div>
+                        <div class="col-auto">
+                            <h6 class="mb-0">Process Completed Successfully!</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About modal -->
+    <div class="modal fade" id="aboutModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-info-circle fa-lg"></i> About PC Garage</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5><b>What's new in version {{package.version}}:</b></h5>
+                    <ul>
+                        <li>Added alarm notification in reminders</li>
+                        <li>Sort customers by 'debt amount' in debts</li>
+                    </ul>
+                    <!-- <h5>Dependencies:</h5> -->
+                    <br>
+                    <table class="table table-bordered table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th>Dependency name</th>
+                                <th>Version</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AngularJS</td>
+                                <td>{{package.dependencies.angular.slice(1, 7)}}</td>
+                            </tr>
+                            <tr>
+                                <td>Bootstrap</td>
+                                <td>{{package.dependencies.bootstrap.slice(1, 7)}}</td>
+                            </tr>
+                            <tr>
+                                <td>jQuery</td>
+                                <td>{{package.dependencies.jquery.slice(1, 7)}}</td>
+                            </tr>
+                            <tr>
+                                <td>ExpressJS</td>
+                                <td>{{package.dependencies.express.slice(1, 7)}}</td>
+                            </tr>
+                            <tr>
+                                <td>MySQL</td>
+                                <td>{{package.dependencies.mysql.slice(1, 7)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <ul>
+                        <li><b>AngularJS:</b> {{package.dependencies.angular.slice(1, 7)}}</li>
+                        <li><b>Bootstrap:</b> {{package.dependencies.bootstrap.slice(1, 7)}}</li>
+                        <li><b>jQuery:</b> {{package.dependencies.jquery.slice(1, 7)}}</li>
+                        <li><b>ExpressJS:</b> {{package.dependencies.express.slice(1, 7)}}</li>
+                        <li><b>MySQL:</b> {{package.dependencies.mysql.slice(1, 7)}}</li>
+                    </ul> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- update modal -->
+    <div class="modal fade" id="updateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-sync-alt fa-lg"></i> Updater(beta)</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <h3 class="text-center">PC Garage</h3>
+                    <h6 class="text-center">current version: {{package.version}}</h6>
+
+                    <!-- text -->
+                    <h6 class="text-center mt-3">{{text}}</h6>
+
+                    <!-- spinner -->
+                    <div class="d-flex justify-content-center mt-3" ng-if="showSpinner">
+                        <div class="spinner-grow text-primary" role="status">
+                        </div>
+                    </div>
+
+                    <!-- download update button -->
+                    <button ng-show="download == true" type="button" class="btn btn-outline-dark"
+                        ng-click="downloadUpdate()">download now</button>
+
+                    <!-- download progress -->
+                    <div class="text-center" ng-if="downloading">
+                        <div class="progress">
+                            <div id="progressBar" class="progress-bar bg-success" role="progressbar"></div>
+                        </div>
+                        <span>({{((data.transferred)/1000000).toFixed(2)}} MB / {{((data.total)/1000000).toFixed(2)}}
+                            MB)</span>
+                    </div>
+
+                    <!-- install update button -->
+                    <div class="text-center" ng-if="downloaded">
+                        <button class="btn btn-outline-success" ng-click="applyUpdate()">install now</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- check for update button -->
+                    <button ng-show="checked == false" type="button" class="btn btn-success"
+                        ng-click="checkForUpdates()">Check
+                        for Update</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

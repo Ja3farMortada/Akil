@@ -1,0 +1,429 @@
+<div class="container-fluid">
+    <!-- Navigation tabs -->
+    <div class="container justify-content-center d-flex">
+        <ul class="nav nav-tabs nav-fills">
+            <li class="nav-item text-center">
+                <a class="nav-link text-secondary text-uppercase animate__animated"
+                    ng-class="{'active': selectedTab === 'statement', 'active-tab-dir': selectedTab === 'statement', 'animate__fadeIn': selectedTab === 'statement'}"
+                    ng-click="selectTab('statement')"><i class="fas fa-chart-pie fa-2x fa-fw"></i> Customer
+                    Statement</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-secondary text-uppercase animate__animated"
+                    ng-class="{'active': selectedTab === 'details', 'active-tab-dir': selectedTab === 'details', 'animate__fadeIn': selectedTab === 'details'}"
+                    ng-click="selectTab('details')"><i class="fas fa-users-cog fa-2x fa-fw"></i> Customer Details</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ******************************************************************************************** -->
+    <!-- ********************************** Customer statement ************************************** -->
+    <!-- ******************************************************************************************** -->
+
+    <div ng-if="selectedTab === 'statement'" class="row mt-4">
+        <div class="col-4">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+                <input id="debtsSearch" type="text" class="form-control col-6" placeholder="Search ..."
+                    ng-model="searchVal">
+            </div>
+            <table class="table table-sm table-bordered text-center mt-3 table-hover">
+                <thead>
+                    <tr>
+                        <th width="68%">Customer Name</th>
+                        <th width="32%" ng-click="sort('total')"><i class="fas" ng-show="sortData.key == 'total'"
+                                ng-class="{'fa-sort-amount-up fa-fw': !sortData.reverse, 'fa-sort-amount-down-alt fa-fw': sortData.reverse}"></i>Total
+                            Due</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr pagination-id="customerDue"
+                        dir-paginate="customer in customers | orderBy:sortData.key:sortData.reverse| filter: searchVal | itemsPerPage:15"
+                        ng-click="getDetails(customer.customer_ID)" class="pointer"
+                        ng-class="{'table-active': isActive(customer.customer_ID)}">
+                        <td>{{ customer.customer_name }}</td>
+                        <td>{{ customer.customer_due.toLocaleString() }} L.L</td>
+                    </tr>
+                    <tr ng-if="(customers | filter:searchVal).length == 0 && searchVal" class="table-active select-off">
+                        <td colspan="2">No Matching Records Found!</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <dir-pagination-controls pagination-id="customerDue" max-size="5" direction-links="true"
+                    boundary-links="false" template-url="../templates/dirPagination.tpl.html">
+                </dir-pagination-controls>
+            </div>
+        </div>
+
+        <div class="col-8">
+            <div class="row justify-content-center">
+                <div class="col-11">
+                    <div ng-if="activeRow != null" class="card">
+                        <div class="card-header p-0">
+                            <ul class="nav nav-tabs nav-fill" style="border-bottom: 0px !important;">
+                                <li class="nav-item">
+                                    <a class="nav-link text-secondary text-uppercase animate__animated"
+                                        ng-class="{'active': subTabSelected === 1, 'active-tab-dir': subTabSelected === 1, 'animate__fadeIn': subTabSelected === 1}"
+                                        ng-click="selectSubTab(1)"><i class="fas fa-archive fa-2x fa-fw"></i>debts
+                                        archive</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-secondary text-uppercase animate__animated"
+                                        ng-class="{'active': subTabSelected === 0, 'active-tab-dir': subTabSelected === 0, 'animate__fadeIn': subTabSelected === 0}"
+                                        ng-click="selectSubTab(0)"><i
+                                            class="fas fa-hand-holding-usd fa-2x fa-fw"></i>debts
+                                        payments</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body pt-2">
+                            <!-- debts archive -->
+                            <div ng-if="subTabSelected === 1">
+                                <div class="row d-flex justify-content-between">
+                                    <div class="col-6 d-flex align-items-center justify-content-center">
+                                        <h4 class="mb-0"><i class="fas fa-user-circle fa-lg text-dark"></i>
+                                            {{customers[activeRow].customer_name}}</h4>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    <i class="fas fa-search"></i>
+                                                </span>
+                                            </div>
+                                            <input id="search" type="text" class="form-control" ng-model="searchDebts"
+                                                placeholder="Search ...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered table-hover text-center table-sm mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th width="25%">Type</th>
+                                            <th width="25%">Date</th>
+                                            <th width="25%">Time</th>
+                                            <th width="25%">Total Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr dir-paginate="data in selectedDetails | filter: searchDebts | itemsPerPage:5"
+                                            pagination-id="debts" class="pointer"
+                                            ng-click="getInvoiceDetails(data.invoice_details, data.table_name)">
+                                            <td>{{ data.table_name }}</td>
+                                            <td>{{ data.inv_date }}</td>
+                                            <td>{{ data.inv_time }}</td>
+                                            <td>{{ data.inv_total_price.toLocaleString() }} L.L</td>
+                                        </tr>
+
+                                        <tr ng-if="selectedDetails.length == 0" class="table-active">
+                                            <td colspan="4">No Debts Records Yet!</td>
+                                        </tr>
+
+                                        <tr ng-if="(selectedDetails | filter:searchDebts).length == 0 && searchDebts"
+                                            class="table-active">
+                                            <td colspan="4">No Matching Records Found!</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <dir-pagination-controls pagination-id="debts" max-size="5" direction-links="true"
+                                    boundary-links="false" template-url="../templates/dirPagination.tpl.html">
+                                </dir-pagination-controls>
+                            </div>
+                            <!-- debts payments -->
+                            <div ng-if="subTabSelected === 0">
+                                <div class="row">
+                                    <div class="col d-flex align-items-center justify-content-center">
+                                        <h4 class="mb-0"><i class="fas fa-user-circle fa-lg text-dark"></i>
+                                            {{customers[activeRow].customer_name}}</h4>
+                                    </div>
+                                    <div class="col">
+                                        <button ng-click="receivePaymentModal()"
+                                            class="btn btn-outline-success float-right"><i
+                                                class="fas fa-hand-holding-usd fa-lg"></i> Receive Payment</button>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered text-center table-sm mt-2">
+                                    <thead>
+                                        <tr>
+                                            <th width="25%">Payment Amount</th>
+                                            <th width="25%">Date</th>
+                                            <th width="25%">Time</th>
+                                            <th width="25%">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr dir-paginate="payment in selectedPaymentDetails | itemsPerPage:5"
+                                            pagination-id="payments" ng-dblclick="editPaymentModal(payment)"
+                                            class="pointer">
+                                            <td>{{ payment.payment_amount.toLocaleString() }} L.L</td>
+                                            <td>{{ payment.payment_date }}</td>
+                                            <td>{{ payment.payment_time }}</td>
+
+                                            <td ng-if="payment.payment_notes">{{ payment.payment_notes }}</td>
+                                            <td ng-if="!payment.payment_notes"> --- </td>
+                                        </tr>
+                                        <tr ng-if="selectedPaymentDetails.length == 0" class="table-active select-off">
+                                            <td colspan="4">No Payment Records Yet!</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <dir-pagination-controls pagination-id="payments" max-size="5" direction-links="true"
+                                    boundary-links="false" template-url="../templates/dirPagination.tpl.html">
+                                </dir-pagination-controls>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receive Payment modal -->
+    <div class="modal fade" id="receivePaymentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Receive Payment</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form ng-submit="submitPayment()">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <label class="mb-1">Payment Amount:</label>
+                        <input type="number" class="form-control" placeholder="Amount" min="1000"
+                            max="{{customers[activeRow]['customer_due']}}" ng-model="paymentData.payment_amount"
+                            autofocus required>
+                        <label class="mb-1 mt-3">Notes:</label>
+                        <input type="text" spellcheck="false" class="form-control" placeholder="Notes"
+                            ng-model="paymentData.payment_notes">
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                                class="fas fa-times"></i>
+                            Cancel</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>
+                            Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Payment modal -->
+    <div class="modal fade" id="editPaymentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Payment</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form ng-submit="editPayment()">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <label class="mb-1">Payment Amount:</label>
+                        <input type="number" class="form-control" placeholder="Amount" min="1000"
+                            ng-model="paymentData.payment_amount" autofocus required>
+                        <label class="mb-1 mt-3">Notes:</label>
+                        <input type="text" spellcheck="false" class="form-control" placeholder="Notes"
+                            ng-model="paymentData.payment_notes">
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                                class="fas fa-times"></i>
+                            Cancel</button>
+                        <button class="btn btn-danger" type="button" ng-click="deletePayment()"><i
+                                class="far fa-trash-alt"></i> Delete</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>
+                            Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice details modal -->
+    <div class="modal fade" id="invoiceDetailsModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Invoice Details</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th width="60%">Item Name</th>
+                                <th width="15%">Quantity</th>
+                                <th width="25%">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in selectedInvoiceDetails">
+                                <td ng-if="item.item_name">{{item.item_name}}</td>
+                                <td ng-if="item.service_name">{{item.service_name}}</td>
+
+                                <td>{{item.qty}}</td>
+
+                                <td ng-if="item.item_price">{{item.item_price.toLocaleString()}} L.L</td>
+                                <td ng-if="item.service_price">{{item.service_price.toLocaleString()}} L.L</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- *************************************************************************************************** -->
+    <!----------------************************ CUSTOMER DETAILS TAB *****************************-------------->
+    <!-- *************************************************************************************************** -->
+
+    <div ng-if="selectedTab === 'details'">
+        <div class="row justify-content-between mb-3 mt-3 select-off">
+            <div class="col-6">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <form class="form-inline">
+                            <label>Show</label>
+                            <select class="custom-select mr-1 ml-1" ng-model="itemsPerPage"
+                                ng-options="option.value as option.name for option in options">
+                            </select>
+                            <label>entries</label>
+                        </form>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-outline-success" ng-click="openNewCustomerModal()">+ Add +</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                    <input id="search" type="text" class="form-control" ng-model="searchVal" placeholder="Search ..."
+                        spellcheck="false">
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-bordered text-center table-sm" style="user-select: none">
+            <thead>
+                <tr>
+                    <th ng-click="sort('ID')"><i class="fas" ng-show="sortKey == 'ID'"
+                            ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> ID</th>
+                    <th ng-click="sort('name')"><i class="fas" ng-show="sortKey == 'name'"
+                            ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> Customer Name</th>
+                    <th>Phone number</th>
+                    <th>Address</th>
+                    <th>Address 2</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="customer in customers|filter: searchVal|orderBy:sortKey:reverse|itemsPerPage:10"
+                    ng-dblclick="openEditCustomerModal(customer.customer_ID)" pagination-id="customerInfo"
+                    class="pointer">
+                    <td>{{customer.customer_ID}}</td>
+                    <td>{{customer.customer_name}}</td>
+                    <td ng-if="customer.customer_phone">{{customer.customer_phone}}</td>
+                    <td ng-if="!customer.customer_phone"> --- </td>
+
+                    <td ng-if="customer.customer_address">{{customer.customer_address}}</td>
+                    <td ng-if="!customer.customer_address"> --- </td>
+                    <td ng-if="customer.customer_address_2">{{customer.customer_address_2}}</td>
+                    <td ng-if="!customer.customer_address_2"> --- </td>
+
+                    <td ng-if="customer.notes">{{customer.notes}}</td>
+                    <td ng-if="!customer.notes"> --- </td>
+                </tr>
+
+                <!-- if no data available -->
+                <tr class="table-active" ng-if="customers.length === 0">
+                    <td colspan="6">No data available in table</td>
+                </tr>
+
+                <!-- if search found nothing -->
+                <tr ng-if="(customers | filter: searchVal).length == 0 && searchVal" class="table-active select-off">
+                    <td colspan="6">No Matching Records Found!</td>
+                </tr>
+            </tbody>
+        </table>
+        <dir-pagination-controls pagination-id="customerInfo" max-size="5" direction-links="true" boundary-links="false"
+            template-url="../templates/dirPagination.tpl.html">
+        </dir-pagination-controls>
+
+        <!-- customer modal -->
+        <div class="modal fade" id="customerModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{modalTitle}}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <form ng-submit="submit()">
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <div class="row mb-2">
+                                <div class="from-group col-6">
+                                    <label>Customer Name</label>
+                                    <input spellcheck="false" type="text" class="form-control"
+                                        ng-model="customerDetails.customer_name" required autofocus>
+                                </div>
+                                <div class="from-group col-6">
+                                    <label>Phone Number</label>
+                                    <input type="number" class="form-control" ng-model="customerDetails.customer_phone"
+                                        min="0" max="999999999" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="from-group col-6">
+                                    <label>Address 1</label>
+                                    <input spellcheck="false" type="text" class="form-control"
+                                        ng-model="customerDetails.customer_address" required>
+                                </div>
+                                <div class="from-group col-6">
+                                    <label>Address 2</label>
+                                    <input spellcheck="false" type="text" class="form-control"
+                                        ng-model="customerDetails.customer_address_2">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Notes</label>
+                                <input type="text" class="form-control" ng-model="customerDetails.notes"
+                                    spellcheck="false">
+                            </div>
+
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                                    class="fas fa-times fa-fw"></i> Cancel</button>
+                            <button type="submit" class="btn btn-success"><i class="fas fa-check fa-fw"></i>
+                                Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,226 @@
+<div class="container-fluid">
+
+    <md-tabs layout="column" md-center-tabs>
+        <!-- <md-tab layout="column" ng-click="selectTab('salesReports')"><i class="far fa-chart-bar fa-2x"></i> <span
+                style="user-select: none">Sales
+                Graph</span></md-tab>
+        <md-tab layout="column" ng-click="selectTab('servicesReports')"><i class="fas fa-chart-area fa-2x"></i> <span
+                style="user-select: none">Services Graph</span></md-tab> -->
+        <md-tab layout="column" ng-click="selectTab('reports')"><i class="fas fa-chart-pie fa-2x"></i> <span
+                style="user-select: none">Reports</span></md-tab>
+    </md-tabs>
+
+    <!-------------------Sales tab ---------------------------->
+    <!-- <div class="container-fluid" ng-show="tabSelected === 'salesReports'">
+        <div class="row">
+            <div style="height: 430px" class="col-7">
+                <div>
+                    <md-datepicker ng-model="monthDatepicker" ng-change="monthDateChanged()"
+                        md-placeholder="Select Month" md-mode="month" md-open-on-focus="true"></md-datepicker>
+                </div>
+                <canvas id="monthlyReportChart"></canvas>
+                <br>
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h6 class="select-off">Total Sales: <span class="text-dark">{{monthlyTotalSells}} L.L</span>
+                        </h6>
+                    </div>
+                    <div class="col-6 text-center">
+                        <h6 class="select-off">Total Profit: <span class="text-success">{{monthlyTotalProfit}}
+                                L.L</span></h6>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 430px" class="col-5">
+                <div class="text-right">Select Year:
+                    <md-datepicker ng-model="yearDatepicker" md-placeholder="Select Year" md-mode="month"
+                        md-open-on-focus="true" md-date-filter="yearFilter" md-date-locale="locale" ng-change="yearDateChanged()"></md-datepicker>
+                </div>
+                <canvas id="yearReportChart"></canvas>
+            </div>
+        </div>
+    </div> -->
+
+    <!------------------------------ Services Tab ---------------------------->
+    <!-- <div class="container-fluid" ng-show="tabSelected === 'servicesReports'">
+        <div class="row">
+            <div style="height: 430px" class="col-7">
+                <div>
+                    <md-datepicker ng-model="serviceMonthDatepicker" ng-change="serviceMonthChanged()"
+                        md-placeholder="Select Month" md-mode="month" md-open-on-focus="true"></md-datepicker>
+                </div>
+                <canvas id="monthlyServiceReportChart"></canvas>
+                <br>
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <h6 class="select-off">Total services sales: <span
+                                class="text-primary">{{serviceMonthlyTotalSells}}
+                                L.L</span></h6>
+                    </div>
+                    <div class="col-6 text-center">
+                        <h6>Total Profit: <span style="color: #FF1493">{{ServiceMonthlyTotalProfit}} L.L</span></h6>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height: 430px" class="col-5">
+                <div class="text-right">
+                    <md-datepicker ng-model="serviceYearDatepicker" md-placeholder="2019 (disabled)" md-mode="month"
+                        md-open-on-focus="true" disabled></md-datepicker>
+                </div>
+                <canvas id="yearServiceReportChart"></canvas>
+            </div>
+        </div>
+    </div> -->
+
+    <!----------------------- Reports Tab --------------------->
+    <div ng-show="tabSelected === 'reports'">
+        <br>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-6 text-center">
+                    <!-- <b>Start Date</b> -->
+                    <md-datepicker ng-model="startDateInput" ng-change="startDatePicker()" md-placeholder="Start Date"
+                        md-open-on-focus="true">
+                    </md-datepicker>
+                </div>
+                <div class="col-6 text-center">
+                    <!-- <b>End Date</b> -->
+                    <md-datepicker ng-model="endDateInput" ng-change="endDatePicker()" md-placeholder="End Date"
+                        md-open-on-focus="true">
+                    </md-datepicker>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="row">
+                    <!-- stock sales  -->
+                    <div class="col-6">
+                        <div class="card shadow border-left-dark">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div class="text-xs text-dark">Stock Sales</div>
+                                        <div class="h5 font-weight-bold">{{totalSells}} L.L</div>
+                                    </div>
+                                    <div class="col-auto"><i class="fas fa-shopping-cart fa-2x text-secondary"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- stock profit -->
+                    <div class="col-6">
+                        <div class="card shadow border-left-success">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div class="text-xs text-success">Stock Earnings</div>
+                                        <div class="h5 font-weight-bold">{{totalProfit}} L.L</div>
+                                    </div>
+                                    <div class="col-auto"><i class="fas fa-hand-holding-usd fa-2x text-secondary"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="card shadow border-left-primary">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div class="text-xs" style="color: #007bff">Services Sales</div>
+                                        <div class="h5 font-weight-bold">{{totalServicesSells}} L.L</div>
+                                    </div>
+                                    <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-secondary"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- services profit -->
+                    <div class="col-6">
+                        <div class="card shadow border-left-pink">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <div class="text-xs" style="color: #FF1493">Services Earnings</div>
+                                        <div class="h5 font-weight-bold">{{totalServicesProfit}} L.L</div>
+                                    </div>
+                                    <div class="col-auto"><i class="fas fa-donate fa-2x text-secondary"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mt-2">
+                    <div class="card-header text-center">
+                        <h5 class="font-weight-bold">Top Sold Items and Services</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold"
+                                        ng-repeat="item in stockSales">{{item.itemName}}
+                                        <span class="text-dark">{{item.count}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-6">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold"
+                                        ng-repeat="service in servicesSales">{{service.serviceName}}
+                                        <span class="text-dark">{{service.count}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <!-- Overall Report Chart -->
+                <div class="card shadow">
+                    <div class="card-header text-center">
+                        <h5 class="font-weight-bold">Overall Sales and Earnings</h5>
+                    </div>
+                    <div class="card-body">
+
+                        <canvas id="overallReport"></canvas>
+
+                        <div class="row">
+                            <div class="col-3 text-center">
+                                <div class="text-xs text-dark">Total Sales</div>
+                                <div class="h6 font-weight-bold">{{overallSales}} L.L</div>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-xs text-danger">Total Payments</div>
+                                <div class="h6 font-weight-bold">{{totalPayments.toLocaleString()}} L.L</div>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-xs text-warning">Total Earnings</div>
+                                <div class="h6 font-weight-bold">{{overallProfit}} L.L</div>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="text-xs text-success">Net Profit</div>
+                                <div class="h6 font-weight-bold">{{netProfit.toLocaleString()}} L.L</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
