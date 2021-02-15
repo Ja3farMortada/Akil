@@ -39,6 +39,7 @@
         "angular-route": "^1.8.0",
         "angular-utils-pagination": "^0.11.1",
         "animate.css": "^4.1.1",
+        "autocompleter": "^6.1.0",
         "body-parser": "^1.19.0",
         "bootstrap": "^4.5.2",
         "chart.js": "^2.9.3",

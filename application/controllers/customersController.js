@@ -170,7 +170,7 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
             customer_phone: null,
             customer_address: null,
             customer_address_2: null,
-            customer_debit: 0,
+            customer_due: 0,
             notes: null
         };
 

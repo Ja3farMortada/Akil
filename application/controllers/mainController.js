@@ -30,6 +30,9 @@ require('angular-material');
 // require md5 
 var md5 = require('md5');
 
+//require autocompleter widget
+var autocomplete = require('autocompleter');
+
 const keys = require('../../keys.json');
 
 require('angular-utils-pagination');
@@ -46,9 +49,9 @@ app.config(function ($routeProvider) {
 
     $routeProvider
 
-        .when('/services', {
-            templateUrl: 'services.html',
-            controller: 'servicesController'
+        .when('/orders', {
+            templateUrl: 'orders.html',
+            controller: 'ordersController'
         })
 
         .when('/sell', {
@@ -351,7 +354,7 @@ app.config(function ($mdThemingProvider) {
 });
 
 // require SPA controllers
-require('../controllers/servicesController');
+require('../controllers/ordersController');
 require('../controllers/sellController');
 require('../controllers/stockController');
 require('../controllers/historyController');
@@ -364,7 +367,7 @@ require('../controllers/settingsController');
 
 
 // require SPA Models
-require('../models/servicesFactory');
+require('../models/ordersFactory');
 require('../models/sellFactory');
 require('../models/stockFactory');
 require('../models/historyFactory');
