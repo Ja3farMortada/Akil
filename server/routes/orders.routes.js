@@ -7,11 +7,11 @@ module.exports = (server, db) => {
     //     })
     // })
 
-    server.get('/getServices', (req, res) => {
-        let query = "SELECT `SID`, `service_name`, `service_type`, `service_cost`, `service_price` FROM `services` WHERE `service_status` = true ";
+    server.get('/getOrders', (req, res) => {
+        let query = "SELECT * FROM `orders` WHERE `order_isDeleted` = false ";
         db.query(query, function (error, results) {
             if (error) {
-                res.status(400).end('Error in query: ' + error);
+                res.status(400).send(error);
             } else {
                 res.send(results);
             }
@@ -19,20 +19,18 @@ module.exports = (server, db) => {
     });
 
 
-    server.post('/addService', (req, res) => {
-        let item = req.body;
-        item.service_status = true;
+    server.post('/addOrder', (req, res) => {
+        let order = req.body;
 
-        let query = `INSERT INTO services SET ?`;
-        db.query(query, item, function (error, results) {
+        let query = `INSERT INTO orders SET ?`;
+        db.query(query, order, function (error, results) {
             if (error) {
-                res.status(400).end('Error in query: ' + error);
+                res.status(400).send( error);
             } else {
-                let sql = "SELECT `SID`, `service_name`, `service_type`, `service_cost`, `service_price` FROM `services` WHERE `SID` = ? ";
+                let sql = "SELECT * FROM `orders` WHERE `order_ID` = ? ";
                 db.query(sql, results.insertId, function (error, results) {
                     if (error) {
-                        console.log(error)
-                        results.status(400).end('Error in query: ' + error);
+                        results.status(400).send(error);
                     } else {
                         res.send(results[0]);
                     }

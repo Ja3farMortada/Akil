@@ -2,7 +2,7 @@ const server = require('express')();
 const bodyParser = require('body-parser');
 
 const loginRoutes = require('./routes/login.routes');
-const servicesRoutes = require('./routes/services.routes');
+const ordersRoutes = require('./routes/orders.routes');
 const sellRoutes = require('./routes/sell.routes');
 const stockRoutes = require('./routes/stock.routes');
 const customersRoutes = require('./routes/customers.routes');
@@ -20,7 +20,7 @@ server.use(bodyParser.urlencoded({
 server.use(bodyParser.json());
 
 loginRoutes(server, connection);
-servicesRoutes(server, connection);
+ordersRoutes(server, connection);
 sellRoutes(server, connection);
 stockRoutes(server, connection);
 customersRoutes(server, connection);

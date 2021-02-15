@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 4.8.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Feb 14, 2021 at 12:24 PM
--- Server version: 8.0.12
--- PHP Version: 7.3.11
+-- Host: 127.0.0.1:3306
+-- Generation Time: Feb 15, 2021 at 08:23 PM
+-- Server version: 5.7.23
+-- PHP Version: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -27,7 +28,8 @@ SET time_zone = "+00:00";
 -- Table structure for table `assets`
 --
 
-CREATE TABLE `assets` (
+DROP TABLE IF EXISTS `assets`;
+CREATE TABLE IF NOT EXISTS `assets` (
   `assets` int(10) NOT NULL,
   `exchange_rate` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -45,16 +47,19 @@ INSERT INTO `assets` (`assets`, `exchange_rate`) VALUES
 -- Table structure for table `customers`
 --
 
-CREATE TABLE `customers` (
-  `customer_ID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `customers`;
+CREATE TABLE IF NOT EXISTS `customers` (
+  `customer_ID` int(11) NOT NULL AUTO_INCREMENT,
   `customer_name` varchar(30) NOT NULL,
   `customer_phone` bigint(15) DEFAULT NULL,
-  `customer_address` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `customer_address_2` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `customer_address` varchar(100) DEFAULT NULL,
+  `customer_address_2` varchar(100) DEFAULT NULL,
   `customer_due` float NOT NULL,
-  `notes` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `customer_status` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `notes` varchar(100) DEFAULT NULL,
+  `customer_status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`customer_ID`),
+  UNIQUE KEY `customer_phone` (`customer_phone`)
+) ENGINE=InnoDB AUTO_INCREMENT=1030 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `customers`
@@ -65,7 +70,10 @@ INSERT INTO `customers` (`customer_ID`, `customer_name`, `customer_phone`, `cust
 (1002, 'test 2', 999999999, NULL, NULL, 0, NULL, 1),
 (1003, 'testing 3', 232343, 'jlasdkjf', 'alsdkjfaskldfj', 0, NULL, 1),
 (1004, 'asdfasdfasdf', 70846278, 'asdf', NULL, 0, NULL, 1),
-(1026, 'ali', 819238192, 'aaita el jabal, kdkal', 'عيال عاذك', 0, 'laskdjf alksdjf', 1);
+(1026, 'ali', 819238192, 'aaita el jabal, kdkal', 'عيال عاذك', 0, 'laskdjf alksdjf', 1),
+(1027, 'ahmad', 29304, 'lasdkjf', 'laskdjf', 0, NULL, 1),
+(1028, 'hadi', 203, 'alsdkfj', 'asldkfj', 0, NULL, 1),
+(1029, 'mohamad', 2839423, 'lsasdlfkj', 'alskdjfa', 0, 'asdfasdf', 1);
 
 -- --------------------------------------------------------
 
@@ -73,16 +81,19 @@ INSERT INTO `customers` (`customer_ID`, `customer_name`, `customer_phone`, `cust
 -- Table structure for table `customer_payments`
 --
 
-CREATE TABLE `customer_payments` (
-  `payment_ID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `customer_payments`;
+CREATE TABLE IF NOT EXISTS `customer_payments` (
+  `payment_ID` int(11) NOT NULL AUTO_INCREMENT,
   `customer_ID_FK` int(11) NOT NULL,
   `payment_amount` float NOT NULL,
   `payment_date` date NOT NULL,
   `payment_time` time NOT NULL,
   `dollar_exchange` float NOT NULL,
-  `payment_notes` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `payment_status` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+  `payment_notes` varchar(50) DEFAULT NULL,
+  `payment_status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`payment_ID`),
+  KEY `customer_ID_FK` (`customer_ID_FK`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 --
 -- Dumping data for table `customer_payments`
@@ -123,17 +134,20 @@ INSERT INTO `customer_payments` (`payment_ID`, `customer_ID_FK`, `payment_amount
 -- Table structure for table `debts`
 --
 
-CREATE TABLE `debts` (
-  `debt_ID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `debts`;
+CREATE TABLE IF NOT EXISTS `debts` (
+  `debt_ID` int(11) NOT NULL AUTO_INCREMENT,
   `customer_ID_FK` int(11) NOT NULL,
   `item_type` varchar(10) NOT NULL,
   `item_name` varchar(100) NOT NULL,
   `amount` float NOT NULL,
   `remaining` float NOT NULL,
   `debt_date` date NOT NULL,
-  `notes` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  `debt_status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `notes` varchar(100) DEFAULT NULL,
+  `debt_status` tinyint(1) NOT NULL,
+  PRIMARY KEY (`debt_ID`),
+  KEY `customer_ID_FK` (`customer_ID_FK`)
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `debts`
@@ -193,14 +207,17 @@ INSERT INTO `debts` (`debt_ID`, `customer_ID_FK`, `item_type`, `item_name`, `amo
 -- Table structure for table `debts_payments`
 --
 
-CREATE TABLE `debts_payments` (
-  `payment_ID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `debts_payments`;
+CREATE TABLE IF NOT EXISTS `debts_payments` (
+  `payment_ID` int(11) NOT NULL AUTO_INCREMENT,
   `debt_ID_FK` int(11) NOT NULL,
   `payment_date` date NOT NULL,
   `payment_time` time DEFAULT NULL,
   `payment_amount` int(10) NOT NULL,
-  `payment_notes` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `payment_notes` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`payment_ID`),
+  KEY `debt_ID_FK` (`debt_ID_FK`)
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `debts_payments`
@@ -274,8 +291,9 @@ INSERT INTO `debts_payments` (`payment_ID`, `debt_ID_FK`, `payment_date`, `payme
 -- Table structure for table `invoice`
 --
 
-CREATE TABLE `invoice` (
-  `inv_ID` int(100) NOT NULL,
+DROP TABLE IF EXISTS `invoice`;
+CREATE TABLE IF NOT EXISTS `invoice` (
+  `inv_ID` int(100) NOT NULL AUTO_INCREMENT,
   `customer_ID_FK` int(10) DEFAULT NULL,
   `inv_date` date NOT NULL,
   `inv_time` time NOT NULL,
@@ -283,8 +301,10 @@ CREATE TABLE `invoice` (
   `inv_total_price` float NOT NULL,
   `dollar_exchange` float DEFAULT NULL,
   `invoice_details` json DEFAULT NULL,
-  `inv_status` tinyint(4) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `inv_status` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`inv_ID`),
+  KEY `customer_ID_FK` (`customer_ID_FK`)
+) ENGINE=InnoDB AUTO_INCREMENT=208 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `invoice`
@@ -504,14 +524,18 @@ INSERT INTO `invoice` (`inv_ID`, `customer_ID_FK`, `inv_date`, `inv_time`, `inv_
 -- Table structure for table `invoice_details`
 --
 
-CREATE TABLE `invoice_details` (
-  `inv_det_ID` int(100) NOT NULL,
+DROP TABLE IF EXISTS `invoice_details`;
+CREATE TABLE IF NOT EXISTS `invoice_details` (
+  `inv_det_ID` int(100) NOT NULL AUTO_INCREMENT,
   `inv_id` int(100) NOT NULL,
   `inv_det_IID` int(10) NOT NULL,
   `inv_det_quantity` int(10) NOT NULL,
   `inv_det_cost` int(10) NOT NULL,
-  `inv_det_price` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `inv_det_price` int(10) NOT NULL,
+  PRIMARY KEY (`inv_det_ID`),
+  KEY `inv_det_IID` (`inv_det_IID`),
+  KEY `inv_id` (`inv_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=240 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `invoice_details`
@@ -761,18 +785,57 @@ INSERT INTO `invoice_details` (`inv_det_ID`, `inv_id`, `inv_det_IID`, `inv_det_q
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE IF NOT EXISTS `orders` (
+  `order_ID` int(100) NOT NULL AUTO_INCREMENT,
+  `customer_ID_FK` int(10) NOT NULL,
+  `track_number` int(100) DEFAULT NULL,
+  `order_date` date NOT NULL,
+  `order_time` time NOT NULL,
+  `destination_province` varchar(20) NOT NULL,
+  `destination_district` varchar(20) DEFAULT NULL,
+  `destination_town` varchar(20) NOT NULL,
+  `destination_address` varchar(100) NOT NULL,
+  `recipient_name` varchar(50) NOT NULL,
+  `recipient_phone` bigint(15) NOT NULL,
+  `order_value` double NOT NULL,
+  `delivery_fee` float NOT NULL,
+  `order_status` varchar(20) NOT NULL,
+  `order_notes` varchar(100) DEFAULT NULL,
+  `driver_ID_FK` int(10) DEFAULT NULL,
+  `order_isDeleted` tinyint(1) NOT NULL DEFAULT '0',
+  `customer_name` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`order_ID`),
+  KEY `customer_ID_FK` (`customer_ID_FK`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_ID`, `customer_ID_FK`, `track_number`, `order_date`, `order_time`, `destination_province`, `destination_district`, `destination_town`, `destination_address`, `recipient_name`, `recipient_phone`, `order_value`, `delivery_fee`, `order_status`, `order_notes`, `driver_ID_FK`, `order_isDeleted`, `customer_name`) VALUES
+(3, 1028, 9856, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'حاريص', 'البركة، مقابل باتسري ناصر', 'Ali hamdan', 70896584, 370000, 10000, 'office', NULL, NULL, 0, 'hadi');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `payments`
 --
 
-CREATE TABLE `payments` (
-  `payment_ID` int(10) NOT NULL,
-  `payment_title` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `category` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+DROP TABLE IF EXISTS `payments`;
+CREATE TABLE IF NOT EXISTS `payments` (
+  `payment_ID` int(10) NOT NULL AUTO_INCREMENT,
+  `payment_title` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `category` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `amount` int(10) NOT NULL,
   `date` date NOT NULL,
   `time` time NOT NULL,
-  `notes` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `notes` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`payment_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `payments`
@@ -805,386 +868,18 @@ INSERT INTO `payments` (`payment_ID`, `payment_title`, `category`, `amount`, `da
 -- Table structure for table `reminders`
 --
 
-CREATE TABLE `reminders` (
-  `reminder_ID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `reminders`;
+CREATE TABLE IF NOT EXISTS `reminders` (
+  `reminder_ID` int(11) NOT NULL AUTO_INCREMENT,
   `reminder_title` varchar(100) NOT NULL,
   `reminder_text` text,
   `reminder_type` varchar(15) NOT NULL DEFAULT 'text',
   `due_date` date DEFAULT NULL,
   `due_time` time DEFAULT NULL,
   `repeat_reminder` varchar(10) DEFAULT NULL,
-  `reminder_status` tinyint(1) NOT NULL DEFAULT '1'
+  `reminder_status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`reminder_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `services`
---
-
-CREATE TABLE `services` (
-  `SID` int(10) NOT NULL,
-  `service_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `service_type` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `service_cost` decimal(10,0) DEFAULT NULL,
-  `service_price` int(10) NOT NULL,
-  `service_status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `services_invoice`
---
-
-CREATE TABLE `services_invoice` (
-  `ser_inv_ID` int(10) NOT NULL,
-  `customer_ID_FK` int(10) DEFAULT NULL,
-  `ser_inv_date` date NOT NULL,
-  `ser_inv_time` time NOT NULL,
-  `ser_inv_total_cost` decimal(10,0) DEFAULT NULL,
-  `ser_inv_total_price` int(10) NOT NULL,
-  `invoice_details` json DEFAULT NULL,
-  `ser_inv_status` tinyint(4) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `services_invoice`
---
-
-INSERT INTO `services_invoice` (`ser_inv_ID`, `customer_ID_FK`, `ser_inv_date`, `ser_inv_time`, `ser_inv_total_cost`, `ser_inv_total_price`, `invoice_details`, `ser_inv_status`) VALUES
-(1, NULL, '2019-03-31', '03:18:04', '87000', 94000, '[{\"qty\": 1, \"ser_inv_id\": 1, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 1, \"service_cost\": 75000, \"service_name\": \"steam 50$\", \"service_price\": 80000}]', 1),
-(2, NULL, '2019-03-31', '03:18:15', '69000', 75000, '[{\"qty\": 1, \"ser_inv_id\": 2, \"service_cost\": 30000, \"service_name\": \"steam 20$\", \"service_price\": 35000}, {\"qty\": 1, \"ser_inv_id\": 2, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(3, NULL, '2019-03-31', '03:26:15', '5500', 6000, '[{\"qty\": 1, \"ser_inv_id\": 3, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(4, NULL, '2019-04-04', '16:54:20', '49250', 50000, '[]', 1),
-(5, NULL, '2019-04-04', '16:54:30', '54750', 56000, '[{\"qty\": 1, \"ser_inv_id\": 5, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(6, NULL, '2019-04-04', '16:54:38', '8500', 9000, '[{\"qty\": 1, \"ser_inv_id\": 6, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(7, NULL, '2019-04-04', '16:59:28', '49250', 50000, '[{\"qty\": 1, \"ser_inv_id\": 7, \"service_cost\": 49250, \"service_name\": \"Touch Bill\", \"service_price\": 50000}]', 1),
-(8, NULL, '2019-04-04', '17:50:13', '524250', 530000, '[{\"qty\": 1, \"ser_inv_id\": 8, \"service_cost\": 75000, \"service_name\": \"steam 50$\", \"service_price\": 80000}, {\"qty\": 1, \"ser_inv_id\": 8, \"service_cost\": 449250, \"service_name\": \"Alfa Bill\", \"service_price\": 450000}]', 1),
-(9, NULL, '2019-04-16', '11:10:46', '543750', 546000, '[{\"qty\": 1, \"ser_inv_id\": 9, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 9, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}, {\"qty\": 1, \"ser_inv_id\": 9, \"service_cost\": 499250, \"service_name\": \"Touch Bill\", \"service_price\": 500000}]', 1),
-(10, NULL, '2019-04-16', '11:11:59', '14000', 15000, '[{\"qty\": 1, \"ser_inv_id\": 10, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(11, NULL, '2019-04-16', '11:22:47', '5500', 6000, '[{\"qty\": 1, \"ser_inv_id\": 11, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(12, NULL, '2019-04-16', '11:24:12', '8500', 9000, '[{\"qty\": 1, \"ser_inv_id\": 12, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(13, NULL, '2019-04-16', '11:25:10', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 13, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(14, NULL, '2019-04-26', '13:10:20', '52350', 525000, '[{\"qty\": 1, \"ser_inv_id\": 14, \"service_cost\": 24250, \"service_name\": \"Touch Bill\", \"service_price\": 25000}, {\"qty\": 1, \"ser_inv_id\": 14, \"service_cost\": 499250, \"service_name\": \"Alfa Bill\", \"service_price\": 500000}]', 1),
-(15, NULL, '2019-04-26', '18:19:25', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 15, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(16, NULL, '2019-04-28', '00:42:12', '20500', 23000, '[{\"qty\": 1, \"ser_inv_id\": 16, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 16, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(17, NULL, '2019-04-28', '00:42:16', '52000', 54000, '[{\"qty\": 1, \"ser_inv_id\": 17, \"service_cost\": 27000, \"service_name\": \"IDM 1 month\", \"service_price\": 28000}, {\"qty\": 1, \"ser_inv_id\": 17, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}]', 1),
-(18, NULL, '2019-04-28', '00:42:21', '53000', 55000, '[{\"qty\": 1, \"ser_inv_id\": 18, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 18, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(19, NULL, '2019-04-28', '00:42:26', '56500', 60000, '[{\"qty\": 1, \"ser_inv_id\": 19, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 19, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 19, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(20, NULL, '2019-04-29', '23:59:21', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 20, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(21, NULL, '2019-05-09', '04:46:39', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 21, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(22, NULL, '2019-05-10', '22:34:21', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 22, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(23, NULL, '2019-05-11', '04:26:37', '5500', 6000, '[{\"qty\": 1, \"ser_inv_id\": 23, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(24, NULL, '2019-05-11', '04:26:46', '79000', 86000, '[{\"qty\": 1, \"ser_inv_id\": 24, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 24, \"service_cost\": 15000, \"service_name\": \"steam 10$\", \"service_price\": 20000}, {\"qty\": 1, \"ser_inv_id\": 24, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}]', 1),
-(25, NULL, '2019-05-12', '22:50:01', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 25, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(26, NULL, '2019-07-02', '17:41:30', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 26, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(27, NULL, '2019-07-10', '16:53:01', '49250', 50000, '[{\"qty\": 1, \"ser_inv_id\": 27, \"service_cost\": 49250, \"service_name\": \"Touch Bill\", \"service_price\": 50000}]', 1),
-(28, NULL, '2019-07-11', '22:11:58', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 28, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(29, NULL, '2019-07-24', '20:51:19', '78000', 80000, '[{\"qty\": 1, \"ser_inv_id\": 29, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 29, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(30, NULL, '2019-07-24', '20:51:34', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 30, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(31, NULL, '2019-07-25', '22:30:49', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 31, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(32, NULL, '2019-07-25', '22:30:53', '14000', 15000, '[{\"qty\": 1, \"ser_inv_id\": 32, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 1, \"ser_inv_id\": 32, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(33, NULL, '2019-08-11', '15:21:42', '83500', 88000, '[{\"qty\": 1, \"ser_inv_id\": 33, \"service_cost\": 75000, \"service_name\": \"steam 50$\", \"service_price\": 80000}, {\"qty\": 1, \"ser_inv_id\": 33, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 8000}]', 1),
-(34, NULL, '2019-08-23', '19:39:39', '90000', 94000, '[{\"qty\": 1, \"ser_inv_id\": 34, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 2, \"ser_inv_id\": 34, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(35, NULL, '2019-08-23', '22:21:58', '390000', 390000, '[{\"qty\": 10, \"ser_inv_id\": 35, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 39000}]', 1),
-(36, NULL, '2019-08-23', '22:22:15', '67000', 70000, '[{\"qty\": 1, \"ser_inv_id\": 36, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 2, \"ser_inv_id\": 36, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(37, NULL, '2019-08-23', '22:22:20', '42000', 45000, '[{\"qty\": 3, \"ser_inv_id\": 37, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(38, NULL, '2019-08-24', '00:48:14', '117000', 120000, '[{\"qty\": 3, \"ser_inv_id\": 38, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(39, NULL, '2019-08-24', '17:42:12', '195000', 200000, '[{\"qty\": 5, \"ser_inv_id\": 39, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(40, NULL, '2019-08-26', '16:28:16', '90000', 94000, '[{\"qty\": 1, \"ser_inv_id\": 40, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 2, \"ser_inv_id\": 40, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(41, NULL, '2019-08-26', '18:04:02', '93500', 99000, '[{\"qty\": 1, \"ser_inv_id\": 41, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 41, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 5, \"ser_inv_id\": 41, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(42, NULL, '2019-08-27', '00:00:50', '68000', 72000, '[{\"qty\": 1, \"ser_inv_id\": 42, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 42, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 2, \"ser_inv_id\": 42, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(43, NULL, '2019-08-31', '14:45:30', '68000', 72000, '[{\"qty\": 1, \"ser_inv_id\": 43, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 43, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 2, \"ser_inv_id\": 43, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(44, NULL, '2019-09-01', '15:21:15', '98500', 103000, '[{\"qty\": 1, \"ser_inv_id\": 44, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 2, \"ser_inv_id\": 44, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 44, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(45, NULL, '2019-09-02', '03:33:14', '166250', 170000, '[{\"qty\": 2, \"ser_inv_id\": 45, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 45, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 45, \"service_cost\": 49250, \"service_name\": \"Alfa Bill\", \"service_price\": 50000}]', 1),
-(46, NULL, '2019-09-02', '10:11:10', '0', 0, '[]', 1),
-(47, NULL, '2019-10-06', '20:45:03', '86500', 89000, '[{\"qty\": 2, \"ser_inv_id\": 47, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 47, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(48, NULL, '2019-10-11', '01:19:08', '59500', 63000, '[{\"qty\": 1, \"ser_inv_id\": 48, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 48, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 48, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(49, NULL, '2019-10-16', '22:18:19', '56500', 60000, '[{\"qty\": 1, \"ser_inv_id\": 49, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 49, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 49, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(50, NULL, '2019-10-16', '22:19:02', '71500', 77000, '[{\"qty\": 2, \"ser_inv_id\": 50, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 50, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 50, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(51, NULL, '2019-10-16', '22:19:09', '98000', 110000, '[{\"qty\": 1, \"ser_inv_id\": 51, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 51, \"service_cost\": 15000, \"service_name\": \"steam 10$\", \"service_price\": 20000}, {\"qty\": 1, \"ser_inv_id\": 51, \"service_cost\": 30000, \"service_name\": \"steam 20$\", \"service_price\": 35000}, {\"qty\": 1, \"ser_inv_id\": 51, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(52, NULL, '2019-11-24', '00:51:18', '18000', 21000, '[{\"qty\": 1, \"ser_inv_id\": 52, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 52, \"service_cost\": 6000, \"service_name\": \"test\", \"service_price\": 7000}]', 1),
-(53, NULL, '2019-11-24', '00:56:01', '47500', 49000, '[{\"qty\": 1, \"ser_inv_id\": 53, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 53, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(54, NULL, '2019-11-24', '00:56:12', '20500', 23000, '[{\"qty\": 1, \"ser_inv_id\": 54, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 54, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(55, NULL, '2019-11-24', '02:59:07', '7000', 10000, '[{\"qty\": 1, \"ser_inv_id\": 55, \"service_cost\": 7000, \"service_name\": \"touch haha\", \"service_price\": 10000}]', 1),
-(56, NULL, '2019-11-24', '03:09:48', '7000', 10000, '[{\"qty\": 1, \"ser_inv_id\": 56, \"service_cost\": 7000, \"service_name\": \"touch haha\", \"service_price\": 10000}]', 1),
-(57, NULL, '2019-11-24', '03:47:51', '94000', 100000, '[{\"qty\": 1, \"ser_inv_id\": 57, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 10, \"ser_inv_id\": 57, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(58, NULL, '2019-11-24', '04:07:52', '102000', 108000, '[{\"qty\": 2, \"ser_inv_id\": 58, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 2, \"ser_inv_id\": 58, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(59, NULL, '2019-11-24', '04:09:12', '446000', 480000, '[{\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 15000, \"service_name\": \"steam 10$\", \"service_price\": 20000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 30000, \"service_name\": \"steam 20$\", \"service_price\": 35000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 75000, \"service_name\": \"steam 50$\", \"service_price\": 80000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 27000, \"service_name\": \"IDM 1 month\", \"service_price\": 28000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 6000, \"service_name\": \"test\", \"service_price\": 7000}, {\"qty\": 1, \"ser_inv_id\": 59, \"service_cost\": 150000, \"service_name\": \"steam 100$\", \"service_price\": 160000}]', 1),
-(60, NULL, '2019-11-24', '04:10:27', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 60, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(61, NULL, '2019-11-24', '20:15:47', '20000', 30000, '[{\"qty\": 1, \"ser_inv_id\": 61, \"service_cost\": 20000, \"service_name\": \"steam 50$\", \"service_price\": 30000}]', 1),
-(62, NULL, '2019-11-24', '20:17:23', '40000', 60000, '[{\"qty\": 1, \"ser_inv_id\": 62, \"service_cost\": 40000, \"service_name\": \"steam 10$\", \"service_price\": 60000}]', 1),
-(63, NULL, '2019-11-24', '20:19:58', '76000', 80000, '[{\"qty\": 1, \"ser_inv_id\": 63, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 63, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}, {\"qty\": 1, \"ser_inv_id\": 63, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(64, NULL, '2019-11-24', '20:21:40', '25000', 26000, '[{\"qty\": 1, \"ser_inv_id\": 64, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}]', 1),
-(65, NULL, '2019-11-24', '20:21:58', '90000', 94000, '[{\"qty\": 1, \"ser_inv_id\": 65, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 65, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 65, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(66, NULL, '2019-11-24', '20:22:27', '14000', 15000, '[{\"qty\": 1, \"ser_inv_id\": 66, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(67, NULL, '2019-11-24', '20:22:49', '80000', 83000, '[{\"qty\": 1, \"ser_inv_id\": 67, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 67, \"service_cost\": 27000, \"service_name\": \"IDM 1 month\", \"service_price\": 28000}, {\"qty\": 1, \"ser_inv_id\": 67, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(68, NULL, '2019-11-24', '20:26:51', '27000', 28000, '[{\"qty\": 1, \"ser_inv_id\": 68, \"service_cost\": 27000, \"service_name\": \"IDM 1 month\", \"service_price\": 28000}]', 1),
-(69, NULL, '2019-11-24', '20:27:06', '117000', 120000, '[{\"qty\": 3, \"ser_inv_id\": 69, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}]', 1),
-(70, NULL, '2019-11-26', '01:40:06', '14000', 15000, '[{\"qty\": 1, \"ser_inv_id\": 70, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 1, \"ser_inv_id\": 70, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(71, NULL, '2019-11-26', '01:41:41', '51000', 54000, '[{\"qty\": 1, \"ser_inv_id\": 71, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 71, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(72, NULL, '2019-11-29', '09:18:16', '73500', 78000, '[{\"qty\": 1, \"ser_inv_id\": 72, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 72, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 72, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}, {\"qty\": 1, \"ser_inv_id\": 72, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(73, NULL, '2019-11-29', '13:24:27', '52000', 54000, '[{\"qty\": 1, \"ser_inv_id\": 73, \"service_cost\": 27000, \"service_name\": \"IDM 1 month\", \"service_price\": 28000}, {\"qty\": 1, \"ser_inv_id\": 73, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}]', 1),
-(74, NULL, '2019-12-04', '17:07:05', '47500', 49000, '[{\"qty\": 1, \"ser_inv_id\": 74, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 74, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(75, NULL, '2019-12-04', '17:07:12', '14000', 15000, '[{\"qty\": 1, \"ser_inv_id\": 75, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 1, \"ser_inv_id\": 75, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(76, NULL, '2019-12-04', '17:07:20', '14000', 15000, '[{\"qty\": 1, \"ser_inv_id\": 76, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(77, NULL, '2019-12-04', '18:02:34', '37000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 77, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 77, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}]', 1),
-(78, NULL, '2019-12-04', '22:33:33', '44500', 46000, '[{\"qty\": 1, \"ser_inv_id\": 78, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 78, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(79, NULL, '2019-12-04', '22:33:41', '5500', 6000, '[{\"qty\": 1, \"ser_inv_id\": 79, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(80, NULL, '2019-12-04', '22:41:45', '8500', 9000, '[{\"qty\": 1, \"ser_inv_id\": 80, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(81, NULL, '2019-12-04', '22:47:13', '73500', 78000, '[{\"qty\": 1, \"ser_inv_id\": 81, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 81, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}, {\"qty\": 1, \"ser_inv_id\": 81, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 81, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(82, NULL, '2019-12-05', '17:47:40', '47500', 49000, '[{\"qty\": 1, \"ser_inv_id\": 82, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 82, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(83, NULL, '2019-12-05', '17:50:38', '47500', 49000, '[{\"qty\": 1, \"ser_inv_id\": 83, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 83, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(84, NULL, '2019-12-05', '17:53:45', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 84, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(85, NULL, '2019-12-06', '08:06:11', '27000', 28000, '[{\"qty\": 1, \"ser_inv_id\": 85, \"service_cost\": 27000, \"service_name\": \"IDM 1 month\", \"service_price\": 28000}]', 1),
-(86, NULL, '2019-12-13', '23:20:20', '47500', 49000, '[{\"qty\": 1, \"ser_inv_id\": 86, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 86, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(87, NULL, '2019-12-15', '19:27:25', '86500', 85000, '[{\"qty\": 2, \"ser_inv_id\": 87, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 87, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 5000}]', 1),
-(88, NULL, '2019-12-15', '19:38:16', '51000', 54000, '[{\"qty\": 1, \"ser_inv_id\": 88, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 88, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(89, NULL, '2019-12-15', '19:39:07', '53000', 55000, '[{\"qty\": 1, \"ser_inv_id\": 89, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 89, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 1, \"ser_inv_id\": 89, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(90, 3, '2019-12-15', '19:40:01', '51000', 54000, '[{\"qty\": 1, \"ser_inv_id\": 90, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 90, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(91, 3, '2019-12-15', '19:40:27', '150000', 200000, '[{\"qty\": 10, \"ser_inv_id\": 91, \"service_cost\": 15000, \"service_name\": \"steam 10$\", \"service_price\": 20000}]', 1),
-(92, NULL, '2019-12-15', '19:43:09', '114000', 120000, '[{\"qty\": 1, \"ser_inv_id\": 92, \"service_cost\": 75000, \"service_name\": \"steam 50$\", \"service_price\": 80000}, {\"qty\": 1, \"ser_inv_id\": 92, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(93, NULL, '2019-12-15', '23:16:30', '57000', 61000, '[{\"qty\": 1, \"ser_inv_id\": 93, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 93, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 93, \"service_cost\": 6000, \"service_name\": \"test\", \"service_price\": 7000}]', 1),
-(94, NULL, '2019-12-16', '13:25:46', '92000', 95000, '[{\"qty\": 2, \"ser_inv_id\": 94, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 94, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 1, \"ser_inv_id\": 94, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(95, NULL, '2019-12-16', '21:43:34', '59500', 63000, '[{\"qty\": 1, \"ser_inv_id\": 95, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"ser_inv_id\": 95, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"ser_inv_id\": 95, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(96, NULL, '2020-04-13', '23:45:58', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 96, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(97, NULL, '2020-04-13', '23:51:20', '5500', 6000, '[{\"qty\": 1, \"ser_inv_id\": 97, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 1),
-(98, 1, '2020-04-13', '23:53:18', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 98, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(99, NULL, '2020-04-14', '15:04:49', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 99, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(100, NULL, '2020-04-21', '21:54:54', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 100, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(101, 2, '2020-04-22', '21:43:08', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 101, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(102, 2, '2020-04-22', '21:46:24', '39000', 40000, '[{\"qty\": 1, \"ser_inv_id\": 102, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}]', 1),
-(103, 1, '2020-04-23', '20:44:47', '12000', 14000, '[{\"qty\": 1, \"ser_inv_id\": 103, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(106, NULL, '2020-08-21', '16:31:25', '88000', 94000, '[{\"qty\": 1, \"service_ID\": 8, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}, {\"qty\": 1, \"service_ID\": 10, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 2, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 0),
-(107, NULL, '2020-08-21', '17:10:00', '68000', 72000, '[{\"qty\": 1, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"service_ID\": 10, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 2, \"service_ID\": 11, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 0),
-(108, NULL, '2020-08-21', '17:14:02', '36000', 42000, '[{\"qty\": 3, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 0),
-(109, NULL, '2020-08-21', '17:14:35', '64000', 67000, '[{\"qty\": 1, \"service_ID\": 10, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"service_ID\": 11, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 3, \"service_ID\": 12, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 0),
-(110, NULL, '2020-08-21', '17:15:59', '12000', 14000, '[{\"qty\": 1, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 0),
-(111, NULL, '2020-08-30', '13:01:07', '59500', 63000, '[{\"qty\": 1, \"service_ID\": 11, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 1, \"service_ID\": 10, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 0),
-(112, NULL, '2020-08-30', '13:01:53', '59500', 63000, '[{\"qty\": 1, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"service_ID\": 10, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"service_ID\": 11, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 1),
-(113, NULL, '2020-08-30', '17:32:47', '146000', 152000, '[{\"qty\": 3, \"service_ID\": 10, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 2, \"service_ID\": 11, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}, {\"qty\": 1, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 1),
-(114, NULL, '2020-08-30', '17:32:52', '28000', 30000, '[{\"qty\": 2, \"service_ID\": 9, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 1),
-(115, NULL, '2020-08-30', '17:34:19', '53000', 55000, '[{\"qty\": 1, \"service_ID\": 3, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}, {\"qty\": 1, \"service_ID\": 9, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}]', 0),
-(116, NULL, '2020-08-30', '17:34:23', '52000', 54000, '[{\"qty\": 1, \"service_ID\": 8, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}, {\"qty\": 1, \"service_ID\": 7, \"service_cost\": 27000, \"service_name\": \"IDM 1 month\", \"service_price\": 28000}]', 0),
-(117, NULL, '2020-08-30', '17:34:28', '45000', 55000, '[{\"qty\": 1, \"service_ID\": 5, \"service_cost\": 30000, \"service_name\": \"steam 20$\", \"service_price\": 35000}, {\"qty\": 1, \"service_ID\": 4, \"service_cost\": 15000, \"service_name\": \"steam 10$\", \"service_price\": 20000}]', 0),
-(118, NULL, '2020-08-30', '17:34:32', '51000', 54000, '[{\"qty\": 1, \"service_ID\": 10, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}]', 0),
-(119, NULL, '2020-08-30', '17:34:36', '11000', 12000, '[{\"qty\": 2, \"service_ID\": 12, \"service_cost\": 5500, \"service_name\": \"touch 3$\", \"service_price\": 6000}]', 0),
-(120, NULL, '2020-11-23', '12:22:04', '51000', 54000, '[{\"qty\": 1, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"service_ID\": 3, \"service_cost\": 39000, \"service_name\": \"alfa 1 monthssss\", \"service_price\": 40000}]', 1),
-(121, NULL, '2020-11-23', '12:22:16', '114000', 121000, '[{\"qty\": 1, \"service_ID\": 9, \"service_cost\": 14000, \"service_name\": \"alfa 10$\", \"service_price\": 15000}, {\"qty\": 1, \"service_ID\": 8, \"service_cost\": 25000, \"service_name\": \"Cyberia 1 Month\", \"service_price\": 26000}, {\"qty\": 1, \"service_ID\": 6, \"service_cost\": 75000, \"service_name\": \"steam 50$\", \"service_price\": 80000}]', 1),
-(122, 3, '2020-11-28', '20:52:34', '59500', 63000, '[{\"qty\": 1, \"service_ID\": 10, \"service_cost\": 39000, \"service_name\": \"touch 1 Month\", \"service_price\": 40000}, {\"qty\": 1, \"service_ID\": 2, \"service_cost\": 12000, \"service_name\": \"touch 10$\", \"service_price\": 14000}, {\"qty\": 1, \"service_ID\": 11, \"service_cost\": 8500, \"service_name\": \"touch 5$\", \"service_price\": 9000}]', 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ser_inv_details`
---
-
-CREATE TABLE `ser_inv_details` (
-  `ser_inv_det_ID` int(100) NOT NULL,
-  `ser_inv_id` int(10) NOT NULL,
-  `ser_inv_SID` int(10) NOT NULL,
-  `ser_inv_quantity` int(10) NOT NULL,
-  `ser_inv_cost` int(10) NOT NULL,
-  `ser_inv_price` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Dumping data for table `ser_inv_details`
---
-
-INSERT INTO `ser_inv_details` (`ser_inv_det_ID`, `ser_inv_id`, `ser_inv_SID`, `ser_inv_quantity`, `ser_inv_cost`, `ser_inv_price`) VALUES
-(1, 1, 6, 1, 75000, 80000),
-(2, 1, 2, 1, 12000, 14000),
-(3, 2, 5, 1, 30000, 35000),
-(4, 2, 10, 1, 39000, 40000),
-(5, 3, 12, 1, 5500, 6000),
-(6, 5, 12, 1, 5500, 6000),
-(7, 6, 11, 1, 8500, 9000),
-(8, 7, 13, 1, 49250, 50000),
-(9, 8, 6, 1, 75000, 80000),
-(10, 8, 14, 1, 449250, 450000),
-(11, 9, 10, 1, 39000, 40000),
-(12, 9, 12, 1, 5500, 6000),
-(13, 9, 13, 1, 499250, 500000),
-(14, 10, 9, 1, 14000, 15000),
-(15, 11, 12, 1, 5500, 6000),
-(16, 12, 11, 1, 8500, 9000),
-(17, 13, 10, 1, 39000, 40000),
-(18, 14, 14, 1, 499250, 500000),
-(19, 14, 13, 1, 24250, 25000),
-(20, 15, 10, 1, 39000, 40000),
-(21, 16, 2, 1, 12000, 14000),
-(22, 16, 11, 1, 8500, 9000),
-(23, 17, 7, 1, 27000, 28000),
-(24, 17, 8, 1, 25000, 26000),
-(25, 18, 9, 1, 14000, 15000),
-(26, 18, 3, 1, 39000, 40000),
-(27, 19, 2, 1, 12000, 14000),
-(28, 19, 12, 1, 5500, 6000),
-(29, 19, 10, 1, 39000, 40000),
-(30, 20, 10, 1, 39000, 40000),
-(31, 21, 2, 1, 12000, 14000),
-(32, 22, 2, 1, 12000, 14000),
-(33, 23, 12, 1, 5500, 6000),
-(34, 24, 3, 1, 39000, 40000),
-(35, 24, 8, 1, 25000, 26000),
-(36, 24, 4, 1, 15000, 20000),
-(37, 25, 10, 1, 39000, 40000),
-(38, 26, 10, 1, 39000, 40000),
-(39, 27, 13, 1, 49250, 50000),
-(40, 28, 2, 1, 12000, 14000),
-(41, 29, 10, 1, 39000, 40000),
-(42, 29, 10, 1, 39000, 40000),
-(43, 30, 2, 1, 12000, 14000),
-(44, 31, 10, 1, 39000, 40000),
-(45, 32, 11, 1, 8500, 9000),
-(46, 32, 12, 1, 5500, 6000),
-(47, 33, 11, 1, 8500, 8000),
-(48, 33, 6, 1, 75000, 80000),
-(49, 34, 2, 1, 12000, 14000),
-(50, 34, 10, 2, 39000, 40000),
-(51, 35, 10, 10, 39000, 39000),
-(52, 36, 9, 2, 14000, 15000),
-(53, 36, 3, 1, 39000, 40000),
-(54, 37, 9, 3, 14000, 15000),
-(55, 38, 10, 3, 39000, 40000),
-(56, 39, 10, 5, 39000, 40000),
-(57, 40, 10, 2, 39000, 40000),
-(58, 40, 2, 1, 12000, 14000),
-(59, 41, 2, 1, 12000, 14000),
-(60, 41, 10, 1, 39000, 40000),
-(61, 41, 11, 5, 8500, 9000),
-(62, 42, 2, 1, 12000, 14000),
-(63, 42, 10, 1, 39000, 40000),
-(64, 42, 11, 2, 8500, 9000),
-(65, 43, 2, 1, 12000, 14000),
-(66, 43, 10, 1, 39000, 40000),
-(67, 43, 11, 2, 8500, 9000),
-(68, 44, 2, 1, 12000, 14000),
-(69, 44, 11, 1, 8500, 9000),
-(70, 44, 10, 2, 39000, 40000),
-(71, 45, 10, 1, 39000, 40000),
-(72, 45, 3, 2, 39000, 40000),
-(73, 45, 14, 1, 49250, 50000),
-(74, 47, 10, 2, 39000, 40000),
-(75, 47, 11, 1, 8500, 9000),
-(76, 48, 10, 1, 39000, 40000),
-(77, 48, 2, 1, 12000, 14000),
-(78, 48, 11, 1, 8500, 9000),
-(79, 49, 10, 1, 39000, 40000),
-(80, 49, 2, 1, 12000, 14000),
-(81, 49, 12, 1, 5500, 6000),
-(82, 50, 11, 1, 8500, 9000),
-(83, 50, 10, 1, 39000, 40000),
-(84, 50, 2, 2, 12000, 14000),
-(85, 51, 9, 1, 14000, 15000),
-(86, 51, 3, 1, 39000, 40000),
-(87, 51, 5, 1, 30000, 35000),
-(88, 51, 4, 1, 15000, 20000),
-(89, 52, 16, 1, 6000, 7000),
-(90, 52, 2, 1, 12000, 14000),
-(91, 53, 10, 1, 39000, 40000),
-(92, 53, 11, 1, 8500, 9000),
-(93, 54, 11, 1, 8500, 9000),
-(94, 54, 2, 1, 12000, 14000),
-(95, 55, 17, 1, 7000, 10000),
-(96, 56, 17, 1, 7000, 10000),
-(97, 57, 10, 1, 39000, 40000),
-(98, 57, 12, 10, 5500, 6000),
-(99, 58, 2, 2, 12000, 14000),
-(100, 58, 10, 2, 39000, 40000),
-(101, 59, 18, 1, 150000, 160000),
-(102, 59, 16, 1, 6000, 7000),
-(103, 59, 12, 1, 5500, 6000),
-(104, 59, 6, 1, 75000, 80000),
-(105, 59, 10, 1, 39000, 40000),
-(106, 59, 11, 1, 8500, 9000),
-(107, 59, 2, 1, 12000, 14000),
-(108, 59, 9, 1, 14000, 15000),
-(109, 59, 7, 1, 27000, 28000),
-(110, 59, 5, 1, 30000, 35000),
-(111, 59, 4, 1, 15000, 20000),
-(112, 59, 3, 1, 39000, 40000),
-(113, 59, 8, 1, 25000, 26000),
-(114, 60, 2, 1, 12000, 14000),
-(115, 61, 6, 1, 20000, 30000),
-(116, 62, 4, 1, 40000, 60000),
-(117, 63, 10, 1, 39000, 40000),
-(118, 63, 8, 1, 25000, 26000),
-(119, 63, 2, 1, 12000, 14000),
-(120, 64, 8, 1, 25000, 26000),
-(121, 65, 2, 1, 12000, 14000),
-(122, 65, 10, 1, 39000, 40000),
-(123, 65, 3, 1, 39000, 40000),
-(124, 66, 9, 1, 14000, 15000),
-(125, 67, 9, 1, 14000, 15000),
-(126, 67, 3, 1, 39000, 40000),
-(127, 67, 7, 1, 27000, 28000),
-(128, 68, 7, 1, 27000, 28000),
-(129, 69, 3, 3, 39000, 40000),
-(130, 70, 12, 1, 5500, 6000),
-(131, 70, 11, 1, 8500, 9000),
-(132, 71, 10, 1, 39000, 40000),
-(133, 71, 2, 1, 12000, 14000),
-(134, 72, 3, 1, 39000, 40000),
-(135, 72, 11, 1, 8500, 9000),
-(136, 72, 2, 1, 12000, 14000),
-(137, 72, 9, 1, 14000, 15000),
-(138, 73, 7, 1, 27000, 28000),
-(139, 73, 8, 1, 25000, 26000),
-(140, 74, 10, 1, 39000, 40000),
-(141, 74, 11, 1, 8500, 9000),
-(142, 75, 12, 1, 5500, 6000),
-(143, 75, 11, 1, 8500, 9000),
-(144, 76, 9, 1, 14000, 15000),
-(145, 77, 2, 1, 12000, 14000),
-(146, 77, 8, 1, 25000, 26000),
-(147, 78, 10, 1, 39000, 40000),
-(148, 78, 12, 1, 5500, 6000),
-(149, 79, 12, 1, 5500, 6000),
-(150, 80, 11, 1, 8500, 9000),
-(151, 81, 11, 1, 8500, 9000),
-(152, 81, 10, 1, 39000, 40000),
-(153, 81, 2, 1, 12000, 14000),
-(154, 81, 9, 1, 14000, 15000),
-(155, 82, 10, 1, 39000, 40000),
-(156, 82, 11, 1, 8500, 9000),
-(157, 83, 11, 1, 8500, 9000),
-(158, 83, 10, 1, 39000, 40000),
-(159, 84, 10, 1, 39000, 40000),
-(160, 85, 7, 1, 27000, 28000),
-(161, 86, 10, 1, 39000, 40000),
-(162, 86, 11, 1, 8500, 9000),
-(163, 87, 10, 2, 39000, 40000),
-(164, 87, 11, 1, 8500, 5000),
-(165, 88, 10, 1, 39000, 40000),
-(166, 88, 2, 1, 12000, 14000),
-(167, 89, 11, 1, 8500, 9000),
-(168, 89, 10, 1, 39000, 40000),
-(169, 89, 12, 1, 5500, 6000),
-(170, 90, 10, 1, 39000, 40000),
-(171, 90, 2, 1, 12000, 14000),
-(172, 91, 4, 10, 15000, 20000),
-(173, 92, 6, 1, 75000, 80000),
-(174, 92, 10, 1, 39000, 40000),
-(175, 93, 10, 1, 39000, 40000),
-(176, 93, 2, 1, 12000, 14000),
-(177, 93, 16, 1, 6000, 7000),
-(178, 94, 11, 1, 8500, 9000),
-(179, 94, 10, 2, 39000, 40000),
-(180, 94, 12, 1, 5500, 6000),
-(181, 95, 11, 1, 8500, 9000),
-(182, 95, 10, 1, 39000, 40000),
-(183, 95, 2, 1, 12000, 14000),
-(184, 96, 10, 1, 39000, 40000),
-(185, 97, 12, 1, 5500, 6000),
-(186, 98, 2, 1, 12000, 14000),
-(187, 99, 2, 1, 12000, 14000),
-(188, 100, 2, 1, 12000, 14000),
-(189, 101, 10, 1, 39000, 40000),
-(190, 102, 10, 1, 39000, 40000),
-(191, 103, 2, 1, 12000, 14000);
 
 -- --------------------------------------------------------
 
@@ -1192,18 +887,20 @@ INSERT INTO `ser_inv_details` (`ser_inv_det_ID`, `ser_inv_id`, `ser_inv_SID`, `s
 -- Table structure for table `stock`
 --
 
-CREATE TABLE `stock` (
-  `IID` int(10) NOT NULL,
-  `barcode` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `item_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+DROP TABLE IF EXISTS `stock`;
+CREATE TABLE IF NOT EXISTS `stock` (
+  `IID` int(10) NOT NULL AUTO_INCREMENT,
+  `barcode` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `item_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `item_qty` int(10) DEFAULT NULL,
-  `item_currency` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `item_currency` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   `item_cost` float DEFAULT NULL,
   `item_price` float DEFAULT NULL,
-  `notes` varchar(200) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
-  `item_status` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `item_status` tinyint(1) NOT NULL,
+  PRIMARY KEY (`IID`)
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `stock`
@@ -1253,18 +950,22 @@ INSERT INTO `stock` (`IID`, `barcode`, `item_name`, `item_qty`, `item_currency`,
 -- Table structure for table `users`
 --
 
-CREATE TABLE `users` (
-  `UID` int(10) NOT NULL,
-  `username` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `type` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'user',
-  `owner` varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `UID` int(10) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(10) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'user',
+  `owner` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `canAddService` tinyint(1) NOT NULL DEFAULT '0',
   `canAddItem` tinyint(1) NOT NULL DEFAULT '0',
   `canViewCustomers` tinyint(1) NOT NULL DEFAULT '0',
   `canViewPayments` tinyint(1) NOT NULL DEFAULT '0',
-  `user_status` tinyint(1) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `user_status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`UID`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `username_2` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `users`
@@ -1276,229 +977,14 @@ INSERT INTO `users` (`UID`, `username`, `password`, `type`, `owner`, `canAddServ
 (3, 'jaafar', '21232f297a57a5a743894a0e4a801fc3', 'user', 'jeff', 0, 0, 0, 0, 0);
 
 --
--- Indexes for dumped tables
---
-
---
--- Indexes for table `customers`
---
-ALTER TABLE `customers`
-  ADD PRIMARY KEY (`customer_ID`),
-  ADD UNIQUE KEY `customer_phone` (`customer_phone`);
-
---
--- Indexes for table `customer_payments`
---
-ALTER TABLE `customer_payments`
-  ADD PRIMARY KEY (`payment_ID`),
-  ADD KEY `customer_ID_FK` (`customer_ID_FK`);
-
---
--- Indexes for table `debts`
---
-ALTER TABLE `debts`
-  ADD PRIMARY KEY (`debt_ID`),
-  ADD KEY `customer_ID_FK` (`customer_ID_FK`);
-
---
--- Indexes for table `debts_payments`
---
-ALTER TABLE `debts_payments`
-  ADD PRIMARY KEY (`payment_ID`),
-  ADD KEY `debt_ID_FK` (`debt_ID_FK`);
-
---
--- Indexes for table `invoice`
---
-ALTER TABLE `invoice`
-  ADD PRIMARY KEY (`inv_ID`),
-  ADD KEY `customer_ID_FK` (`customer_ID_FK`);
-
---
--- Indexes for table `invoice_details`
---
-ALTER TABLE `invoice_details`
-  ADD PRIMARY KEY (`inv_det_ID`),
-  ADD KEY `inv_det_IID` (`inv_det_IID`),
-  ADD KEY `inv_id` (`inv_id`);
-
---
--- Indexes for table `payments`
---
-ALTER TABLE `payments`
-  ADD PRIMARY KEY (`payment_ID`);
-
---
--- Indexes for table `reminders`
---
-ALTER TABLE `reminders`
-  ADD PRIMARY KEY (`reminder_ID`);
-
---
--- Indexes for table `services`
---
-ALTER TABLE `services`
-  ADD PRIMARY KEY (`SID`);
-
---
--- Indexes for table `services_invoice`
---
-ALTER TABLE `services_invoice`
-  ADD PRIMARY KEY (`ser_inv_ID`),
-  ADD KEY `ser_inv_date` (`ser_inv_date`),
-  ADD KEY `customer_ID_FK` (`customer_ID_FK`);
-
---
--- Indexes for table `ser_inv_details`
---
-ALTER TABLE `ser_inv_details`
-  ADD PRIMARY KEY (`ser_inv_det_ID`),
-  ADD KEY `ser_inv_id` (`ser_inv_id`,`ser_inv_SID`),
-  ADD KEY `ser_inv_SID` (`ser_inv_SID`);
-
---
--- Indexes for table `stock`
---
-ALTER TABLE `stock`
-  ADD PRIMARY KEY (`IID`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`UID`),
-  ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `username_2` (`username`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `customers`
---
-ALTER TABLE `customers`
-  MODIFY `customer_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1027;
-
---
--- AUTO_INCREMENT for table `customer_payments`
---
-ALTER TABLE `customer_payments`
-  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
-
---
--- AUTO_INCREMENT for table `debts`
---
-ALTER TABLE `debts`
-  MODIFY `debt_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
-
---
--- AUTO_INCREMENT for table `debts_payments`
---
-ALTER TABLE `debts_payments`
-  MODIFY `payment_ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
-
---
--- AUTO_INCREMENT for table `invoice`
---
-ALTER TABLE `invoice`
-  MODIFY `inv_ID` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=208;
-
---
--- AUTO_INCREMENT for table `invoice_details`
---
-ALTER TABLE `invoice_details`
-  MODIFY `inv_det_ID` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=240;
-
---
--- AUTO_INCREMENT for table `payments`
---
-ALTER TABLE `payments`
-  MODIFY `payment_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT for table `reminders`
---
-ALTER TABLE `reminders`
-  MODIFY `reminder_ID` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `services`
---
-ALTER TABLE `services`
-  MODIFY `SID` int(10) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `services_invoice`
---
-ALTER TABLE `services_invoice`
-  MODIFY `ser_inv_ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=123;
-
---
--- AUTO_INCREMENT for table `ser_inv_details`
---
-ALTER TABLE `ser_inv_details`
-  MODIFY `ser_inv_det_ID` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=192;
-
---
--- AUTO_INCREMENT for table `stock`
---
-ALTER TABLE `stock`
-  MODIFY `IID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `UID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `customer_payments`
+-- Constraints for table `orders`
 --
-ALTER TABLE `customer_payments`
-  ADD CONSTRAINT `customer_payments_ibfk_1` FOREIGN KEY (`customer_ID_FK`) REFERENCES `customers` (`customer_ID`);
-
---
--- Constraints for table `debts`
---
-ALTER TABLE `debts`
-  ADD CONSTRAINT `debts_ibfk_1` FOREIGN KEY (`customer_ID_FK`) REFERENCES `customers` (`customer_ID`);
-
---
--- Constraints for table `debts_payments`
---
-ALTER TABLE `debts_payments`
-  ADD CONSTRAINT `debts_payments_ibfk_1` FOREIGN KEY (`debt_ID_FK`) REFERENCES `debts` (`debt_id`);
-
---
--- Constraints for table `invoice`
---
-ALTER TABLE `invoice`
-  ADD CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`customer_ID_FK`) REFERENCES `customers` (`customer_ID`);
-
---
--- Constraints for table `invoice_details`
---
-ALTER TABLE `invoice_details`
-  ADD CONSTRAINT `invoice_details_ibfk_1` FOREIGN KEY (`inv_det_IID`) REFERENCES `stock` (`iid`),
-  ADD CONSTRAINT `invoice_details_ibfk_2` FOREIGN KEY (`inv_id`) REFERENCES `invoice` (`inv_id`);
-
---
--- Constraints for table `services_invoice`
---
-ALTER TABLE `services_invoice`
-  ADD CONSTRAINT `services_invoice_ibfk_1` FOREIGN KEY (`customer_ID_FK`) REFERENCES `customers` (`customer_ID`);
-
---
--- Constraints for table `ser_inv_details`
---
-ALTER TABLE `ser_inv_details`
-  ADD CONSTRAINT `ser_inv_details_ibfk_1` FOREIGN KEY (`ser_inv_SID`) REFERENCES `services` (`sid`),
-  ADD CONSTRAINT `ser_inv_details_ibfk_2` FOREIGN KEY (`ser_inv_id`) REFERENCES `services_invoice` (`ser_inv_id`);
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_ID_FK`) REFERENCES `customers` (`customer_ID`) ON DELETE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

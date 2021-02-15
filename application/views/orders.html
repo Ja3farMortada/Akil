@@ -1,0 +1,224 @@
+<div class="container-fluid">
+    
+    <div class="row justify-content-between mb-3 mt-3 select-off">
+        <div class="col-6">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <form class="form-inline">
+                        <label>Show</label>
+                        <select class="custom-select mr-1 ml-1" ng-model="itemsPerPage"
+                            ng-options="option.value as option.name for option in options">
+                        </select>
+                        <label>entries</label>
+                    </form>
+                </div>
+                <div class="col-auto">
+                    <button class="btn btn-outline-success" ng-click="openNewOrderModal()">+ Add +</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+                <input id="search" type="text" class="form-control" ng-model="searchVal" placeholder="Search ..."
+                    spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered text-center table-sm" style="user-select: none">
+        <thead>
+            <tr>
+                <th ng-click="sort('name')"><i class="fas" ng-show="sortKey == 'name'"
+                        ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> Customer Name</th>
+                <th ng-click="sort('ID')"><i class="fas" ng-show="sortKey == 'ID'"
+                        ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> Order Number</th>
+                <th>Recipient / Phone</th>
+                <th>Address</th>
+                <th>Total Value</th>
+                <th>Order Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr dir-paginate="order in orders|filter: searchVal|orderBy:sortKey:reverse|itemsPerPage:10"
+                ng-dblclick="openEditOrderModal(order.order_ID)" pagination-id="orderInfo"
+                class="pointer">
+                <td>{{order.customer_name}}</td>
+                <td>{{order.track_number}}</td>
+                <td>{{order.recipient_name}} / {{order.recipient_phone}}</td>
+                <td>{{order.destination_province}}, {{order.destination_district}}, {{order.destination_town}}</td>
+                <td>{{(order.order_value + order.delivery_fee).toLocaleString()}} L.L</td>
+                <td>{{order.order_status}}</td>
+                <td>
+                    <button class="btn btn-success btn-sm pt-0 pb-0"><i class="fas fa-shuttle-van"></i></button>
+                    <button class="btn btn-warning btn-sm pt-0 pb-0"><i class="fas fa-info"></i></button>
+                </td>
+            </tr>
+
+            <!-- if no data available -->
+            <tr class="table-active" ng-if="orders.length === 0">
+                <td colspan="7">No data available in table</td>
+            </tr>
+
+            <!-- if search found nothing -->
+            <tr ng-if="(orders | filter: searchVal).length == 0 && searchVal" class="table-active select-off">
+                <td colspan="7">No Matching Records Found!</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- <dir-pagination-controls pagination-id="orderInfo" max-size="5" direction-links="true" boundary-links="false"
+        template-url="../templates/dirPagination.tpl.html">
+    </dir-pagination-controls> -->
+
+    <!-- order modal -->
+    <div class="modal fade" id="orderModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">{{modalTitle}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form ng-submit="submit()">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <!-- First row -->
+                        <div class="row mb-2">
+                            <div class="form-group col-3">
+                                <label>Customer Name</label>
+                                <input id="choose" ng-change="validate()" ng-focus="select()"
+                                    ng-class="{'is-invalid': isValid === false}" list="chooseCustomer"
+                                    class="form-control text-center" ng-model="orderDetails.customer_name" autofocus spellcheck="false" required>
+                                <datalist id="chooseCustomer">
+                                    <option ng-repeat="customer in customers">{{customer.customer_name}}</option>
+                                </datalist>
+                                <div ng-if="isValid === false" class="invalid-feedback">
+                                    Please choose a correct username!
+                                </div>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Invoice Number</label>
+                                <input type="number" class="form-control text-center" ng-model="orderDetails.track_number"
+                                    min="0" required>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Recipient Name</label>
+                                <input type="text" class="form-control text-center" ng-model="orderDetails.recipient_name" spellcheck="false" required>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Recipient Phone</label>
+                                <input type="number" class="form-control text-center" ng-model="orderDetails.recipient_phone"
+                                    min="0" max="999999999" required>
+                            </div>
+                        </div>
+
+                        <!-- Second row -->
+                        <div class="row mb-2">
+                            <div class="from-group col-3">
+                                <label>Destination Province/المحافظة</label>
+                                <select class="form-control text-center" ng-model="orderDetails.destination_province" required>
+                                    <option value=""></option>
+                                    <option value="الجنوب">الجنوب</option>
+                                    <option value="النبطية">النبطية</option>
+                                    <option value="بيروت">بيروت</option>
+                                    <option value="البقاع">البقاع</option>
+                                    <option value="جبل لبنان">جبل لبنان</option>
+                                    <option value="الشمال">الشمال</option>
+                                    <option value="بعلبك الهرمل">بعلبك الهرمل</option>
+                                    <option value="عكار">عكار</option>
+                                    <option value="كسروان جبيل">كسروان جبيل</option>
+                                </select>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Destination District/القضاء</label>
+                                <select class="form-control text-center" ng-model="orderDetails.destination_district">
+                                    <option value=""></option>
+                            
+                                    <option value="المتن" ng-if="orderDetails.destination_province === 'جبل لبنان'">المتن</option>
+                                    <option value="بعبدا" ng-if="orderDetails.destination_province === 'جبل لبنان'">بعبدا</option>
+                                    <option value="عاليه" ng-if="orderDetails.destination_province === 'جبل لبنان'">عاليه</option>
+                                    <option value="الشوف" ng-if="orderDetails.destination_province === 'جبل لبنان'">الشوف</option>
+                            
+                                    <option value="جبيل" ng-if="orderDetails.destination_province === 'كسروان جبيل'">جبيل</option>
+                                    <option value="كسروان" ng-if="orderDetails.destination_province === 'كسروان جبيل'">كسروان</option>
+                            
+                                    <option value="زحلة" ng-if="orderDetails.destination_province === 'البقاع'">زحلة</option>
+                                    <option value="البقاع  الغربي" ng-if="orderDetails.destination_province === 'البقاع'">البقاع الغربي</option>
+                                    <option value="راشيا" ng-if="orderDetails.destination_province === 'البقاع'">راشيا</option>
+                            
+                                    <option value="الهرمل" ng-if="orderDetails.destination_province === 'بعلبك الهرمل'">الهرمل</option>
+                                    <option value="بعلبك" ng-if="orderDetails.destination_province === 'بعلبك الهرمل'">بعلبك</option>
+                            
+                                    <option value="طرابلس" ng-if="orderDetails.destination_province === 'الشمال'">طرابلس</option>
+                                    <option value="زغرتا - الزاوية" ng-if="orderDetails.destination_province === 'الشمال'">زغرتا - الزاوية</option>
+                                    <option value="بشري" ng-if="orderDetails.destination_province === 'الشمال'">بشري</option>
+                                    <option value="البترون" ng-if="orderDetails.destination_province === 'الشمال'">البترون</option>
+                                    <option value="الكورة" ng-if="orderDetails.destination_province === 'الشمال'">الكورة</option>
+                                    <option value="الضنية" ng-if="orderDetails.destination_province === 'الشمال'">الضنية</option>
+                            
+                                    <option value="عكار" ng-if="orderDetails.destination_province === 'عكار'">عكار</option>
+                            
+                                    <option value="صور" ng-if="orderDetails.destination_province === 'الجنوب'">صور</option>
+                                    <option value="صيدا" ng-if="orderDetails.destination_province === 'الجنوب'">صيدا</option>
+                                    <option value="جزين" ng-if="orderDetails.destination_province === 'الجنوب'">جزين</option>
+                            
+                                    <option value="بنت جبيل" ng-if="orderDetails.destination_province === 'النبطية'">بنت جبيل</option>
+                                    <option value="النبطية" ng-if="orderDetails.destination_province === 'النبطية'">النبطية</option>
+                                    <option value="مرجعيون" ng-if="orderDetails.destination_province === 'النبطية'">مرجعيون</option>
+                                    <option value="حاصبيا" ng-if="orderDetails.destination_province === 'النبطية'">حاصبيا</option>
+                                </select>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Destination Town/البلدة</label>
+                                <input spellcheck="false" type="text" class="form-control text-center"
+                                    ng-model="orderDetails.destination_town" required>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Destination Address</label>
+                                <input spellcheck="false" type="text" class="form-control text-center"
+                                    ng-model="orderDetails.destination_address" required>
+                            </div>
+                        </div>
+
+                        <!-- Third row -->
+                        <div class="row mb-2">
+                            <div class="from-group col-3">
+                                <label>Order Value</label>
+                                <input spellcheck="false" type="number" class="form-control text-center"
+                                    ng-model="orderDetails.order_value" min="0" required>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Delivery fee</label>
+                                <input type="number" class="form-control text-center" ng-model="orderDetails.delivery_fee"
+                                    min="0" required>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Order Date</label>
+                                <input id="modelDatepicker" type="text" class="form-control text-center" ng-model="orderDetails.order_date" required>
+                            </div>
+                            <div class="from-group col-3">
+                                <label>Notes</label>
+                                <input type="text" class="form-control text-center" ng-model="orderDetails.order_notes">
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                                class="fas fa-times fa-fw"></i> Cancel</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-check fa-fw"></i>
+                            Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
