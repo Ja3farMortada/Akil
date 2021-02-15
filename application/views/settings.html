@@ -29,11 +29,11 @@
                 class="list-group-item list-group-item-action d-flex h5 mb-0"><span
                     class="badge badge-primary badge-fa mr-4 d-flex align-items-center justify-content-center"><i
                         class="fas fa-money-check"></i></span>Services</a>
-            <!-- Customers -->
-            <a href="" ng-click="selectTab('Customers')" ng-class="{'active': tabSelected === 'Customers'}"
+            <!-- Drivers -->
+            <a href="" ng-click="selectTab('Drivers')" ng-class="{'active': tabSelected === 'Drivers'}"
                 class="list-group-item list-group-item-action d-flex h5 mb-0"><span
                     class="badge badge-success badge-fa mr-4 d-flex align-items-center justify-content-center"><i
-                        class="fas fa-users"></i></span>Customers</a>
+                        class="fas fa-users"></i></span>Drivers</a>
         </ul>
     </div>
     <div class="col-9">
@@ -56,8 +56,8 @@
             <!-- Stock Settings Directive -->
             <stock-settings ng-if="tabSelected === 'Stock'"></stock-settings>
 
-            <!-- Customers Settings Directive -->
-            <customers-settings ng-if="tabSelected === 'Customers'"></customers-settings> 
+            <!-- Drivers Settings Directive -->
+            <drivers-settings ng-if="tabSelected === 'Drivers'"></drivers-settings> 
 
         </div>
     </div>

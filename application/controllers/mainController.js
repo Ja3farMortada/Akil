@@ -375,6 +375,7 @@ require('../models/settingsFactory');
 require('../models/accountFactory');
 require('../models/generalFactory');
 require('../models/customersFactory');
+require('../models/driversFactory');
 require('../models/stockModel');
 
 //require Application Services
@@ -384,7 +385,7 @@ require('../services/dateService');
 //require Directives
 require('../directives/generalSettings');
 require('../directives/accountSettings');
-require('../directives/customersSettings');
+require('../directives/driversSettings');
 require('../directives/stockSettings');
 
 

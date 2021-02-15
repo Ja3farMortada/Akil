@@ -24,8 +24,8 @@ app.factory('settingsFactory', [function () {
                     this.tabSelected = 'Services';
                     break;
 
-                case 'Customers':
-                    this.tabSelected = 'Customers';
+                case 'Drivers':
+                    this.tabSelected = 'Drivers';
                     break;
             };
         }

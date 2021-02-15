@@ -1,17 +1,17 @@
 <table class="table table-bordered text-center table-sm" style="user-select: none">
     <thead>
         <tr>
-            <th style="width: 5%" class="pointer" ng-click="openNewCustomerModal()"><i
-                    class="fas fa-user-plus fa-lg"></i></th>
+            <th style="width: 5%" class="pointer" ng-click="openNewDriverModal()"><i
+                    class="fas fa-user-plus fa-lg animated"></i></th>
             <th>ID</th>
-            <th>Customer Name</th>
+            <th>Driver Name</th>
             <th>Phone number</th>
             <th>Address</th>
         </tr>
     </thead>
     <tbody>
         <tr dir-paginate="driver in drivers|itemsPerPage:10">
-            <td class="pointer" ng-dblclick="openEditCustomerModal(driver.driver_ID)"><i
+            <td class="pointer" ng-dblclick="openEditDriverModal(driver.driver_ID)"><i
                     class="fas fa-user-edit fa-lg text-dark"></i></td>
             <td>{{driver.driver_ID}}</td>
             <td>{{driver.driver_name}}</td>
@@ -45,16 +45,16 @@
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="from-group">
-                        <label>Customer Name</label>
+                        <label>Driver Name</label>
                         <input spellcheck="false" type="text" class="form-control" ng-model="driverDetails.driver_name" required
                             autofocus>
                     </div>
                     <div class="from-group">
-                        <label>Customer Phone</label>
+                        <label>Driver Phone</label>
                         <input type="text" class="form-control" ng-model="driverDetails.driver_phone" min="0">
                     </div>
                     <div class="from-group">
-                        <label>Customer Address</label>
+                        <label>Driver Address</label>
                         <input type="text" class="form-control" ng-model="driverDetails.driver_address">
                     </div>
                 </div>

@@ -100,3 +100,16 @@ form label {
  textarea {
     margin-bottom: 10px;
 }
+
+
+
+.animated {
+    animation-name: example;
+    animation-duration: 1s;
+}
+@keyframes example {
+    0%   {transform: rotate(20deg); color: rgb(74, 76, 182);}
+    50%  {font-size: 25px; color: rgb(42, 66, 146);}
+    75%  {transform: rotate(-20deg); color: rgb(48, 54, 117);}
+    100% {color: rgb(34, 32, 46);}
+  }
