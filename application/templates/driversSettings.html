@@ -46,16 +46,17 @@
                 <div class="modal-body">
                     <div class="from-group">
                         <label>Driver Name</label>
-                        <input spellcheck="false" type="text" class="form-control" ng-model="driverDetails.driver_name" required
-                            autofocus>
+                        <input spellcheck="false" type="text" class="form-control" ng-model="driverDetails.driver_name"
+                            required autofocus>
                     </div>
                     <div class="from-group">
                         <label>Driver Phone</label>
-                        <input type="text" class="form-control" ng-model="driverDetails.driver_phone" min="0">
+                        <input type="number" class="form-control" ng-model="driverDetails.driver_phone" min="0" required>
                     </div>
                     <div class="from-group">
                         <label>Driver Address</label>
-                        <input type="text" class="form-control" ng-model="driverDetails.driver_address">
+                        <input spellcheck="false" type="text" class="form-control"
+                            ng-model="driverDetails.driver_address">
                     </div>
                 </div>
                 <!-- Modal footer -->

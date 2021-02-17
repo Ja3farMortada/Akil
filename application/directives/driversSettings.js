@@ -15,13 +15,12 @@ app.directive('driversSettings', function (driversFactory) {
                 scope.driverDetails = {
                     driver_name: null,
                     driver_phone: null,
-                    driver_address: null,
-                    driver_debit: 0
+                    driver_address: null
                 };
 
                 $('#driverModal').modal('show');
                 $('#driverModal').on('shown.bs.modal', function () {
-                    $(this).find('[autofocus]').focus();
+                    $(this).find('[autofocus]').trigger('focus');
                 });
             };
 
@@ -34,7 +33,7 @@ app.directive('driversSettings', function (driversFactory) {
                 angular.copy(scope.drivers[index], scope.driverDetails);
                 $('#driverModal').modal('show');
                 $('#driverModal').on('shown.bs.modal', function () {
-                    $(this).find('[autofocus]').focus();
+                    $(this).find('[autofocus]').trigger('focus');
                 });
             };
 

@@ -13,7 +13,6 @@ module.exports = (server, db) => {
 
     server.post('/addCustomer', (req, res) => {
         let data = req.body;
-        data.customer_status = true;
         let query = "INSERT INTO customers SET ?";
         db.query(query, data, function (error, results) {
             if (error) {
@@ -22,7 +21,7 @@ module.exports = (server, db) => {
                 let sql = `SELECT * FROM customers WHERE customer_ID = ?`;
                 db.query(sql, results.insertId, function (error, result) {
                     if (error) {
-                        res.status(400).end(error);
+                        res.status(400).send(error);
                     } else {
                         res.send(result[0])
                     }
@@ -41,7 +40,7 @@ module.exports = (server, db) => {
                 let query = `SELECT * FROM customers WHERE customer_ID = ${data.customer_ID}`;
                 db.query(query, function (error, result) {
                     if (error) {
-                        res.status(400).end(error);
+                        res.status(400).send(error);
                     } else {
                         res.send(result);
                     }

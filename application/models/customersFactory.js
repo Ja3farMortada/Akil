@@ -1,4 +1,4 @@
-app.factory('customersFactory', function ($http, NotificationService) {
+app.factory('customersFactory', function ($http, NotificationService, ordersFactory) {
 
     // define URL
     const url = `http://${keys.host}:${keys.port}`;
@@ -6,10 +6,6 @@ app.factory('customersFactory', function ($http, NotificationService) {
     var model = {};
     model.selectedTab = 'statement';
     model.customers = [];
-    // model.customerDebts = [];
-    model.selectedDebtsDetails = [];
-    model.selectedPaymentDetails = [];
-    model.totalDebts = [];
     model.activeRow = null;
     model.sortData = {
         key: 'total',
@@ -30,30 +26,6 @@ app.factory('customersFactory', function ($http, NotificationService) {
     // };
     // model.getCustomerDebts = getCustomerDebts();
 
-    model.getDebtsDetails = ID => {
-        return $http.post(`${url}/getDebtsDetails`, ID).then(function (response) {
-            angular.copy(response.data, model.selectedDebtsDetails);
-        }, function (error) {
-            NotificationService.showError(error);
-        });
-    };
-
-    model.getPaymentDetails = ID => {
-        return $http.post(`${url}/getPaymentsDetails`, ID).then(function (response) {
-            angular.copy(response.data, model.selectedPaymentDetails);
-        }, function (error) {
-            NotificationService.showError(error);
-        });
-    };
-
-    const getTotalDebts = function () {
-        return $http.get(`${url}/getTotalDebts`).then(function (response) {
-            angular.copy(response.data, model.totalDebts);
-        }, function (error) {
-            NotificationService.showError(error);
-        });
-    };
-    model.getTotalDebts = getTotalDebts();
 
     model.submitPayment = function (data) {
         return $http.post(`${url}/submitCustomerPayment`, data).then(function (response) {
@@ -139,6 +111,7 @@ app.factory('customersFactory', function ($http, NotificationService) {
         return $http.post(`${url}/editCustomer`, data).then(response => {
             $('#customerModal').modal('hide');
             NotificationService.showSuccess();
+            ordersFactory.fetchOrders();
             return response.data;
         }, function (err) {
             NotificationService.showError(err);

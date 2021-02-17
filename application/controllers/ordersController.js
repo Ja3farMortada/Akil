@@ -1,32 +1,73 @@
-app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory', 'DateService', function ($scope, ordersFactory, customersFactory, DateService) {
+app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory', 'driversFactory', 'DateService', function ($scope, ordersFactory, customersFactory, driversFactory, DateService) {
 
-    // get customers
+    $('#search').trigger('focus');
+
+    // bind model and controller
+    $scope.searchVal = ordersFactory.searchVal;
+    $scope.orders = ordersFactory.orders;
     $scope.customers = customersFactory.customers;
-    $scope.orders = ordersFactory.orders
+    $scope.drivers = driversFactory.drivers;
+    let towns = ordersFactory.towns;
 
-    // var countries = [{
-    //         label: 'United Kingdom'
-    //     },
-    //     {
-    //         label: 'United States'
-    //     }
-    // ];
 
-    // var input = document.getElementById("fname");
+    // Items per page initial value and set function
+    ordersFactory.getOrders.then(function () {
+        $scope.options = ordersFactory.setItemsPerPage();
+        $scope.itemsPerPage = ordersFactory.itemsPerPage;
+    });
 
-    // autocomplete({
-    //     input: input,
-    //     fetch: function (text, update) {
-    //         text = text.toLowerCase();
-    //         // you can also use AJAX requests instead of preloaded data
-    //         var suggestions = countries.filter(n => n.label.toLowerCase().startsWith(text))
-    //         update(suggestions);
-    //     },
-    //     onSelect: function (item) {
-    //         input.value = item.label;
-    //     }
-    // });
+    // autocompleter function
+    let input = document.getElementById("townInput");
+    function autoCompleter() {
+        autocomplete({
+            input: input,
+            fetch: function (text, update) {
+                text = text.toLowerCase();
+                var suggestions = towns.filter(n => n.label.toLowerCase().startsWith(text))
+                update(suggestions);
+            },
+            onSelect: function (item) {
+                $scope.$digest($scope.orderDetails.destination_town = item.label);
+            },
+            showOnFocus: true
+            // preventSubmit: true
+        });
+    }
 
+    // select elements for update
+    let selectedIndex;
+    $scope.toggleSelection = ID => {
+        $('.btn-outline-secondary').trigger('blur');
+        selectedIndex = $scope.orders.findIndex(index => index.order_ID == ID);
+        $scope.orders[selectedIndex]['selected'] = !$scope.orders[selectedIndex]['selected'];
+    }
+
+    // open choose driver for exporting orders
+    $scope.exportOrders = () => {
+        $scope.orderInvoice = {
+            driver_ID_FK: null,
+            pickup_date: DateService.getDate(),
+            pickup_time: DateService.getTime(),
+            total_value: null
+        };
+        $('#chooseDriver').modal('show');
+    }
+    $scope.submitExport = () => {
+        if ($scope.orderInvoice.driver_ID_FK) {
+            let orderIDArray = [];
+            let invoiceTotalValue = 0;
+            for(let i = 0; i < $scope.orders.length; i++) {
+                if ($scope.orders[i]['selected']) {
+                    invoiceTotalValue += ($scope.orders[i]['order_value'] + $scope.orders[i]['delivery_fee']);
+                    orderIDArray.push($scope.orders[i]['order_ID']);
+                }
+            }
+            if (invoiceTotalValue > 0) {
+                $scope.orderInvoice.total_value = invoiceTotalValue;
+                ordersFactory.exportOrders([orderIDArray, $scope.orderInvoice]);
+            }
+        }
+    }
 
     // New Order Modal
     $scope.openNewOrderModal = () => {
@@ -52,6 +93,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
         $('#orderModal').on('shown.bs.modal', function () {
             $(this).find('[autofocus]').trigger('focus');
         });
+        autoCompleter();
     };
 
     // select on focus for new customer name
@@ -76,30 +118,32 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
     };
     datepicker();
 
-    let index;
+    let orderIndex;
     $scope.openEditOrderModal = ID => {
         $scope.selectedModal = 'edit';
         $scope.modalTitle = 'Edit Order';
-        index = $scope.orders.findIndex(index => index.order_ID == ID);
+        orderIndex = $scope.orders.findIndex(index => index.order_ID == ID);
         $scope.orderDetails = {};
-        angular.copy($scope.orders[index], $scope.orderDetails);
+        angular.copy($scope.orders[orderIndex], $scope.orderDetails);
         $('#orderModal').modal('show');
         $('#orderModal').on('shown.bs.modal', function () {
             $(this).find('[autofocus]').trigger('focus');
         });
+        autoCompleter();
     };
 
     function addOrder() {
         var index = null;
         for (var i = 0; i < $scope.customers.length; i++) {
-            if ($scope.customers[i]['customer_name'] === $scope.orderDetails.customer_name) {
+            if ($scope.customers[i]['customer_phone'] === parseInt($scope.orderDetails.customer_phone)) {
                 index = i;
                 break;
             }
         }
         if (index != null) {
             $scope.orderDetails.customer_ID_FK = $scope.customers[index]['customer_ID'];
-            console.log($scope.orderDetails)
+            delete $scope.orderDetails["customer_name"];
+            delete $scope.orderDetails["customer_phone"];
             ordersFactory.addOrder($scope.orderDetails).then(function (response) {
                 if (response) {
                     $scope.orders.push(response);
@@ -112,9 +156,26 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
     };
 
     function editOrder() {
-        ordersFactory.editOrder($scope.orderDetails).then(function (response) {
-            angular.copy(response[0], $scope.orders[index]);
-        })
+
+        var index = null;
+        for (var i = 0; i < $scope.customers.length; i++) {
+            if ($scope.customers[i]['customer_phone'] === parseInt($scope.orderDetails.customer_phone)) {
+                index = i;
+                break;
+            }
+        }
+        if (index != null) {
+            $scope.orderDetails.customer_ID_FK = $scope.customers[index]['customer_ID'];
+            delete $scope.orderDetails["customer_name"];
+            delete $scope.orderDetails["customer_phone"];
+            delete $scope.orderDetails["selected"];
+            ordersFactory.editOrder($scope.orderDetails).then(function (response) {
+                angular.copy(response[0], $scope.orders[orderIndex]);
+            });
+        } else {
+            $scope.isValid = false;
+            $scope.select();
+        }
     };
 
     $scope.submit = () => {

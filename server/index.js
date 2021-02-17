@@ -6,9 +6,7 @@ const ordersRoutes = require('./routes/orders.routes');
 const sellRoutes = require('./routes/sell.routes');
 const stockRoutes = require('./routes/stock.routes');
 const customersRoutes = require('./routes/customers.routes');
-const historyRoutes = require('./routes/history.routes');
 const paymentsRoutes = require('./routes/payments.routes');
-const debtsRoutes = require('./routes/debts.routes');
 const remindersRoutes = require('./routes/reminders.routes');
 const settingsRoutes = require('./routes/settings.routes');
 
@@ -24,9 +22,7 @@ ordersRoutes(server, connection);
 sellRoutes(server, connection);
 stockRoutes(server, connection);
 customersRoutes(server, connection);
-historyRoutes(server, connection);
 paymentsRoutes(server, connection);
-debtsRoutes(server, connection);
 remindersRoutes(server, connection);
 settingsRoutes(server, connection);
 

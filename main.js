@@ -43,7 +43,7 @@ function createWindow() {
     win.show();
 
     // and load the index.html of the app
-    win.loadFile('application/views/main.html');
+    win.loadFile('application/views/login.html');
 
     // Emitted when the window is closed.
     win.on('closed', () => {
