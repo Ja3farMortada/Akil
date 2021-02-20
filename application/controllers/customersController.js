@@ -46,7 +46,7 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
     // sub-tab selection
     $scope.subTabSelected = 1;
     $scope.selectSubTab = function (tab) {
-        customersFactory.getDebtsDetails({
+        customersFactory.getOrdersArchive({
             ID: $scope.customers[$scope.activeRow]['customer_ID']
         });
         if ($scope.subTabSelected !== tab) {

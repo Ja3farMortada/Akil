@@ -265,17 +265,17 @@
                     <table class="table table-bordered table-sm text-center">
                         <thead>
                             <tr>
-                                <th width="60%">Order Number</th>
-                                <th width="15%">Order Value</th>
-                                <th width="25%">Delivery Fee</th>
+                                <th>Order Number</th>
+                                <th>Order Date</th>
+                                <th>Order Value</th>
+                                <th>Delivery Fee</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>{{selectedOrderDetails.track_number}}</td>
-
+                                <td>{{selectedOrderDetails.order_date}}</td>
                                 <td>{{selectedOrderDetails.order_value.toLocaleString()}} L.L</td>
-
                                 <td>{{selectedOrderDetails.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
                         </tbody>
