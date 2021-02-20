@@ -8,8 +8,8 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
     };
 
     $scope.customers = customersFactory.customers;
-    $scope.selectedDetails = customersFactory.selectedDebtsDetails;
-    $scope.selectedPaymentDetails = customersFactory.selectedPaymentDetails;
+    $scope.selectedArchive = customersFactory.selectedArchive;
+    // $scope.selectedPaymentDetails = customersFactory.selectedPaymentDetails;
     $scope.selectedInvoiceDetails = [];
     $scope.activeRow = customersFactory.activeRow;
 
@@ -35,12 +35,12 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
         let index = $scope.customers.findIndex(index => index.customer_ID == ID);
         customersFactory.activeRow = index;
         $scope.activeRow = customersFactory.activeRow;
-        customersFactory.getDebtsDetails({
+        customersFactory.getOrdersArchive({
             ID: ID
         });
-        customersFactory.getPaymentDetails({
-            ID: ID
-        });
+        // customersFactory.getPaymentDetails({
+        //     ID: ID
+        // });
     };
 
     // sub-tab selection
@@ -117,9 +117,12 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
     };
 
 
-    $scope.getInvoiceDetails = (data, type) => {
-        $scope.selectedInvoiceDetails = JSON.parse(data);
-        $('#invoiceDetailsModal').modal('show');
+    $scope.openOrderDetails = data => {
+        // console.log(data);
+        $scope.selectedOrderDetails = {};
+        angular.copy(data, $scope.selectedOrderDetails);
+        // $scope.selectedOrderDetails = JSON.parse(data);
+        $('#orderDetailsModal').modal('show');
     };
 
     // *********************************************************************************

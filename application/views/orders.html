@@ -99,7 +99,7 @@
                     <!-- Modal body -->
                     <div class="modal-body">
                         <!-- First row -->
-                        <div class="row mb-2">
+                        <div class="row">
                             <div class="form-group col-3">
                                 <label>Customer Phone</label>
                                 <input id="choose" ng-change="validate()" ng-focus="select()"
@@ -114,17 +114,17 @@
                                     Please choose a correct phone number!
                                 </div>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Invoice Number</label>
                                 <input type="number" class="form-control text-center"
                                     ng-model="orderDetails.track_number" min="0" required>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Recipient Name</label>
                                 <input type="text" class="form-control text-center"
                                     ng-model="orderDetails.recipient_name" spellcheck="false" required>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Recipient Phone</label>
                                 <input type="number" class="form-control text-center"
                                     ng-model="orderDetails.recipient_phone" min="0" max="999999999" required>
@@ -132,8 +132,8 @@
                         </div>
 
                         <!-- Second row -->
-                        <div class="row mb-2">
-                            <div class="from-group col-3">
+                        <div class="row">
+                            <div class="form-group col-3">
                                 <label>Destination Province/المحافظة</label>
                                 <select class="form-control text-center" ng-model="orderDetails.destination_province"
                                     required>
@@ -149,7 +149,7 @@
                                     <option value="كسروان جبيل">كسروان جبيل</option>
                                 </select>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Destination District/القضاء</label>
                                 <select class="form-control text-center" ng-model="orderDetails.destination_district">
                                     <option value=""></option>
@@ -213,12 +213,12 @@
                                         حاصبيا</option>
                                 </select>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Destination Town/البلدة</label>
                                 <input id="townInput" spellcheck="false" type="text" class="form-control text-center"
                                     ng-model="orderDetails.destination_town" required>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Destination Address</label>
                                 <input spellcheck="false" type="text" class="form-control text-center"
                                     ng-model="orderDetails.destination_address" required>
@@ -226,23 +226,23 @@
                         </div>
 
                         <!-- Third row -->
-                        <div class="row mb-2">
-                            <div class="from-group col-3">
+                        <div class="row">
+                            <div class="form-group col-3">
                                 <label>Order Value</label>
                                 <input spellcheck="false" type="number" class="form-control text-center"
                                     ng-model="orderDetails.order_value" min="0" required>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Delivery fee</label>
                                 <input type="number" class="form-control text-center"
                                     ng-model="orderDetails.delivery_fee" min="0" required>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Order Date</label>
                                 <input id="modelDatepicker" type="text" class="form-control text-center"
                                     ng-model="orderDetails.order_date" required>
                             </div>
-                            <div class="from-group col-3">
+                            <div class="form-group col-3">
                                 <label>Notes</label>
                                 <input type="text" class="form-control text-center" ng-model="orderDetails.order_notes">
                             </div>
@@ -276,14 +276,20 @@
                 <!-- body -->
                 <form ng-submit="submitExport()">
                     <div class="modal-body">
-                        <label>Driver Name</label>
-                        <select class="custom-select col-6" ng-model="orderInvoice.driver_ID_FK" required>
-                            <option ng-repeat="driver in drivers" ng-value="driver.driver_ID">
-                                {{driver.driver_name}}</option>
-                        </select>
-                        <!-- <div class="invalid-feedback">
-                            Please select a valid state.
-                        </div> -->
+                        <div class="row">
+                            <div class="col-6">
+                                <label>Driver Name</label>
+                                <select class="form-control" ng-model="orderInvoice.driver_ID_FK" required>
+                                    <option ng-repeat="driver in drivers" ng-value="driver.driver_ID">
+                                        {{driver.driver_name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label>Invoice Date:</label>
+                                <input id="driverDatepicker" type="text" class="form-control text-center" ng-model="orderInvoice.pickup_date" required>
+                            </div>
+                        </div>
+                        <br>
                     </div>
                     <!-- footer -->
                     <div class="modal-footer">

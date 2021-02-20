@@ -96,7 +96,7 @@
                                                     <i class="fas fa-search"></i>
                                                 </span>
                                             </div>
-                                            <input id="search" type="text" class="form-control" ng-model="searchDebts"
+                                            <input id="search" type="text" class="form-control" ng-model="searchArchive"
                                                 placeholder="Search ...">
                                         </div>
                                     </div>
@@ -104,20 +104,20 @@
                                 <table class="table table-bordered table-hover text-center table-sm mt-2">
                                     <thead>
                                         <tr>
-                                            <th width="25%">Type</th>
+                                            <th width="25%">Status</th>
                                             <th width="25%">Date</th>
-                                            <th width="25%">Time</th>
-                                            <th width="25%">Total Price</th>
+                                            <th width="25%">Recipient</th>
+                                            <th width="25%">Order Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr dir-paginate="data in selectedDetails | filter: searchDebts | itemsPerPage:5"
+                                        <tr dir-paginate="data in selectedArchive | filter: searchArchive | itemsPerPage:5"
                                             pagination-id="debts" class="pointer"
-                                            ng-click="getInvoiceDetails(data.invoice_details, data.table_name)">
-                                            <td>{{ data.table_name }}</td>
-                                            <td>{{ data.inv_date }}</td>
-                                            <td>{{ data.inv_time }}</td>
-                                            <td>{{ data.inv_total_price.toLocaleString() }} L.L</td>
+                                            ng-click="openOrderDetails(data)">
+                                            <td>{{ data.order_status }}</td>
+                                            <td>{{ data.order_date }}</td>
+                                            <td>{{ data.recipient_name }}</td>
+                                            <td>{{ data.order_value.toLocaleString() }} L.L</td>
                                         </tr>
 
                                         <tr ng-if="selectedDetails.length == 0" class="table-active">
@@ -252,33 +252,31 @@
         </div>
     </div>
 
-    <!-- Invoice details modal -->
-    <div class="modal fade" id="invoiceDetailsModal">
+    <!-- Order details modal -->
+    <div class="modal fade" id="orderDetailsModal">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Invoice Details</h4>
+                    <h4 class="modal-title">Order Details</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <table class="table table-bordered table-sm text-center">
                         <thead>
                             <tr>
-                                <th width="60%">Item Name</th>
-                                <th width="15%">Quantity</th>
-                                <th width="25%">Price</th>
+                                <th width="60%">Order Number</th>
+                                <th width="15%">Order Value</th>
+                                <th width="25%">Delivery Fee</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="item in selectedInvoiceDetails">
-                                <td ng-if="item.item_name">{{item.item_name}}</td>
-                                <td ng-if="item.service_name">{{item.service_name}}</td>
+                            <tr>
+                                <td>{{selectedOrderDetails.track_number}}</td>
 
-                                <td>{{item.qty}}</td>
+                                <td>{{selectedOrderDetails.order_value.toLocaleString()}} L.L</td>
 
-                                <td ng-if="item.item_price">{{item.item_price.toLocaleString()}} L.L</td>
-                                <td ng-if="item.service_price">{{item.service_price.toLocaleString()}} L.L</td>
+                                <td>{{selectedOrderDetails.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
                         </tbody>
                     </table>

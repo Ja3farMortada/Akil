@@ -33,6 +33,9 @@ var md5 = require('md5');
 //require autocompleter widget
 var autocomplete = require('autocompleter');
 
+// Barcode generator
+var JsBarcode = require('jsbarcode');
+
 const keys = require('../../keys.json');
 
 require('angular-utils-pagination');

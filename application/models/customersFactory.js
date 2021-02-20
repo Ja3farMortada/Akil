@@ -6,6 +6,8 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
     var model = {};
     model.selectedTab = 'statement';
     model.customers = [];
+    model.selectedArchive = [];
+    model.selectedPaymentDetails = [];
     model.activeRow = null;
     model.sortData = {
         key: 'total',
@@ -17,14 +19,14 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
         model.sortData.reverse = !model.sortData.reverse;
     }
 
-    // const getCustomerDebts = function () {
-    //     return $http.get(`${url}/getCustomerDebts`).then(function (response) {
-    //         angular.copy(response.data, model.customerDebts);
-    //     }, function (error) {
-    //         NotificationService.showError(error);
-    //     });
-    // };
-    // model.getCustomerDebts = getCustomerDebts();
+    model.getOrdersArchive = ID => {
+        return $http.post(`${url}/getOrdersArchive`, ID).then(function (response) {
+            angular.copy(response.data, model.selectedArchive);
+        }, function (error) {
+            NotificationService.showError(error.status);
+        });
+    };
+
 
 
     model.submitPayment = function (data) {

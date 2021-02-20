@@ -62,20 +62,20 @@ module.exports = (server, db) => {
         });
     });
 
-    server.get('/getCustomerDebts', (req, res) => {
-        let query = "SELECT customer_ID_FK as customer_ID, customers.customer_name, SUM(remaining) as remaining FROM debts INNER JOIN customers ON customer_ID_FK = customer_ID WHERE debt_status = 1 GROUP BY customers.customer_ID ORDER BY customers.customer_name ASC";
-        db.query(query, function (error, results) {
-            if (error) {
-                res.status(400).send(error);
-            } else {
-                res.send(results);
-            }
-        });
-    });
+    // server.get('/getCustomerDebts', (req, res) => {
+    //     let query = "SELECT customer_ID_FK as customer_ID, customers.customer_name, SUM(remaining) as remaining FROM debts INNER JOIN customers ON customer_ID_FK = customer_ID WHERE debt_status = 1 GROUP BY customers.customer_ID ORDER BY customers.customer_name ASC";
+    //     db.query(query, function (error, results) {
+    //         if (error) {
+    //             res.status(400).send(error);
+    //         } else {
+    //             res.send(results);
+    //         }
+    //     });
+    // });
 
-    server.post('/getDebtsDetails', (req, res) => {
+    server.post('/getOrdersArchive', (req, res) => {
         let ID = req.body.ID;
-        let query = `SELECT 'stock' AS table_name, inv_ID, inv_date, inv_time, inv_total_price, invoice_details FROM invoice WHERE customer_ID_FK = ${ID} AND inv_status = 1 UNION SELECT 'service' AS table_name, ser_inv_ID, ser_inv_date, ser_inv_time, ser_inv_total_price, invoice_details FROM services_invoice WHERE customer_ID_FK = ${ID} AND ser_inv_status = 1 ORDER BY inv_date DESC, inv_time DESC`;
+        let query = `SELECT * FROM orders WHERE customer_ID_FK = ${ID} AND order_isDeleted = 0 ORDER BY order_date DESC, order_time DESC`;
         db.query(query, function (error, results) {
             if (error) {
                 res.status(400).send(error);

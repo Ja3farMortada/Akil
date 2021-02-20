@@ -18,6 +18,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
 
     // autocompleter function
     let input = document.getElementById("townInput");
+
     function autoCompleter() {
         autocomplete({
             input: input,
@@ -56,7 +57,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
         if ($scope.orderInvoice.driver_ID_FK) {
             let orderIDArray = [];
             let invoiceTotalValue = 0;
-            for(let i = 0; i < $scope.orders.length; i++) {
+            for (let i = 0; i < $scope.orders.length; i++) {
                 if ($scope.orders[i]['selected']) {
                     invoiceTotalValue += ($scope.orders[i]['order_value'] + $scope.orders[i]['delivery_fee']);
                     orderIDArray.push($scope.orders[i]['order_ID']);
@@ -113,6 +114,17 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
                     dateFormat: 'yy-mm-dd'
                 }).val();
                 $scope.$digest($scope.orderDetails.order_date = d);
+            }
+        }).datepicker("setDate", "0");
+        // driver datepicker
+        $('#driverDatepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            minDate: 0,
+            onSelect: function () {
+                var d = $('#driverDatepicker').datepicker({
+                    dateFormat: 'yy-mm-dd'
+                }).val();
+                $scope.$digest($scope.orderInvoice.pickup_date = d);
             }
         }).datepicker("setDate", "0");
     };
