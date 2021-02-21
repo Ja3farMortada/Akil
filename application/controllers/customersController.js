@@ -118,7 +118,7 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
 
 
     $scope.openOrderDetails = data => {
-        // console.log(data);
+        console.log(data);
         $scope.selectedOrderDetails = {};
         angular.copy(data, $scope.selectedOrderDetails);
         // $scope.selectedOrderDetails = JSON.parse(data);

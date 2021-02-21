@@ -108,6 +108,7 @@
                                             <th width="25%">Date</th>
                                             <th width="25%">Recipient</th>
                                             <th width="25%">Order Value</th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -264,15 +265,46 @@
                 <div class="modal-body">
                     <table class="table table-bordered table-sm text-center">
                         <thead>
-                            <tr>
-                                <th width="60%">Order Number</th>
-                                <th width="15%">Order Value</th>
-                                <th width="25%">Delivery Fee</th>
+                            <tr class="main_customers_row">
+                                <th colspan="3" class="cus_border_right">Order</th>
+                                <th colspan="6" class="cus_border_right">Recipient</th>
+                                <th colspan="2">Cost</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <!-- Sub Columns : -->
+                            <tr class="sub_customers_row">
+                                <td>Number</td>
+                                <td>Time</td>
+                                <td class="cus_border_right">Note</td>
+                                <td>Name</td>
+                                <td>Phone</td>
+                                <td>Province</td>
+                                <td>District</td>
+                                <td>Town</td>
+                                <td class="cus_border_right">Address</td>
+                                <td>Order</td>
+                                <td>Delivery</td>
+                            </tr>
+                            <!-- Data Columns : -->
                             <tr>
                                 <td>{{selectedOrderDetails.track_number}}</td>
+
+                                <td>{{selectedOrderDetails.order_time}}</td>
+
+                                <td class="text-wrap order_note_col cus_border_right">{{selectedOrderDetails.order_notes}}</td>
+
+                                <td>{{selectedOrderDetails.recipient_name}}</td>
+
+                                <td>{{selectedOrderDetails.recipient_phone}}</td>
+
+                                <td>{{selectedOrderDetails.destination_province}}</td>
+
+                                <td>{{selectedOrderDetails.destination_district}}</td>
+
+                                <td>{{selectedOrderDetails.destination_town}}</td>
+
+                                <td class="cus_border_right">{{selectedOrderDetails.destination_address}}</td>
 
                                 <td>{{selectedOrderDetails.order_value.toLocaleString()}} L.L</td>
 

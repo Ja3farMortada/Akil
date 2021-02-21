@@ -144,6 +144,13 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
         autoCompleter();
     };
 
+    $scope.openInfoModal = ID => {
+        orderIndex = $scope.orders.findIndex(index => index.order_ID == ID);
+        $scope.orderInfo = {};
+        angular.copy($scope.orders[orderIndex], $scope.orderInfo);
+        $('#infoModal').modal('show');
+    }
+
     function addOrder() {
         var index = null;
         for (var i = 0; i < $scope.customers.length; i++) {
