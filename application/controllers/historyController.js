@@ -3,19 +3,24 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
     // get logged in user type
     $scope.loggedInUser = JSON.parse(localStorage.getItem('setting'));
 
+    // bind invoices with model factory
+    $scope.driversInvoice = historyFactory.driversInvoice;
+    $scope.invoiceDetails = historyFactory.invoiceDetails;
+    // $scope.totalServices = historyFactory.totalServices;
+    // $scope.totalStock = historyFactory.totalStock;
+
     // Tabs selection
     $scope.tabSelected = historyFactory.tabSelected;
     $scope.selectTab = tab => {
         if (tab != historyFactory.tabSelected) {
             historyFactory.selectTab(tab);
             $scope.tabSelected = historyFactory.tabSelected;
-            $scope.items = null;
-            $scope.activeRow = null;
         }
     };
 
     // define datepicker value
     $scope.datePickerValue = historyFactory.datePickerValue;
+
     function datepicker() {
         $('#invoiceDatePicker').datepicker({
             dateFormat: 'yy-mm-dd',
@@ -37,42 +42,23 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
         datepicker();
     };
 
-    // bind invoices with model factory
-    $scope.servicesInvoices = historyFactory.servicesInvoices;
-    $scope.stockInvoices = historyFactory.stockInvoices;
-    $scope.totalServices = historyFactory.totalServices;
-    $scope.totalStock = historyFactory.totalStock;
-
 
     // watch for datepicker value change and get invoices
     $scope.$watch('datePickerValue', function () {
-        $scope.items = null;
-        $scope.activeRow = null;
-        historyFactory.fetchServicesInvoices($scope.datePickerValue);
-        historyFactory.fetchStockInvoices($scope.datePickerValue);
-        historyFactory.fetchTotalServices($scope.datePickerValue);
-        historyFactory.fetchTotalStock($scope.datePickerValue);
+        // $scope.activeRow = null;
+        historyFactory.fetchDriversInvoice($scope.datePickerValue);
     });
 
     // show invoice details 
-    let selectedInvoice;
-    $scope.showInvoiceDetails = (ID, totalPrice) => {
-        $scope.totalPrice = totalPrice;
-        switch ($scope.tabSelected) {
-            case 0:
-                let index = $scope.servicesInvoices.findIndex(index => index.ser_inv_ID == ID);
-                selectedInvoice = $scope.servicesInvoices[index];
-                $scope.items = JSON.parse($scope.servicesInvoices[index]['invoice_details']);
-                $scope.activeRow = ID;
-                break;
-
-            case 1:
-                let index2 = $scope.stockInvoices.findIndex(index2 => index2.inv_ID == ID);
-                selectedInvoice = $scope.stockInvoices[index2];
-                $scope.items = JSON.parse($scope.stockInvoices[index2]['invoice_details']);
-                $scope.activeRow = ID;
-                break;
-        }
+    $scope.getInvoiceDetails = (invoiceID) => {
+        $scope.activeRow = invoiceID;
+        historyFactory.getInvoiceDetails(invoiceID);
+        // JsBarcode('#invoiceBarcode', invoiceID, {
+        //     height: 30,
+        //     background: "whitesmoke",
+        //     // displayValue: false,
+        //     fontSize: 12
+        // })
     };
 
     // delete invoice

@@ -1,24 +1,32 @@
 <div class="container-fluid" ng-cloak>
 
-    <md-tabs layout="column" md-selected="tabSelected" md-stretch-tabs="never" md-dynamic-height md-center-tabs class="select-off">
-        <md-tab layout="column" ng-click="selectTab(0)"><i class="fas fa-file-invoice fa-2x"></i> Services
-            Invoices</md-tab>
-        <md-tab layout="column" ng-click="selectTab(1)"><i class="fas fa-file-invoice-dollar fa-2x"></i> Sales
-            Invoices</md-tab>
-    </md-tabs>
+    <!-- Navigation tabs -->
+    <div class="container justify-content-center d-flex">
+        <ul class="nav nav-tabs nav-fills">
+            <li class="nav-item text-center">
+                <a class="nav-link text-secondary text-uppercase animate__animated"
+                    ng-class="{'active': tabSelected === 0, 'active-tab-dir': tabSelected === 0, 'animate__fadeIn': tabSelected === 0}"
+                    ng-click="selectTab(0)"><i class="fas fa-file-invoice fa-2x fa-fw"></i> Driver's Invoices</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-secondary text-uppercase animate__animated"
+                    ng-class="{'active': tabSelected === 1, 'active-tab-dir': tabSelected === 1, 'animate__fadeIn': tabSelected === 1}"
+                    ng-click="selectTab(1)"><i class="fas fa-users-cog fa-2x fa-fw"></i> Orders Archive</a>
+            </li>
+        </ul>
+    </div>
 
-    <br>
 
-    <div class="row">
+    <div class="row mt-3" ng-show="tabSelected == 0">
         <!-- invoices table -->
-        <div class="col-3">
+        <div class="col-4">
             <!-- date input -->
             <div class="container-fluid row mb-2">
-                <label class="col-2 col-form-label">Date:</label>
-                <div class="col-8">
+                <label class="col-1 col-form-label">Date:</label>
+                <div class="col-7">
                     <input type="text" class="form-control text-center" id="invoiceDatePicker">
                 </div>
-                <div class="col-2">
+                <div class="col-4">
                     <button class="btn btn-info" ng-click="today()">today</button>
                 </div>
             </div>
@@ -26,108 +34,74 @@
             <table class="table table-bordered text-center table-hover table-sm">
                 <thead style="user-select: none">
                     <tr>
-                        <th width="30%">Invoice #</th>
-                        <th width="30%">Time</th>
-                        <th width="40%">Total Price</th>
+                        <th width="25%">Invoice #</th>
+                        <th width="45%">Driver</th>
+                        <th width="30%">Total Value</th>
                     </tr>
                 </thead>
                 <tbody style="user-select: none;">
-                    <!-- services invoices -->
-                    <tr dir-paginate="invoice in servicesInvoices | itemsPerPage:10" pagination-id="services" class="pointer"
-                        ng-click="showInvoiceDetails(invoice.ser_inv_ID, invoice.ser_inv_total_price)" ng-show="tabSelected === 0"
-                        ng-class="{'table-active': isActive(invoice.ser_inv_ID)}">
-                        <td>{{invoice.ser_inv_ID}}</td>
-                        <td>{{invoice.ser_inv_time}}</td>
-                        <td>{{invoice.ser_inv_total_price.toLocaleString()}} L.L</td>
-                    </tr>
-
-                    <!-- stock invoices -->
-                    <tr dir-paginate="invoice in stockInvoices | itemsPerPage:10" pagination-id="stock" class="pointer"
-                        ng-click="showInvoiceDetails(invoice.inv_ID, invoice.inv_total_price)" ng-show="tabSelected === 1"
-                        ng-class="{'table-active': isActive(invoice.inv_ID)}">
-                        <td>{{invoice.inv_ID}}</td>
-                        <td>{{invoice.inv_time}}</td>
-                        <td>{{invoice.inv_total_price.toLocaleString()}} L.L</td>
+                    <!-- driver's invoices -->
+                    <tr dir-paginate="data in driversInvoice | itemsPerPage:10" pagination-id="invoices" class="pointer"
+                        ng-click="getInvoiceDetails(data.invoice_ID)"
+                        ng-class="{'table-active': isActive(data.invoice_ID)}">
+                        <td>{{data.invoice_ID}}</td>
+                        <td>{{data.driver_name}}</td>
+                        <td>{{data.total_value.toLocaleString()}} L.L</td>
                     </tr>
 
                     <!-- if no records -->
-                    <tr ng-if="servicesInvoices.length == 0 && tabSelected == 0">
-                        <td colspan="3" class="table-active">No Records Yet!</td>
-                    </tr>
-                    <tr ng-if="stockInvoices.length == 0 && tabSelected == 1">
+                    <tr ng-if="driversInvoice.length == 0">
                         <td colspan="3" class="table-active">No Records Yet!</td>
                     </tr>
                 </tbody>
             </table>
-            <dir-pagination-controls ng-show="tabSelected === 0" pagination-id="services" max-size="5" direction-links="true" boundary-links="false"
-                template-url="../templates/dirPagination.tpl.html">
-            </dir-pagination-controls>
-            <dir-pagination-controls ng-show="tabSelected === 1" pagination-id="stock" max-size="5" direction-links="true" boundary-links="false"
+            <dir-pagination-controls pagination-id="invoices" max-size="5" direction-links="true" boundary-links="false"
                 template-url="../templates/dirPagination.tpl.html">
             </dir-pagination-controls>
 
-            <!-- total services invoices -->
-            <div ng-if="servicesInvoices.length != 0 && tabSelected == 0">
-                <div class="alert alert-primary text-center">
-                    <h5 class="mb-0">Total Sales: {{(totalServices[0].totalPrice).toLocaleString()}} L.L</h5>
-                </div>
-                <div class="alert alert-success text-center" ng-if="loggedInUser.type === 'admin'">
-                    <h5 class="mb-0">Total Income: {{(totalServices[0].totalPrice - totalServices[0].totalCost).toLocaleString()}} L.L</h5>
-                </div>
-            </div>
-
-            <!-- total stock invoices -->
-            <div ng-if="stockInvoices.length != 0 && tabSelected == 1">
-                <div class="alert alert-primary text-center">
-                    <h5 class="mb-0">Total Sales: {{(totalStock[0].totalPrice).toLocaleString()}} L.L</h5>
-                </div>
-                <div class="alert alert-success text-center" ng-if="loggedInUser.type === 'admin'">
-                    <h5 class="mb-0">Total Income: {{(totalStock[0].totalPrice - totalStock[0].totalCost).toLocaleString()}} L.L</h5>
-                </div>
-            </div>
         </div>
 
         <!-- invoice details table -->
-        <div id="test" class="col-9">
-            <table class="table text-center table-sm select-off">
-                <thead class="table-bordered">
+        <div class="col-8" ng-show="invoiceDetails.length > 0">
+            <div class="row justify-content-betweens mb-2">
+                <div class="col-5">
+                    <button class="btn btn-outline-dark btn-sms" ng-click="print()"><i class="fas fa-print"></i>
+                        Print</button>
+                    <button class="btn btn-outline-danger btn-sms" ng-click="deleteInvoice()"><i
+                            class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+                <div class="col-3 ml-auto">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input id="search" type="text" class="form-control" ng-model="searchVal"
+                            placeholder="Search ..." spellcheck="false">
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-hover text-center table-sm select-off">
+                <thead>
                     <tr>
-                        <th width="50%">Name</th>
-                        <th width="20%">Unit Price</th>
-                        <th width="10%">Quantity</th>
-                        <th width="20%">Total Unit Price</th>
+                        <th width="25%">Customer Name</th>
+                        <th width="25%">Order Number</th>
+                        <th width="25%">Order Date</th>
+                        <th width="25%">Total Value</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- services invoice selected -->
-                    <tr ng-if="tabSelected == 0" ng-repeat="item in items" class="table-bordered">
-                        <td>{{item.service_name}}</td>
-                        <td>{{item.service_price.toLocaleString()}} L.L</td>
-                        <td>{{item.qty}}</td>
-                        <td>{{(item.service_price * item.qty).toLocaleString()}} L.L</td>
-                    </tr>
-                    <!-- stock invoice selected -->
-                    <tr ng-if="tabSelected == 1" ng-repeat="item in items" class="table-bordered">
-                        <td>{{item.item_name}}</td>
-                        <td>{{item.item_price.toLocaleString()}} L.L</td>
-                        <td>{{item.qty}}</td>
-                        <td>{{(item.item_price * item.qty).toLocaleString()}} L.L</td>
+                    <tr ng-click="showOrderDetails(data)" ng-repeat="data in invoiceDetails| filter: searchVal">
+                        <td>{{data.customer_name}}</td>
+                        <td>{{data.track_number}}</td>
+                        <td>{{data.order_date}}</td>
+                        <td>{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
                     </tr>
 
-                    <tr class="table-active" ng-if="!items">
-                        <td colspan="4">There is no invoice selected yet</td>
-                    </tr>
-
-                    <tr ng-if="items">
-                        <td colspan="3" class="pb-0 pt-1">
-                            <div class="float-left">
-                                <button class="btn btn-outline-dark btn-sm" ng-click="print()"><i class="fas fa-print"></i> Print</button>
-                                <button class="btn btn-outline-danger btn-sm" ng-click="deleteInvoice()"><i class="fas fa-trash-alt"></i> Delete</button>
-                            </div>
-                        </td>
-                        <td class="table-success">
-                            <span class="h5">Total: {{totalPrice.toLocaleString()}} L.L</span>
-                        </td>
+                    <!-- if search is empty -->
+                    <tr ng-if="(invoiceDetails | filter: searchVal).length == 0 && searchVal" class="table-active select-off">
+                        <td colspan="4">No Matching Records Found!</td>
                     </tr>
                 </tbody>
             </table>

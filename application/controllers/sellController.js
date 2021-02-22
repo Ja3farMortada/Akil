@@ -1,4 +1,4 @@
-app.controller('sellController', ['$scope', '$http', '$timeout', 'sellFactory', 'stockFactory', 'DateService', 'DebtsFactory', 'NotificationService', 'stockModel', 'customersFactory', function ($scope, $http, $timeout, sellFactory, stockFactory, DateService, DebtsFactory, NotificationService, stockModel, customersFactory) {
+app.controller('sellController', ['$scope', '$http', '$timeout', 'sellFactory', 'stockFactory', 'DateService', 'NotificationService', 'stockModel', 'customersFactory', function ($scope, $http, $timeout, sellFactory, stockFactory, DateService, NotificationService, stockModel, customersFactory) {
 
 
     // Get Items
@@ -8,7 +8,7 @@ app.controller('sellController', ['$scope', '$http', '$timeout', 'sellFactory', 
     $scope.customers = customersFactory.customers;
 
     stockFactory.getItems.then(function () {
-        angular.element(document.querySelector("#itemsDataList")).focus();
+        angular.element(document.querySelector("#itemsDataList")).trigger('focus');
     });
 
     // get exchange rate

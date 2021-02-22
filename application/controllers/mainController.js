@@ -373,6 +373,7 @@ require('../controllers/settingsController');
 require('../models/ordersFactory');
 require('../models/sellFactory');
 require('../models/stockFactory');
+require('../models/historyFactory');
 require('../models/debtsFactory');
 require('../models/paymentsFactory');
 require('../models/remindersFactory');
