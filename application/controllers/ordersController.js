@@ -154,7 +154,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
     function addOrder() {
         var index = null;
         for (var i = 0; i < $scope.customers.length; i++) {
-            if ($scope.customers[i]['customer_phone'] === parseInt($scope.orderDetails.customer_phone)) {
+            if ($scope.customers[i]['customer_phone'] === $scope.orderDetails.customer_phone) {
                 index = i;
                 break;
             }
@@ -175,10 +175,9 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
     };
 
     function editOrder() {
-
         var index = null;
         for (var i = 0; i < $scope.customers.length; i++) {
-            if ($scope.customers[i]['customer_phone'] === parseInt($scope.orderDetails.customer_phone)) {
+            if ($scope.customers[i]['customer_phone'] === $scope.orderDetails.customer_phone) {
                 index = i;
                 break;
             }

@@ -39,6 +39,8 @@ app.factory('ordersFactory', function ($http, NotificationService) {
     const getOrders = () => {
         return $http.get(`${url}/getOrders`).then(function (response) {
             angular.copy(response.data, model.orders);
+            // console.log(model.orders)
+            // console.log(typeof(model.orders[0].customer_phone))
         }, function (error) {
             NotificationService.showError(error);
         });

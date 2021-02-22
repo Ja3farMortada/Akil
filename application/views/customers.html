@@ -255,7 +255,7 @@
 
     <!-- Order details modal -->
     <div class="modal fade" id="orderDetailsModal">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
@@ -418,8 +418,7 @@
                                 </div>
                                 <div class="from-group col-6">
                                     <label>Phone Number</label>
-                                    <input type="number" class="form-control" ng-model="customerDetails.customer_phone"
-                                        min="0" max="999999999" required>
+                                    <input spellcheck="false" class="form-control" ng-model="customerDetails.customer_phone" required>
                                 </div>
                             </div>
 
