@@ -66,7 +66,7 @@
                 <td>{{(order.order_value + order.delivery_fee).toLocaleString()}} L.L</td>
                 <td ng-if="order.order_notes">{{order.order_notes}}</td>
                 <td ng-if="!order.order_notes"> --- </td>
-                <td width="5%" class="btn-outline-info"><i class="fas fa-info-circle"></i> Info</td>
+                <td width="5%" class="btn-outline-info" ng-click="openInfoModal(order.order_ID)"><i class="fas fa-info-circle"></i> Info</td>
                 <td width="5%" class="btn-outline-success" ng-click="openEditOrderModal(order.order_ID)"><i
                         class="fas fa-edit"></i> Edit</td>
             </tr>
@@ -302,5 +302,69 @@
             </div>
         </div>
     </div>
+
+ <!-- Order Info modal -->
+ <div class="modal fade" id="infoModal">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Order Info</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-sm text-center">
+                    <thead>
+                        <tr class="main_customers_row">
+                            <th colspan="3" class="cus_border_right">Order</th>
+                            <th colspan="6" class="cus_border_right">Recipient</th>
+                            <th colspan="2">Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Sub Columns : -->
+                        <tr class="sub_customers_row">
+                            <td>Number</td>
+                            <td>Time</td>
+                            <td class="cus_border_right">Note</td>
+                            <td>Name</td>
+                            <td>Phone</td>
+                            <td>Province</td>
+                            <td>District</td>
+                            <td>Town</td>
+                            <td class="cus_border_right">Address</td>
+                            <td>Order</td>
+                            <td>Delivery</td>
+                        </tr>
+                        <!-- Data Columns : -->
+                        <tr>
+                            <td>{{orderInfo.track_number}}</td>
+
+                            <td>{{orderInfo.order_time}}</td>
+
+                            <td class="text-wrap order_note_col cus_border_right">{{orderInfo.order_notes}}</td>
+
+                            <td>{{orderInfo.recipient_name}}</td>
+
+                            <td>{{orderInfo.recipient_phone}}</td>
+
+                            <td>{{orderInfo.destination_province}}</td>
+
+                            <td>{{orderInfo.destination_district}}</td>
+
+                            <td>{{orderInfo.destination_town}}</td>
+
+                            <td class="cus_border_right">{{orderInfo.destination_address}}</td>
+
+                            <td>{{orderInfo.order_value.toLocaleString()}} L.L</td>
+
+                            <td>{{orderInfo.delivery_fee.toLocaleString()}} L.L</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 </div>

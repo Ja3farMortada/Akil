@@ -140,3 +140,20 @@ form label {
     background: #81ca91;
     cursor: pointer;
 }
+
+.main_customers_row {
+    font-weight: 900 !important;
+    background-color: #0c1e6e10 !important;
+}
+
+tr.sub_customers_row>td {
+    font-weight: 600 !important;
+}
+
+.order_note_col {
+    max-width: 7rem !important;
+}
+
+.cus_border_right {
+    border-right: 2px solid #0c1e6e33 !important;
+}
