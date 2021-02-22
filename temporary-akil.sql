@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 20, 2021 at 06:44 PM
+-- Generation Time: Feb 22, 2021 at 02:33 PM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -51,7 +51,7 @@ DROP TABLE IF EXISTS `customers`;
 CREATE TABLE IF NOT EXISTS `customers` (
   `customer_ID` int(11) NOT NULL AUTO_INCREMENT,
   `customer_name` varchar(30) NOT NULL,
-  `customer_phone` bigint(15) DEFAULT NULL,
+  `customer_phone` varchar(15) DEFAULT NULL,
   `customer_address` varchar(100) DEFAULT NULL,
   `customer_address_2` varchar(100) DEFAULT NULL,
   `customer_due` float NOT NULL,
@@ -59,22 +59,23 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `customer_status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`customer_ID`),
   UNIQUE KEY `customer_phone` (`customer_phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=1032 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1033 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `customers`
 --
 
 INSERT INTO `customers` (`customer_ID`, `customer_name`, `customer_phone`, `customer_address`, `customer_address_2`, `customer_due`, `notes`, `customer_status`) VALUES
-(1001, 'test', 12341234, 'test', NULL, 0, NULL, 1),
-(1002, 'test 2', 999999999, NULL, NULL, 0, NULL, 1),
-(1003, 'testing 3', 232343, 'jlasdkjf', 'alsdkjfaskldfj', 0, NULL, 1),
-(1004, 'asdfasdfasdf', 708462789, 'asdf', NULL, 0, NULL, 1),
-(1026, 'ali', 819238192, 'aaita el jabal, kdkal', 'عيال عاذك', 0, 'laskdjf alksdjf', 1),
-(1027, 'ahmad', 29304, 'lasdkjf', 'laskdjf', 0, NULL, 1),
-(1028, 'hadi', 1234, 'alsdkfj', 'asldkfj', 0, NULL, 1),
-(1029, 'mohamad', 2839423, 'lsasdlfkj', 'alskdjfa', 0, 'asdfasdf', 1),
-(1031, 'حسن', 7777777, 'مشسيبتن', NULL, 0, NULL, 1);
+(1001, 'test', '12341234', 'test', NULL, 0, NULL, 1),
+(1002, 'test 2', '81025354', 'test', NULL, 0, NULL, 1),
+(1003, 'testing 3', '03323434', 'jlasdkjf', 'alsdkjfaskldfj', 0, NULL, 1),
+(1004, 'asdfasdfasdf', '708462789', 'asdf', NULL, 0, NULL, 1),
+(1026, 'ali', '81923819', 'aaita el jabal, kdkal', 'عيال عاذك', 0, 'laskdjf alksdjf', 1),
+(1027, 'ahmad', '03584685', 'lasdkjf', 'laskdjf', 0, NULL, 1),
+(1028, 'hadi', '03487563', 'alsdkfj', 'asldkfj', 0, NULL, 1),
+(1029, 'mohamad', '02839423', 'lsasdlfkj', 'alskdjfa', 0, 'asdfasdf', 1),
+(1031, 'حسن', '07777777', 'مشسيبتن', NULL, 0, NULL, 1),
+(1032, 'asdfsadfasdf', '03456476', 'asdfsdaf', NULL, 0, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -139,7 +140,7 @@ DROP TABLE IF EXISTS `drivers`;
 CREATE TABLE IF NOT EXISTS `drivers` (
   `driver_ID` int(10) NOT NULL AUTO_INCREMENT,
   `driver_name` varchar(50) NOT NULL,
-  `driver_phone` bigint(20) NOT NULL,
+  `driver_phone` varchar(10) NOT NULL,
   `driver_address` varchar(50) DEFAULT NULL,
   `driver_status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`driver_ID`)
@@ -150,8 +151,8 @@ CREATE TABLE IF NOT EXISTS `drivers` (
 --
 
 INSERT INTO `drivers` (`driver_ID`, `driver_name`, `driver_phone`, `driver_address`, `driver_status`) VALUES
-(1, 'ahmad hamdan', 71156894, 'tebnin haris main', 1),
-(2, 'mostapha hussein', 3658456, NULL, 1);
+(1, 'ahmad hamdan', '71156894', 'tebnin haris main', 1),
+(2, 'mostapha hussein', '03658456', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -170,7 +171,7 @@ CREATE TABLE IF NOT EXISTS `drivers_invoice` (
   `invoice_status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`invoice_ID`),
   KEY `drivers_invoice_ibfk_1` (`driver_ID_FK`)
-) ENGINE=InnoDB AUTO_INCREMENT=1009 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1010 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `drivers_invoice`
@@ -184,7 +185,8 @@ INSERT INTO `drivers_invoice` (`invoice_ID`, `driver_ID_FK`, `pickup_date`, `pic
 (1005, 1, '2021-02-17', '23:59:19', 89000, 0, 1),
 (1006, 1, '2021-02-18', '14:30:03', 566000, 0, 1),
 (1007, 1, '2021-02-21', '17:08:52', 152000, 0, 1),
-(1008, 1, '2021-02-20', '17:27:46', 940000, 0, 1);
+(1008, 1, '2021-02-20', '17:27:46', 940000, 0, 1),
+(1009, 2, '2021-02-22', '13:02:49', 130000, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -200,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `invoice_map` (
   PRIMARY KEY (`map_ID`),
   KEY `invoice_map_ibfk_1` (`invoice_ID_FK`),
   KEY `order_ID_FK` (`order_ID_FK`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `invoice_map`
@@ -223,7 +225,9 @@ INSERT INTO `invoice_map` (`map_ID`, `invoice_ID_FK`, `order_ID_FK`) VALUES
 (14, 1007, 10),
 (15, 1007, 12),
 (16, 1008, 4),
-(17, 1008, 5);
+(17, 1008, 5),
+(18, 1009, 7),
+(19, 1009, 8);
 
 -- --------------------------------------------------------
 
@@ -243,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `destination_town` varchar(20) NOT NULL,
   `destination_address` varchar(100) NOT NULL,
   `recipient_name` varchar(50) NOT NULL,
-  `recipient_phone` bigint(15) NOT NULL,
+  `recipient_phone` varchar(10) NOT NULL,
   `order_value` double NOT NULL,
   `delivery_fee` float NOT NULL,
   `order_status` varchar(20) NOT NULL,
@@ -253,24 +257,25 @@ CREATE TABLE IF NOT EXISTS `orders` (
   PRIMARY KEY (`order_ID`),
   KEY `customer_ID_FK` (`customer_ID_FK`),
   KEY `orders_ibfk_2` (`driver_ID_FK`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`order_ID`, `customer_ID_FK`, `track_number`, `order_date`, `order_time`, `destination_province`, `destination_district`, `destination_town`, `destination_address`, `recipient_name`, `recipient_phone`, `order_value`, `delivery_fee`, `order_status`, `order_notes`, `driver_ID_FK`, `order_isDeleted`) VALUES
-(3, 1026, 9856, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'عيتا الجبل', 'البركة، مقابل باتسري ناصر', 'Ali hamdan', 70896584, 154000, 10000, 'driver', NULL, NULL, 0),
-(4, 1029, 234, '2021-02-16', '15:09:45', 'النبطية', 'مرجعيون', 'تبنين', 'asdfsadf', 'adsf', 234, 550000, 10000, 'driver', NULL, NULL, 0),
-(5, 1004, 5789, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'شقرا', 'البركة، مقابل باتسري ناصر', 'Ali hamdan', 70896584, 370000, 10000, 'driver', NULL, NULL, 0),
-(6, 1028, 9856, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'حاريص', 'البركة، مقابل باتسري ناصر', 'Ali hadi', 70896879, 370000, 10000, 'driver', NULL, NULL, 0),
-(7, 1001, 5642165, '2021-02-16', '15:48:42', 'الجنوب', 'صور', 'حاريص', 'testnig', 'asdfasdf', 5464516, 60000, 10000, 'office', NULL, NULL, 0),
-(8, 1027, 89564, '2021-02-16', '15:50:36', 'بيروت', NULL, 'شقرا', 'fasdfasdf', 'asdfasdf', 1516513, 50000, 10000, 'office', NULL, NULL, 0),
-(9, 1004, 23423, '2021-02-16', '17:04:37', 'بيروت', NULL, 'تبنين', '234', 'asdf', 324, 12000, 10000, 'driver', '', NULL, 0),
-(10, 1004, 234, '2021-02-16', '17:08:01', 'بيروت', NULL, 'شقرا', 'asdfasdf', 'sadf', 234, 12000, 10000, 'driver', NULL, NULL, 0),
-(11, 1029, 788554, '2021-02-15', '17:51:51', 'عكار', 'عكار', 'صفد البطيخ', 'المنية', 'محمد مصطفى', 81789564, 79000, 10000, 'office', NULL, NULL, 0),
-(12, 1026, 234234, '2021-02-16', '17:54:46', 'البقاع', 'البقاع  الغربي', 'تبنين', 'شسيب', 'شيسب', 234, 120000, 10000, 'driver', NULL, NULL, 0),
-(13, 1031, 234234234, '2021-02-16', '18:24:51', 'كسروان جبيل', 'جبيل', 'جبيل', 'سشيب', 'شسيبسشيب', 234234, 50000, 12000, 'office', NULL, NULL, 0);
+(3, 1026, 9856, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'عيتا الجبل', 'البركة، مقابل باتسري ناصر', 'Ali hamdan', '70896584', 154000, 10000, 'driver', NULL, NULL, 0),
+(4, 1029, 234, '2021-02-16', '15:09:45', 'النبطية', 'مرجعيون', 'تبنين', 'asdfsadf', 'adsf', '00000234', 550000, 10000, 'driver', NULL, NULL, 0),
+(5, 1004, 5789, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'شقرا', 'البركة، مقابل باتسري ناصر', 'Ali hamdan', '70896584', 370000, 10000, 'driver', NULL, NULL, 0),
+(6, 1028, 9856, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'حاريص', 'البركة، مقابل باتسري ناصر', 'Ali hadi', '70896879', 370000, 10000, 'driver', NULL, NULL, 0),
+(7, 1001, 5642165, '2021-02-16', '15:48:42', 'الجنوب', 'صور', 'حاريص', 'testnig', 'asdfasdf', '05464516', 60000, 10000, 'driver', NULL, NULL, 0),
+(8, 1027, 89564, '2021-02-16', '15:50:36', 'بيروت', NULL, 'شقرا', 'fasdfasdf', 'asdfasdf', '01516513', 50000, 10000, 'driver', NULL, NULL, 0),
+(9, 1004, 23423, '2021-02-16', '17:04:37', 'بيروت', NULL, 'تبنين', '234', 'asdf', '00000324', 12000, 10000, 'driver', '', NULL, 0),
+(10, 1004, 234, '2021-02-16', '17:08:01', 'بيروت', NULL, 'شقرا', 'asdfasdf', 'sadf', '00000234', 12000, 10000, 'driver', NULL, NULL, 0),
+(11, 1029, 788554, '2021-02-15', '17:51:51', 'عكار', 'عكار', 'صفد البطيخ', 'المنية', 'محمد مصطفى', '81789564', 79000, 10000, 'office', NULL, NULL, 0),
+(12, 1026, 234234, '2021-02-16', '17:54:46', 'البقاع', 'البقاع  الغربي', 'تبنين', 'شسيب', 'شيسب', '00000234', 120000, 10000, 'driver', NULL, NULL, 0),
+(13, 1002, 234234234, '2021-02-16', '18:24:51', 'كسروان جبيل', 'جبيل', 'جبيل', 'سشيب', 'شسيبسشيب', '03897564', 50000, 12000, 'office', NULL, NULL, 0),
+(14, 1032, 13584513, '2021-02-22', '15:22:33', 'النبطية', 'بنت جبيل', 'شقرا', 'test', 'سالي عواركة', '03897564', 40000, 10000, 'office', 'test test', NULL, 0);
 
 -- --------------------------------------------------------
 
