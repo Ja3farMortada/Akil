@@ -48,6 +48,13 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
             historyFactory.fetchDriversInvoice($scope.datePickerValue);
         }
     });
+    
+    $scope.showOrderDetails = details => {
+        console.log(details);
+        $scope.selectedInvoiceDetails = {};
+        angular.copy(details, $scope.selectedInvoiceDetails);
+        $('#invoiceDetailsModal').modal('show');
+    };
 
     // how invoice details 
     $scope.getInvoiceDetails = (invoiceID) => {

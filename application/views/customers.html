@@ -267,7 +267,7 @@
                         <thead>
                             <tr class="main_customers_row">
                                 <th colspan="3" class="cus_border_right">Order</th>
-                                <th colspan="6" class="cus_border_right">Recipient</th>
+                                <th colspan="5" class="cus_border_right">Recipient</th>
                                 <th colspan="2">Cost</th>
                             </tr>
                         </thead>
@@ -275,14 +275,13 @@
                             <!-- Sub Columns : -->
                             <tr class="sub_customers_row">
                                 <td>Number</td>
-                                <td>Time</td>
-                                <td class="cus_border_right">Note</td>
+                                <td>Date</td>
+                                <td class="cus_border_right">Time</td>
                                 <td>Name</td>
                                 <td>Phone</td>
                                 <td>Province</td>
                                 <td>District</td>
-                                <td>Town</td>
-                                <td class="cus_border_right">Address</td>
+                                <td class="cus_border_right">Town</td>
                                 <td>Order</td>
                                 <td>Delivery</td>
                             </tr>
@@ -290,9 +289,9 @@
                             <tr>
                                 <td>{{selectedOrderDetails.track_number}}</td>
 
-                                <td>{{selectedOrderDetails.order_time}}</td>
+                                <td>{{selectedOrderDetails.order_date}}</td>
 
-                                <td class="text-wrap order_note_col cus_border_right">{{selectedOrderDetails.order_notes}}</td>
+                                <td class="cus_border_right">{{selectedOrderDetails.order_time}}</td>
 
                                 <td>{{selectedOrderDetails.recipient_name}}</td>
 
@@ -302,13 +301,18 @@
 
                                 <td>{{selectedOrderDetails.destination_district}}</td>
 
-                                <td>{{selectedOrderDetails.destination_town}}</td>
-
-                                <td class="cus_border_right">{{selectedOrderDetails.destination_address}}</td>
+                                <td class="cus_border_right">{{selectedOrderDetails.destination_town}}</td>
 
                                 <td>{{selectedOrderDetails.order_value.toLocaleString()}} L.L</td>
+
                                 <td>{{selectedOrderDetails.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
+                             <!-- third row -->
+                        <tr>
+                            <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes :</b> {{selectedOrderDetails.order_notes}}</td>
+                            <td colspan="5" class="cus_border_right align-middle"><b>Address :</b> {{selectedOrderDetails.destination_address}}</td>
+                            <td colspan="2" class="align-middle"><b>Total :</b> {{(selectedOrderDetails.order_value + selectedOrderDetails.delivery_fee).toLocaleString()}} L.L</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
