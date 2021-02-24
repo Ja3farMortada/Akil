@@ -6,8 +6,7 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
     // bind invoices with model factory
     $scope.driversInvoice = historyFactory.driversInvoice;
     $scope.invoiceDetails = historyFactory.invoiceDetails;
-    // $scope.totalServices = historyFactory.totalServices;
-    // $scope.totalStock = historyFactory.totalStock;
+    $scope.activeRow = historyFactory.activeRow;
 
     // Tabs selection
     $scope.tabSelected = historyFactory.tabSelected;
@@ -44,34 +43,30 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
 
 
     // watch for datepicker value change and get invoices
-    $scope.$watch('datePickerValue', function () {
-        // $scope.activeRow = null;
-        historyFactory.fetchDriversInvoice($scope.datePickerValue);
+    $scope.$watch('datePickerValue', function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            historyFactory.fetchDriversInvoice($scope.datePickerValue);
+        }
     });
 
-    // show invoice details 
+    // how invoice details 
     $scope.getInvoiceDetails = (invoiceID) => {
+        historyFactory.activeRow = invoiceID;
         $scope.activeRow = invoiceID;
         historyFactory.getInvoiceDetails(invoiceID);
-        // JsBarcode('#invoiceBarcode', invoiceID, {
-        //     height: 30,
-        //     background: "whitesmoke",
-        //     // displayValue: false,
-        //     fontSize: 12
-        // })
     };
 
     // delete invoice
-    $scope.deleteInvoice = function () {
-        NotificationService.showWarning().then(ok => {
-            if (ok) {
-                historyFactory.deleteInvoice(selectedInvoice, $scope.tabSelected, $scope.datePickerValue).then(function () {
-                    $scope.activeRow = null;
-                    $scope.items = null
-                });
-            }
-        });
-    };
+    // $scope.deleteInvoice = function () {
+    //     NotificationService.showWarning().then(ok => {
+    //         if (ok) {
+    //             historyFactory.deleteInvoice(selectedInvoice, $scope.tabSelected, $scope.datePickerValue).then(function () {
+    //                 $scope.activeRow = null;
+    //                 $scope.items = null
+    //             });
+    //         }
+    //     });
+    // };
 
 
     $scope.isActive = ID => {
@@ -79,28 +74,28 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
     };
 
     // print function
-    $scope.print = function () {
-        let itemsForPrint = [];
-        if ($scope.tabSelected === 0) {
-            for (let i = 0; i < $scope.items.length; i++) {
-                itemsForPrint[i] = {
-                    ID: selectedInvoice.ser_inv_ID,
-                    name: $scope.items[i]['service_name'],
-                    price: $scope.items[i]['service_price'],
-                    quantity: $scope.items[i]['qty']
-                }
-            }
-        } else {
-            for (let i = 0; i < $scope.items.length; i++) {
-                itemsForPrint[i] = {
-                    ID: selectedInvoice.inv_ID,
-                    name: $scope.items[i]['item_name'],
-                    price: $scope.items[i]['item_price'],
-                    quantity: $scope.items[i]['qty']
-                }
-            }
-        }
-        ipcRenderer.send('printDocument', [itemsForPrint, $scope.totalPrice]);
-    };
+    // $scope.print = function () {
+    //     let itemsForPrint = [];
+    //     if ($scope.tabSelected === 0) {
+    //         for (let i = 0; i < $scope.items.length; i++) {
+    //             itemsForPrint[i] = {
+    //                 ID: selectedInvoice.ser_inv_ID,
+    //                 name: $scope.items[i]['service_name'],
+    //                 price: $scope.items[i]['service_price'],
+    //                 quantity: $scope.items[i]['qty']
+    //             }
+    //         }
+    //     } else {
+    //         for (let i = 0; i < $scope.items.length; i++) {
+    //             itemsForPrint[i] = {
+    //                 ID: selectedInvoice.inv_ID,
+    //                 name: $scope.items[i]['item_name'],
+    //                 price: $scope.items[i]['item_price'],
+    //                 quantity: $scope.items[i]['qty']
+    //             }
+    //         }
+    //     }
+    //     ipcRenderer.send('printDocument', [itemsForPrint, $scope.totalPrice]);
+    // };
 
 }]);

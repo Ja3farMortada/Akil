@@ -1,4 +1,4 @@
-app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory', 'driversFactory', 'DateService', function ($scope, ordersFactory, customersFactory, driversFactory, DateService) {
+app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory', 'driversFactory', 'invoiceFactory', 'historyFactory', 'DateService', function ($scope, ordersFactory, customersFactory, driversFactory, invoiceFactory, historyFactory, DateService) {
 
     $('#search').trigger('focus');
 
@@ -7,6 +7,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
     $scope.orders = ordersFactory.orders;
     $scope.customers = customersFactory.customers;
     $scope.drivers = driversFactory.drivers;
+    $scope.invoices = invoiceFactory.invoices;
     let towns = ordersFactory.towns;
 
 
@@ -65,8 +66,41 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
             }
             if (invoiceTotalValue > 0) {
                 $scope.orderInvoice.total_value = invoiceTotalValue;
-                ordersFactory.exportOrders([orderIDArray, $scope.orderInvoice]);
+                ordersFactory.exportOrders([orderIDArray, $scope.orderInvoice]).then(function (response) {
+                    invoiceFactory.getScannedInvoice(parseInt(response));
+                    invoiceFactory.getScannedInvoiceOrders(parseInt(response));
+                    invoiceFactory.fetchInvoices();
+                    historyFactory.fetchDriversInvoice(DateService.getDate());
+                    // historyFactory
+                });
             }
+        }
+    }
+
+    // open choose invoice for editing invoice
+    $scope.openAddToInvoiceModal = () => {
+        $scope.selectedInvoice = {
+            invoice_ID: null,
+            total_value: null
+        };
+        $('#chooseInvoice').modal('show');
+    }
+    $scope.addToInvoice = () => {
+        let orderIDArray = [];
+        let ordersTotalValue = 0;
+        for (let i = 0; i < $scope.orders.length; i++) {
+            if ($scope.orders[i]['selected']) {
+                ordersTotalValue += ($scope.orders[i]['order_value'] + $scope.orders[i]['delivery_fee']);
+                orderIDArray.push($scope.orders[i]['order_ID']);
+            }
+        }
+        if (ordersTotalValue > 0) {
+            $scope.selectedInvoice.total_value = ordersTotalValue;
+            ordersFactory.addToInvoice([orderIDArray, $scope.selectedInvoice]).then(function () {
+                invoiceFactory.getScannedInvoice($scope.selectedInvoice.invoice_ID);
+                invoiceFactory.getScannedInvoiceOrders($scope.selectedInvoice.invoice_ID);
+                historyFactory.fetchDriversInvoice(DateService.getDate());
+            });
         }
     }
 

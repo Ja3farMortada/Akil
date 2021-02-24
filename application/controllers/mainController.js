@@ -57,9 +57,9 @@ app.config(function ($routeProvider) {
             controller: 'ordersController'
         })
 
-        .when('/sell', {
-            templateUrl: 'sell.html',
-            controller: 'sellController'
+        .when('/invoices', {
+            templateUrl: 'invoices.html',
+            controller: 'invoicesController'
         })
 
         .when('/stock', {
@@ -358,7 +358,7 @@ app.config(function ($mdThemingProvider) {
 
 // require SPA controllers
 require('../controllers/ordersController');
-require('../controllers/sellController');
+require('../controllers/invoicesController');
 require('../controllers/stockController');
 require('../controllers/historyController');
 require('../controllers/customersController');
@@ -371,7 +371,7 @@ require('../controllers/settingsController');
 
 // require SPA Models
 require('../models/ordersFactory');
-require('../models/sellFactory');
+require('../models/invoicesFactory');
 require('../models/stockFactory');
 require('../models/historyFactory');
 require('../models/debtsFactory');

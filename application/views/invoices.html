@@ -1,0 +1,85 @@
+<div class="container-fluid mt-2 select-off">
+    <div class="row d-flex justify-content-between mb-4">
+        <div class="col-3">
+            <form ng-submit="submitBarcode()">
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-barcode fa-lg"></i>
+                        </span>
+                    </div>
+                    <input placeholder="Focus here before scan .." id="barcodeInput" type="text" class="form-control"
+                        ng-model="barcode">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- <br> -->
+
+    <div class="row" ng-if="orders.length > 0">
+
+        <div class="col-3">
+            <ul class="list-group text-center">
+                <li class="list-group-item list-group-item-dark"><b>Invoice #:</b> {{invoice[0].invoice_ID}}</li>
+                <li class="list-group-item"><b>Date:</b> {{invoice[0].pickup_date}}</li>
+                <li class="list-group-item"><b>Driver:</b> {{invoice[0].driver_name}}</li>
+                <li class="list-group-item"><b>Total Value:</b> {{invoice[0].total_value.toLocaleString()}} L.L</li>
+                <li ng-if="invoice[0].invoice_isDelivered == 0" class="list-group-item bg-danger"><b>Status:</b> Not
+                    Delivered</li>
+                <li ng-if="invoice[0].invoice_isDelivered == 1" class="list-group-item bg-success"><b>Status:</b>
+                    Delivered</li>
+            </ul>
+        </div>
+
+        <div class="col-9">
+            <div class="row mb-2">
+                <div class="col-5">
+                    <button disabled class="btn btn-outline-dark btn-sms" ng-click="print()"><i
+                            class="fas fa-print"></i>
+                        Print</button>
+                    <button ng-if="invoice[0].invoice_isDelivered == 0" class="btn btn-outline-success btn-sms"
+                        ng-click="deliverInvoice()"><i class="fas fa-clipboard-check"></i> Mark As Delivered</button>
+                </div>
+                <div class="col-3 ml-auto">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                        <input id="search" type="text" class="form-control" ng-model="searchVal"
+                            placeholder="Search ..." spellcheck="false">
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-sm text-center">
+                <thead>
+                    <tr>
+                        <th width="15%">Order Number</th>
+                        <th width="25%">Customer Name</th>
+                        <th width="20%">Destination</th>
+                        <th width="20%">Order Total Value</th>
+                        <th colspan="2" width="20%">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="data in orders">
+                        <td>{{data.track_number}}</td>
+                        <td>{{data.customer_name}}</td>
+                        <td>{{data.destination_town}}</td>
+                        <td>{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
+                        <td width="10%" class="btn-outline-info" ng-click="openInfoModal(order.order_ID)"><i
+                                class="fas fa-info-circle"></i> Info</td>
+                        <td ng-if="invoice[0].invoice_isDelivered == 0" width="10%" class="btn-outline-danger"
+                            ng-click="removeOrder(data.order_ID, (data.order_value + data.delivery_fee))"><i
+                                class="fas fa-times"></i> Remove</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>

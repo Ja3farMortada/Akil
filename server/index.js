@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 
 const loginRoutes = require('./routes/login.routes');
 const ordersRoutes = require('./routes/orders.routes');
-const sellRoutes = require('./routes/sell.routes');
+const invoicesRoutes = require('./routes/invoices.routes');
 const stockRoutes = require('./routes/stock.routes');
 const historyRoutes = require('./routes/history.routes');
 const customersRoutes = require('./routes/customers.routes');
@@ -20,7 +20,7 @@ server.use(bodyParser.json());
 
 loginRoutes(server, connection);
 ordersRoutes(server, connection);
-sellRoutes(server, connection);
+invoicesRoutes(server, connection);
 stockRoutes(server, connection);
 historyRoutes(server, connection);
 customersRoutes(server, connection);

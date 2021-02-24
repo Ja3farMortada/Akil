@@ -11,7 +11,6 @@ app.factory('ordersFactory', function ($http, NotificationService) {
         value: 10
     };
     model.orders = [];
-    model.invoice = [];
     model.towns = [];
 
 
@@ -39,8 +38,6 @@ app.factory('ordersFactory', function ($http, NotificationService) {
     const getOrders = () => {
         return $http.get(`${url}/getOrders`).then(function (response) {
             angular.copy(response.data, model.orders);
-            // console.log(model.orders)
-            // console.log(typeof(model.orders[0].customer_phone))
         }, function (error) {
             NotificationService.showError(error);
         });
@@ -66,8 +63,8 @@ app.factory('ordersFactory', function ($http, NotificationService) {
     }
     model.fetchTowns = fetchTowns();
 
-
-    model.addOrder = function (item) {
+    // add order
+    model.addOrder = item => {
         return $http.post(`${url}/addOrder`, item).then(function (response) {
             $('#orderModal').modal('toggle');
             NotificationService.showSuccess();
@@ -77,7 +74,8 @@ app.factory('ordersFactory', function ($http, NotificationService) {
         });
     };
 
-    model.editOrder = function (item) {
+    // edit order
+    model.editOrder = item => {
         return $http.post(`${url}/editOrder`, item).then(function (response) {
             $('#orderModal').modal('toggle');
             NotificationService.showSuccess();
@@ -87,8 +85,9 @@ app.factory('ordersFactory', function ($http, NotificationService) {
         });
     };
 
-    // model.deleteService = ID => {
-    //     return $http.post(`${url}/deleteService`, ID).then(function () {
+    // delete order
+    // model.deleteOrder = ID => {
+    //     return $http.post(`${url}/deleteOrder`, ID).then(function () {
     //         $('#editServiceModal').modal('toggle');
     //         NotificationService.showSuccess();
     //     }, function (error) {
@@ -96,17 +95,29 @@ app.factory('ordersFactory', function ($http, NotificationService) {
     //     });
     // };
 
-
-    model.exportOrders = function (item) {
+    // export orders
+    model.exportOrders = item => {
         return $http.post(`${url}/exportOrders`, item).then(function (response) {
             $('#chooseDriver').modal('toggle');
-            // return response.data;
+            model.fetchOrders();
+            NotificationService.showSuccess();
+            return (response.data)
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+
+    // add to invoice
+    model.addToInvoice = data => {
+        return $http.post(`${url}/addToInvoice`, data).then(function () {
+            $('#chooseInvoice').modal('toggle');
             model.fetchOrders();
             NotificationService.showSuccess();
         }, function (error) {
             NotificationService.showError(error);
         });
     };
+
 
     return model;
 });
