@@ -71,7 +71,7 @@
                         <td>{{data.customer_name}}</td>
                         <td>{{data.destination_town}}</td>
                         <td>{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
-                        <td width="10%" class="btn-outline-info" ng-click="openInfoModal(order.order_ID)"><i
+                        <td width="10%" class="btn-outline-info" ng-click="openInfoModal(data)"><i
                                 class="fas fa-info-circle"></i> Info</td>
                         <td ng-if="invoice[0].invoice_isDelivered == 0" width="10%" class="btn-outline-danger"
                             ng-click="removeOrder(data.order_ID, (data.order_value + data.delivery_fee))"><i
@@ -81,6 +81,73 @@
             </table>
         </div>
 
+    </div>
+
+    <!-- invoice details modal -->
+    <div class="modal fade" id="invoiceInfoModal">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Invoice Info</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-sm text-center">
+                        <thead>
+                            <tr class="main_customers_row">
+                                <th colspan="3" class="cus_border_right">Order</th>
+                                <th colspan="5" class="cus_border_right">Recipient</th>
+                                <th colspan="2">Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sub Columns : -->
+                            <tr class="sub_customers_row">
+                                <td>Number</td>
+                                <td>Date</td>
+                                <td class="cus_border_right">Time</td>
+                                <td>Name</td>
+                                <td>Phone</td>
+                                <td>Province</td>
+                                <td>District</td>
+                                <td class="cus_border_right">Town</td>
+                                <td>Order</td>
+                                <td>Delivery</td>
+                            </tr>
+                            <!-- Data Columns : -->
+                            <tr>
+                                <td>{{selectedInvoiceInfo.track_number}}</td>
+
+                                <td>{{selectedInvoiceInfo.order_date}}</td>
+
+                                <td class="cus_border_right">{{selectedInvoiceInfo.order_time}}</td>
+
+                                <td>{{selectedInvoiceInfo.recipient_name}}</td>
+
+                                <td>{{selectedInvoiceInfo.recipient_phone}}</td>
+
+                                <td>{{selectedInvoiceInfo.destination_province}}</td>
+
+                                <td>{{selectedInvoiceInfo.destination_district}}</td>
+
+                                <td class="cus_border_right">{{selectedInvoiceInfo.destination_town}}</td>
+
+                                <td>{{selectedInvoiceInfo.order_value.toLocaleString()}} L.L</td>
+
+                                <td>{{selectedInvoiceInfo.delivery_fee.toLocaleString()}} L.L</td>
+                            </tr>
+                             <!-- third row -->
+                        <tr>
+                            <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes :</b> {{selectedInvoiceInfo.order_notes}}</td>
+                            <td colspan="5" class="cus_border_right align-middle"><b>Address :</b> {{selectedInvoiceInfo.destination_address}}</td>
+                            <td colspan="2" class="align-middle"><b>Total :</b> {{(selectedInvoiceInfo.order_value + selectedInvoiceInfo.delivery_fee).toLocaleString()}} L.L</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>

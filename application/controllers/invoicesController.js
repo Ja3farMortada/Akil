@@ -72,5 +72,12 @@ app.controller('invoicesController', ['$scope', 'invoiceFactory', function ($sco
         // console.log([$scope.invoice[0], $scope.orders])
         ipcRenderer.send('printDocument', [$scope.invoice[0], $scope.orders, $scope.sortData]);
     }
+    
+    // open info modal 
+    $scope.openInfoModal = info => {
+        $scope.selectedInvoiceInfo = {};
+        angular.copy(info, $scope.selectedInvoiceInfo);
+        $('#invoiceInfoModal').modal('show');
+    }
 
 }]);
