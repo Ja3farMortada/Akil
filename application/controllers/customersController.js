@@ -20,18 +20,14 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
     };
 
     // sorting in table
-    $scope.sortData = customersFactory.sortData;
+    $scope.sortDueData = customersFactory.sortDueData;
 
-    $scope.sort = keyname => {
-        customersFactory.sort(keyname);
+    $scope.sortDue = keyname => {
+        customersFactory.sortDue(keyname);
     }
-    // $scope.sort = function (keyname) {
-    //     $scope.sortKey = keyname;
-    //     $scope.reverse = !$scope.reverse;
-    // };
 
     // get selected customer details
-    $scope.getDetails = function (ID) {
+    $scope.getDetails = ID => {
         let index = $scope.customers.findIndex(index => index.customer_ID == ID);
         customersFactory.activeRow = index;
         $scope.activeRow = customersFactory.activeRow;
@@ -42,6 +38,11 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
         //     ID: ID
         // });
     };
+    if ($scope.activeRow) {
+        customersFactory.getOrdersArchive({
+            ID: $scope.customers[$scope.activeRow].customer_ID
+        });
+    }
 
     // sub-tab selection
     $scope.subTabSelected = 1;

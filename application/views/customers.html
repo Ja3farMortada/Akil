@@ -20,8 +20,8 @@
     <!-- ********************************** Customer statement ************************************** -->
     <!-- ******************************************************************************************** -->
 
-    <div ng-if="selectedTab === 'statement'" class="row mt-4">
-        <div class="col-4">
+    <div ng-show="selectedTab === 'statement'" class="row mt-4">
+        <div class="col-4 select-off">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text">
@@ -29,26 +29,26 @@
                     </span>
                 </div>
                 <input id="debtsSearch" type="text" class="form-control col-6" placeholder="Search ..."
-                    ng-model="searchVal">
+                    ng-model="statementSearch">
             </div>
             <table class="table table-sm table-bordered text-center mt-3 table-hover">
                 <thead>
                     <tr>
                         <th width="68%">Customer Name</th>
-                        <th width="32%" ng-click="sort('total')"><i class="fas" ng-show="sortData.key == 'total'"
-                                ng-class="{'fa-sort-amount-up fa-fw': !sortData.reverse, 'fa-sort-amount-down-alt fa-fw': sortData.reverse}"></i>Total
+                        <th width="32%" ng-click="sortDue('customer_due')"><i class="fas" ng-show="sortDueData.key == 'customer_due'"
+                                ng-class="{'fa-sort-amount-down-alt fa-fw': !sortDueData.reverse, 'fa-sort-amount-up fa-fw': sortDueData.reverse}"></i>Total
                             Due</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr pagination-id="customerDue"
-                        dir-paginate="customer in customers | orderBy:sortData.key:sortData.reverse| filter: searchVal | itemsPerPage:15"
+                        dir-paginate="customer in customers | orderBy:sortDueData.key:sortDueData.reverse| filter: statementSearch | itemsPerPage:15"
                         ng-click="getDetails(customer.customer_ID)" class="pointer"
                         ng-class="{'table-active': isActive(customer.customer_ID)}">
                         <td>{{ customer.customer_name }}</td>
                         <td>{{ customer.customer_due.toLocaleString() }} L.L</td>
                     </tr>
-                    <tr ng-if="(customers | filter:searchVal).length == 0 && searchVal" class="table-active select-off">
+                    <tr ng-if="(customers | filter:statementSearch).length == 0 && statementSearch" class="table-active select-off">
                         <td colspan="2">No Matching Records Found!</td>
                     </tr>
                 </tbody>
@@ -108,13 +108,12 @@
                                             <th width="25%">Date</th>
                                             <th width="25%">Recipient</th>
                                             <th width="25%">Order Value</th>
-                                            
+
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr dir-paginate="data in selectedArchive | filter: searchArchive | itemsPerPage:5"
-                                            pagination-id="debts" class="pointer"
-                                            ng-click="openOrderDetails(data)">
+                                            pagination-id="debts" class="pointer" ng-click="openOrderDetails(data)">
                                             <td>{{ data.order_status }}</td>
                                             <td>{{ data.order_date }}</td>
                                             <td>{{ data.recipient_name }}</td>
@@ -307,12 +306,16 @@
 
                                 <td>{{selectedOrderDetails.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
-                             <!-- third row -->
-                        <tr>
-                            <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes :</b> {{selectedOrderDetails.order_notes}}</td>
-                            <td colspan="5" class="cus_border_right align-middle"><b>Address :</b> {{selectedOrderDetails.destination_address}}</td>
-                            <td colspan="2" class="align-middle"><b>Total :</b> {{(selectedOrderDetails.order_value + selectedOrderDetails.delivery_fee).toLocaleString()}} L.L</td>
-                        </tr>
+                            <!-- third row -->
+                            <tr>
+                                <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes
+                                        :</b> {{selectedOrderDetails.order_notes}}</td>
+                                <td colspan="5" class="cus_border_right align-middle"><b>Address :</b>
+                                    {{selectedOrderDetails.destination_address}}</td>
+                                <td colspan="2" class="align-middle"><b>Total :</b>
+                                    {{(selectedOrderDetails.order_value + selectedOrderDetails.delivery_fee).toLocaleString()}}
+                                    L.L</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -324,7 +327,7 @@
     <!----------------************************ CUSTOMER DETAILS TAB *****************************-------------->
     <!-- *************************************************************************************************** -->
 
-    <div ng-if="selectedTab === 'details'">
+    <div ng-show="selectedTab === 'details'">
         <div class="row justify-content-between mb-3 mt-3 select-off">
             <div class="col-6">
                 <div class="row align-items-center">
@@ -359,9 +362,9 @@
         <table class="table table-bordered text-center table-sm" style="user-select: none">
             <thead>
                 <tr>
-                    <th ng-click="sort('ID')"><i class="fas" ng-show="sortKey == 'ID'"
+                    <th ng-click="sort('customer_ID')"><i class="fas" ng-show="sortKey == 'customer_ID'"
                             ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> ID</th>
-                    <th ng-click="sort('name')"><i class="fas" ng-show="sortKey == 'name'"
+                    <th ng-click="sort('customer_name')"><i class="fas" ng-show="sortKey == 'customer_name'"
                             ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> Customer Name</th>
                     <th>Phone number</th>
                     <th>Address</th>
@@ -422,7 +425,8 @@
                                 </div>
                                 <div class="from-group col-6">
                                     <label>Phone Number</label>
-                                    <input spellcheck="false" class="form-control" ng-model="customerDetails.customer_phone" required>
+                                    <input spellcheck="false" class="form-control"
+                                        ng-model="customerDetails.customer_phone" required>
                                 </div>
                             </div>
 

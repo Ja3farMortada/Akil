@@ -9,14 +9,14 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
     model.selectedArchive = [];
     model.selectedPaymentDetails = [];
     model.activeRow = null;
-    model.sortData = {
-        key: 'total',
-        reverse: false
+    model.sortDueData = {
+        key: 'customer_due',
+        reverse: true
     }
 
-    model.sort = keyname => {
-        model.sortData.key = keyname;
-        model.sortData.reverse = !model.sortData.reverse;
+    model.sortDue = keyname => {
+        model.sortDueData.key = keyname;
+        model.sortDueData.reverse = !model.sortDueData.reverse;
     }
 
     model.getOrdersArchive = ID => {
@@ -29,7 +29,7 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
 
 
 
-    model.submitPayment = function (data) {
+    model.submitPayment = data => {
         return $http.post(`${url}/submitCustomerPayment`, data).then(function (response) {
             $('#receivePaymentModal').modal('hide');
             NotificationService.showSuccess();
@@ -39,7 +39,7 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
         });
     };
 
-    model.editPayment = function (data) {
+    model.editPayment = data => {
         return $http.post(`${url}/editCustomerPayment`, data).then(function (response) {
             $('#editPaymentModal').modal('hide');
             NotificationService.showSuccessToast();
@@ -49,7 +49,7 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
         });
     };
 
-    model.deletePayment = function (data) {
+    model.deletePayment = data => {
         return $http.post(`${url}/deletePayment`, data).then(function (response) {
             $('#editPaymentModal').modal('hide');
             NotificationService.showSuccessToast();
@@ -59,7 +59,7 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
         });
     };
 
-    model.updateCustomerDebit = function (data) {
+    model.updateCustomerDebit = data => {
         return $http.post(`${url}/updateCustomerDebit`, data).then(function (response) {
             angular.copy(response.data, customersFactory.customers);
         }, function (error) {

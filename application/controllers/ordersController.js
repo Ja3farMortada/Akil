@@ -17,6 +17,12 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
         $scope.itemsPerPage = ordersFactory.itemsPerPage;
     });
 
+    // sorting in table
+    $scope.sortData = ordersFactory.sortData;
+    $scope.sort = keyname => {
+        ordersFactory.sort(keyname);
+    }
+
     // autocompleter function
     let input = document.getElementById("townInput");
 
@@ -185,6 +191,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
         $('#infoModal').modal('show');
     }
 
+    // Add order function
     function addOrder() {
         var index = null;
         for (var i = 0; i < $scope.customers.length; i++) {
@@ -200,6 +207,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
             ordersFactory.addOrder($scope.orderDetails).then(function (response) {
                 if (response) {
                     $scope.orders.push(response);
+                    customersFactory.fetchCustomers();
                 }
             });
         } else {
@@ -223,6 +231,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
             delete $scope.orderDetails["selected"];
             ordersFactory.editOrder($scope.orderDetails).then(function (response) {
                 angular.copy(response[0], $scope.orders[orderIndex]);
+                customersFactory.fetchCustomers();
             });
         } else {
             $scope.isValid = false;
@@ -240,19 +249,5 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
                 break;
         }
     };
-
-    // var index = null;
-    //     for (var i = 0; i < $scope.customers.length; i++) {
-    //         if ($scope.customers[i]['name'] === $scope.newDebt.customer_name) {
-    //             index = i;
-    //             break;
-    //         }
-    //     }
-    //     if (index != null) {
-
-    // } else {
-    //     $scope.isValid = false;
-    //     $scope.select();
-    // }
 
 }]);

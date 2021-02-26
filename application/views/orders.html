@@ -43,19 +43,20 @@
         <thead>
             <tr>
                 <th width="3%">#</th>
-                <th width="20%" ng-click="sort('name')"><i class="fas" ng-show="sortKey == 'name'"
-                        ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> Customer Name | Phone</th>
-                <th width="10%" ng-click="sort('ID')"><i class="fas" ng-show="sortKey == 'ID'"
-                        ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> Order Number</th>
+                <th width="20%" ng-click="sort('customer_name')"><i class="fas" ng-show="sortData.key == 'customer_name'"
+                        ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Customer Name | Phone</th>
+                <th width="10%" ng-click="sort('order_ID')"><i class="fas" ng-show="sortData.key == 'order_ID'"
+                        ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Order Number</th>
                 <th width="20%">Recipient | Phone</th>
-                <th width="17%">Address</th>
+                <th width="17%" ng-click="sort(['destination_province', 'destination_district', 'destination_town'])"><i class="fas" ng-show="sortData.key == ['destination_province', 'destination_district', 'destination_town']"
+                    ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Address</th>
                 <th width="10%">Total Value</th>
                 <th width="10%">Notes</th>
                 <th width="10%" colspan="2">More</th>
             </tr>
         </thead>
         <tbody>
-            <tr dir-paginate="order in orders|filter: searchVal.value|orderBy:sortKey:reverse|itemsPerPage:itemsPerPage.value"
+            <tr dir-paginate="order in orders|filter: searchVal.value|orderBy:sortData.key:sortData.reverse|itemsPerPage:itemsPerPage.value"
                 pagination-id="orderInfo" ng-class="{'table-active': order.selected == true}">
                 <td ng-click="toggleSelection(order.order_ID)" class="btn-outline-secondary">
                     <div class="form-check">
@@ -63,9 +64,9 @@
                             ng-model="order.selected">
                     </div>
                 </td>
-                <td>{{order.customer_name}} | {{order.customer_phone}}</td>
+                <td>{{order.customer_name}} : {{order.customer_phone}}</td>
                 <td>{{order.track_number}}</td>
-                <td>{{order.recipient_name}} | {{order.recipient_phone}}</td>
+                <td>{{order.recipient_name}} : {{order.recipient_phone}}</td>
                 <td>{{order.destination_province}}, {{order.destination_district}}, {{order.destination_town}}</td>
                 <td>{{(order.order_value + order.delivery_fee).toLocaleString()}} L.L</td>
                 <td ng-if="order.order_notes" class="text-nowrap">{{order.order_notes}}</td>

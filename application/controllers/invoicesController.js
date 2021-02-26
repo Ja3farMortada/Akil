@@ -1,3 +1,5 @@
+const { ipcRenderer } = require("electron");
+
 app.controller('invoicesController', ['$scope', 'invoiceFactory', function ($scope, invoiceFactory) {
 
     angular.element(document).ready(function () {
@@ -8,12 +10,21 @@ app.controller('invoicesController', ['$scope', 'invoiceFactory', function ($sco
     $scope.invoice = invoiceFactory.invoice;
     $scope.orders = invoiceFactory.orders;
 
+    // sorting in table
+    $scope.sortData ={
+        key: ['destination_province', 'destination_district', 'destination_town'],
+        reverse: true
+    };
+    $scope.sort = keyname => {
+        $scope.sortData.key = keyname;
+        $scope.sortData.reverse = !$scope.sortData.reverse; 
+    }
+
     // submit barcode input
     $scope.submitBarcode = () => {
         if ($scope.barcode) {
             invoiceFactory.getScannedInvoice($scope.barcode);
             invoiceFactory.getScannedInvoiceOrders($scope.barcode)
-
             $scope.barcode = null;
         }
     }
@@ -54,6 +65,12 @@ app.controller('invoicesController', ['$scope', 'invoiceFactory', function ($sco
                 invoiceFactory.removeOrder(ID, value);
             }
         });
+    }
+
+    //print
+    $scope.print = () => {
+        // console.log([$scope.invoice[0], $scope.orders])
+        ipcRenderer.send('printDocument', [$scope.invoice[0], $scope.orders, $scope.sortData]);
     }
 
 }]);

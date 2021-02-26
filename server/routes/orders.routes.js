@@ -38,12 +38,19 @@ module.exports = (server, db) => {
             if (error) {
                 res.status(400).send(error);
             } else {
-                let sql = "SELECT orders.*, customers.customer_name, customers.customer_phone FROM orders INNER JOIN customers ON customer_ID_FK = customer_ID WHERE order_ID = ? ";
-                db.query(sql, results.insertId, function (error, results) {
+                let query2 = `UPDATE customers SET customer_due = customer_due + ${order.order_value} WHERE customer_ID = ${order.customer_ID_FK}`;
+                db.query(query2, function (error) {
                     if (error) {
-                        results.status(400).send(error);
+                        res.status(400).send(error);
                     } else {
-                        res.send(results[0]);
+                        let query3 = "SELECT orders.*, customers.customer_name, customers.customer_phone FROM orders INNER JOIN customers ON customer_ID_FK = customer_ID WHERE order_ID = ? ";
+                        db.query(query3, results.insertId, function (error, results) {
+                            if (error) {
+                                res.status(400).send(error);
+                            } else {
+                                res.send(results[0]);
+                            }
+                        });
                     }
                 });
             }
@@ -52,19 +59,24 @@ module.exports = (server, db) => {
 
     server.post('/editOrder', (req, res) => {
         let order = req.body;
-        // let order = [3,4,5,6];
-        let query = `UPDATE orders SET ? WHERE order_ID = ${order.order_ID}`;
-        // let query = `UPDATE orders SET order_status = 'test' WHERE order_ID IN (?)`;
-        db.query(query, order, function (error) {
+        let query = `UPDATE customers SET customer_due = customer_due + ${order.order_value} - (SELECT order_value FROM orders WHERE order_ID = ${order.order_ID}) WHERE customer_ID = ${order.customer_ID_FK}`;
+        db.query(query, function (error) {
             if (error) {
                 res.status(400).send(error);
             } else {
-                let query = `SELECT orders.*, customers.customer_name, customers.customer_phone FROM orders INNER JOIN customers ON customer_ID_FK = customer_ID WHERE order_ID = ${order.order_ID}`;
-                db.query(query, function (error, result) {
+                let query2 = `UPDATE orders SET ? WHERE order_ID = ${order.order_ID}`;
+                db.query(query2, order, function (error) {
                     if (error) {
-                        res.status(400).send(error);
+                        res.status(400).send(error)
                     } else {
-                        res.send(result);
+                        let query3 = `SELECT orders.*, customers.customer_name, customers.customer_phone FROM orders INNER JOIN customers ON customer_ID_FK = customer_ID WHERE order_ID = ${order.order_ID}`;
+                        db.query(query3, function (error, result) {
+                            if (error) {
+                                res.status(400).send(error);
+                            } else {
+                                res.send(result);
+                            }
+                        });
                     }
                 });
             }

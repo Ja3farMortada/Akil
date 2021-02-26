@@ -12,21 +12,22 @@
 <script src="print-invoice.js"></script>
 
 <body>
-    <div ng-app="printApp" ng-controller="printController" class="container invisibles" id="invoiceDetailsTable"
+    <div ng-app="printApp" ng-controller="printController" class="container-fluid invisibles" id="invoiceDetailsTable"
         ng-cloak>
         <div class="row">
             <div class="col-6 mx-auto text-center">
-                <img src="../assets/2.png" width="180" height="150">
+                <!-- <img src="../assets/2.png" width="180" height="150"> -->
+                <svg id="barcode"></svg>
             </div>
         </div>
 
-        <br><br>
+        <br>
 
         <div class="row">
             <div class="col-8">
-                <h5 class="font-weight-bold font-italic" style="font-family: Courier New">Tibneen-Haris Main Road</h5>
-                <h5 class="font-italic" style="font-family: Courier New"><b>Mobile:</b>81-934181</h5>
-                <h5 class="font-italic" style="font-family: Courier New"><b>Phone:</b>07-325373</h5>
+                <h5 class="font-weight-bold font-italic" style="font-family: Courier New"><b>Driver:</b> {{invoice.driver_name}}</h5>
+                <!-- <h5 class="font-italic" style="font-family: Courier New"><b>Mobile:</b>{{invoice.driver_phone}}</h5> -->
+                <!-- <h5 class="font-italic" style="font-family: Courier New"><b>Phone:</b>07-325373</h5> -->
             </div>
             <div class="col-4">
                 <table class="table table-bordered text-center">
@@ -38,36 +39,40 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="border: 2px solid #000000 !important;">{{invoice[0]['ID']}}</td>
-                            <td style="border: 2px solid #000000 !important;">{{date}}</td>
+                            <td style="border: 2px solid #000000 !important;">{{invoice.invoice_ID}}</td>
+                            <td style="border: 2px solid #000000 !important;">{{invoice.pickup_date}}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <br><br><br><br><br><br>
+        <br>
         <div>
-            <h5>Billed To : ..............................</h5>
-            <br>
+            <!-- <h5>Billed To : ..............................</h5> -->
             <table class="table text-center">
                 <thead class="table-bordered">
                     <tr>
-                        <th style="width: 50%; border: 2px solid #000000 !important;">Description</th>
-                        <th style="width: 20%; border: 2px solid #000000 !important;" class="blackBordered">Unit Price
+                        <th style="width: 10%; border: 2px solid #000000 !important;">Order #</th>
+                        <th style="width: 20%; border: 2px solid #000000 !important;" class="blackBordered">Name
                         </th>
-                        <th style="width: 10%; border: 2px solid #000000 !important;" class="blackBordered">Quantity
+                        <th style="width: 15%; border: 2px solid #000000 !important;" class="blackBordered">Phone Number
                         </th>
-                        <th style="width: 20%; border: 2px solid #000000 !important;" class="blackBordered">Total Unit
-                            Price</th>
+                        <th style="width: 15%; border: 2px solid #000000 !important;" class="blackBordered">Town
+                        </th>
+                        <th style="width: 25%; border: 2px solid #000000 !important;" class="blackBordered">Address
+                        </th>
+                        <th style="width: 15%; border: 2px solid #000000 !important;" class="blackBordered">Total Value</th>
                     </tr>
                 </thead>
                 <tbody class="table-bordered table-sm">
-                    <tr ng-repeat="item in invoice">
-                        <td>{{item.name}}</td>
-                        <td>{{item.price.toLocaleString()}}</td>
-                        <td>{{item.quantity}}</td>
-                        <td>{{(item.price * item.quantity).toLocaleString()}}</td>
+                    <tr ng-repeat="order in orders | orderBy:sortData.key:sortData.reverse">
+                        <td>{{order.track_number}}</td>
+                        <td>{{order.recipient_name}}</td>
+                        <td>{{order.recipient_phone}}</td>
+                        <td>{{order.destination_town}}</td>
+                        <td>{{order.destination_address}}</td>
+                        <td>{{(order.order_value + order.delivery_fee).toLocaleString()}} L.L</td>
                     </tr>
                 </tbody>
             </table>
@@ -77,15 +82,14 @@
             <div class="row">
                 <div class="col-9"></div>
                 <div class="col-3 text-center">
-                    <h5><b>Total:</b> {{totalPrice.toLocaleString()}} $</h5>
+                    <h5><b>Total:</b> {{invoice.total_value.toLocaleString()}} L.L</h5>
                 </div>
             </div>
-            <!-- <h5 class="float-right">Only {{priceInName}} LBP</h5> -->
         </div>
 
-        <br><br><br>
+        <!-- <br><br><br>
 
-        <h6 class="font-weight-bold font-italic">Signature: ......................</h6>
+        <h6 class="font-weight-bold font-italic">Signature: ......................</h6> -->
     </div>
 </body>
 

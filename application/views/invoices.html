@@ -36,7 +36,7 @@
         <div class="col-9">
             <div class="row mb-2">
                 <div class="col-5">
-                    <button disabled class="btn btn-outline-dark btn-sms" ng-click="print()"><i
+                    <button class="btn btn-outline-dark btn-sms" ng-click="print()"><i
                             class="fas fa-print"></i>
                         Print</button>
                     <button ng-if="invoice[0].invoice_isDelivered == 0" class="btn btn-outline-success btn-sms"
@@ -59,13 +59,14 @@
                     <tr>
                         <th width="15%">Order Number</th>
                         <th width="25%">Customer Name</th>
-                        <th width="20%">Destination</th>
+                        <th width="20%" ng-click="sort(['destination_province', 'destination_district', 'destination_town'])"><i class="fas"
+                            ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Destination</th>
                         <th width="20%">Order Total Value</th>
                         <th colspan="2" width="20%">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="data in orders">
+                    <tr ng-repeat="data in orders | orderBy:sortData.key:sortData.reverse">
                         <td>{{data.track_number}}</td>
                         <td>{{data.customer_name}}</td>
                         <td>{{data.destination_town}}</td>

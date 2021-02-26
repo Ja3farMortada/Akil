@@ -1,7 +1,7 @@
 module.exports = (server, db) => {
 
     server.get('/getCustomers', (req, res) => {
-        let query = "SELECT * FROM customers WHERE customer_status = 1 ORDER BY customer_due DESC";
+        let query = "SELECT * FROM customers WHERE customer_status = 1";
         db.query(query, function (error, results) {
             if (error) {
                 res.status(400).send(error);

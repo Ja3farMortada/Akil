@@ -60,7 +60,7 @@ app.factory('invoiceFactory', ['$http', 'NotificationService', 'ordersFactory', 
             orderValue: value,
             invoiceID: model.invoice[0]['invoice_ID']
         }).then(function() {
-            NotificationService.showSuccess();
+            NotificationService.showSuccessToast();
             model.getScannedInvoice(model.invoice[0]['invoice_ID']);
             model.getScannedInvoiceOrders(model.invoice[0]['invoice_ID']);
             model.fetchInvoices();

@@ -8,20 +8,34 @@ app.factory('ordersFactory', function ($http, NotificationService) {
         value: null
     };
     model.itemsPerPage = {
-        value: 10
+        value: 15
     };
     model.orders = [];
     model.towns = [];
+    model.sortData = {
+        key: 'order_ID',
+        reverse: true
+    }
 
+    // sorting table
+    model.sort = keyname => {
+        model.sortData.key = keyname;
+        model.sortData.reverse = !model.sortData.reverse;
+    }
 
+    // items per page
     model.setItemsPerPage = () => {
         return options = [{
                 name: "10",
                 value: 10
             },
             {
-                name: "20",
-                value: 20
+                name: "15",
+                value: 15
+            },
+            {
+                name: "30",
+                value: 30
             },
             {
                 name: "50",

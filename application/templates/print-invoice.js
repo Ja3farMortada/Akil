@@ -4,15 +4,22 @@ const {
     ipcRenderer
 } = require('electron');
 
+// Barcode generator
+var JsBarcode = require('jsbarcode');
+
 const app = angular.module('printApp', []);
 
 app.controller('printController', function ($scope) {
 
     ipcRenderer.on('printDocument', function (event, data) {
         $scope.$digest($scope.invoice = data[0]);
-        $scope.$digest($scope.totalPrice = data[1]);
+        $scope.$digest($scope.orders = data[1]);
+        $scope.$digest($scope.sortData = data[2]);
         // $scope.$digest($scope.invoiceType = data[3]);
         $scope.$digest($scope.date = getDate());
+        JsBarcode('#barcode', $scope.invoice.invoice_ID, {
+
+        })
         print();
     });
 
