@@ -104,16 +104,31 @@ form label {
 
 
 .animated {
-    animation-name: example;
+    animation-name: rotateIcon;
     animation-duration: 1s;
 }
-@keyframes example {
-    0%   {transform: rotate(20deg); color: rgb(74, 76, 182);}
-    50%  {font-size: 25px; color: rgb(42, 66, 146);}
-    75%  {transform: rotate(-20deg); color: rgb(48, 54, 117);}
-    100% {color: rgb(34, 32, 46);}
+
+@keyframes rotateIcon {
+    0%   {transform: rotate(20deg); color: rgb(32, 167, 73);}
+    50%  {font-size: 25px; color: rgb(28, 88, 51);}
+    75%  {transform: rotate(-20deg); color: rgb(35, 63, 40);}
+    100% {color: rgb(16, 19, 18);}
   }
-  
+
+  .animated-edit {
+    color: #343a40;
+    animation-name: rotateIconEdit;
+    animation-duration: 1s;
+}
+
+@keyframes rotateIconEdit {
+    0%   {transform: rotate(-20deg); color: rgb(41, 96, 197);}
+    50%  {font-size: 25px; color: rgb(38, 81, 146);}
+    75%  {transform: rotate(20deg); color: rgb(22, 58, 99);}
+    100% {color: #272c31;}
+  }
+   
+
 .autocomplete {
     background: white;
     z-index: 10000;

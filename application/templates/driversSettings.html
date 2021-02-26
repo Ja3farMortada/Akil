@@ -12,7 +12,7 @@
     <tbody>
         <tr dir-paginate="driver in drivers|itemsPerPage:10">
             <td class="pointer" ng-dblclick="openEditDriverModal(driver.driver_ID)"><i
-                    class="fas fa-user-edit fa-lg text-dark"></i></td>
+                    class="fas fa-user-edit fa-lg animated-edit"></i></td>
             <td>{{driver.driver_ID}}</td>
             <td>{{driver.driver_name}}</td>
             <td ng-if="driver.driver_phone">{{driver.driver_phone}}</td>

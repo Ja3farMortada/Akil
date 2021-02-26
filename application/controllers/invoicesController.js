@@ -56,4 +56,12 @@ app.controller('invoicesController', ['$scope', 'invoiceFactory', function ($sco
         });
     }
 
+    // open info modal 
+
+    $scope.openInfoModal = info => {
+        $scope.selectedInvoiceInfo = {};
+        angular.copy(info, $scope.selectedInvoiceInfo);
+        $('#invoiceInfoModal').modal('show');
+    }
+
 }]);
