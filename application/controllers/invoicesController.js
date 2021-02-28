@@ -1,6 +1,6 @@
 const { ipcRenderer } = require("electron");
 
-app.controller('invoicesController', ['$scope', 'invoiceFactory', function ($scope, invoiceFactory) {
+app.controller('invoicesController', ['$scope', 'invoiceFactory', 'historyFactory', function ($scope, invoiceFactory, historyFactory) {
 
     angular.element(document).ready(function () {
         $('#barcodeInput').trigger('focus');
@@ -47,6 +47,7 @@ app.controller('invoicesController', ['$scope', 'invoiceFactory', function ($sco
                     data.array.push($scope.orders[i]['order_ID']);
                 }
                 invoiceFactory.deliverInvoice(data);
+                historyFactory.fetchDriversInvoice(historyFactory.datePickerValue);
                 $('#barcodeInput').trigger('focus');
             }
         });

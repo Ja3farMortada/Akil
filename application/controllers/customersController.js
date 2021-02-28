@@ -9,7 +9,7 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
 
     $scope.customers = customersFactory.customers;
     $scope.selectedArchive = customersFactory.selectedArchive;
-    // $scope.selectedPaymentDetails = customersFactory.selectedPaymentDetails;
+    $scope.selectedPaymentDetails = customersFactory.selectedPaymentDetails;
     $scope.selectedInvoiceDetails = [];
     $scope.activeRow = customersFactory.activeRow;
 
@@ -34,9 +34,9 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
         customersFactory.getOrdersArchive({
             ID: ID
         });
-        // customersFactory.getPaymentDetails({
-        //     ID: ID
-        // });
+        customersFactory.getPaymentDetails({
+            ID: ID
+        });
     };
     if ($scope.activeRow) {
         customersFactory.getOrdersArchive({
@@ -62,7 +62,6 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
             "payment_amount": null,
             "payment_date": DateService.getDate(),
             "payment_time": DateService.getTime(),
-            "dollar_exchange": $scope.exchangeRate.exchange_rate,
             "payment_notes": ''
         };
         $('#receivePaymentModal').on('shown.bs.modal', function () {
@@ -81,13 +80,9 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
 
     // declate edit payment modal
     $scope.editPaymentModal = data => {
-        $scope.paymentData = {
-            "customer_ID_FK": $scope.customers[$scope.activeRow].customer_ID,
-            "payment_ID": data.payment_ID,
-            "payment_amount": data.payment_amount,
-            "old_payment_amount": data.payment_amount,
-            "payment_notes": data.payment_notes
-        };
+        $scope.paymentData = {};
+        angular.copy(data, $scope.paymentData);
+        $scope.paymentData.old_payment_amount = data.payment_amount;
         $('#editPaymentModal').on('shown.bs.modal', function () {
             $(this).find('[autofocus]').trigger('focus');
         });
@@ -117,12 +112,10 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
 
     };
 
-
+    // order details modal
     $scope.openOrderDetails = data => {
-        console.log(data);
         $scope.selectedOrderDetails = {};
         angular.copy(data, $scope.selectedOrderDetails);
-        // $scope.selectedOrderDetails = JSON.parse(data);
         $('#orderDetailsModal').modal('show');
     };
 
@@ -172,10 +165,11 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
         $scope.customerDetails = {
             customer_name: null,
             customer_phone: null,
+            customer_province: null,
+            customer_district: null,
+            customer_town: null,
             customer_address: null,
-            customer_address_2: null,
-            customer_due: 0,
-            notes: null
+            customer_due: 0
         };
 
         $('#customerModal').modal('show');

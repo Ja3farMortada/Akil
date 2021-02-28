@@ -19,14 +19,14 @@
 
     <div class="row mt-3" ng-show="tabSelected == 0">
         <!-- invoices table -->
-        <div class="col-4">
+        <div class="col-5">
             <!-- date input -->
             <div class="container-fluid row mb-2">
                 <label class="col-1 col-form-label">Date:</label>
-                <div class="col-7">
+                <div class="col-5">
                     <input type="text" class="form-control text-center" id="invoiceDatePicker">
                 </div>
-                <div class="col-4">
+                <div class="col-3">
                     <button class="btn btn-info" ng-click="today()">today</button>
                 </div>
             </div>
@@ -34,9 +34,10 @@
             <table class="table table-bordered text-center table-hover table-sm">
                 <thead style="user-select: none">
                     <tr>
-                        <th width="25%">Invoice #</th>
-                        <th width="45%">Driver</th>
+                        <th width="15%">Invoice #</th>
+                        <th width="35%">Driver</th>
                         <th width="30%">Total Value</th>
+                        <th width="20%">Status</th>
                     </tr>
                 </thead>
                 <tbody style="user-select: none;">
@@ -47,11 +48,14 @@
                         <td>{{data.invoice_ID}}</td>
                         <td>{{data.driver_name}}</td>
                         <td>{{data.total_value.toLocaleString()}} L.L</td>
+
+                        <td ng-if="data.invoice_isDelivered == 0" class="text-danger">Not Delivered</td>
+                        <td ng-if="data.invoice_isDelivered == 1" class="text-success">Delivered</td>
                     </tr>
 
                     <!-- if no records -->
                     <tr ng-if="driversInvoice.length == 0">
-                        <td colspan="3" class="table-active">No Records Yet!</td>
+                        <td colspan="4" class="table-active">No Records Yet!</td>
                     </tr>
                 </tbody>
             </table>
@@ -62,7 +66,7 @@
         </div>
 
         <!-- invoice details table -->
-        <div class="col-8" ng-show="invoiceDetails.length > 0">
+        <div class="col-7" ng-show="invoiceDetails.length > 0">
             <div class="row justify-content-betweens mb-2">
                 <div class="col-5">
                     <button disabled class="btn btn-outline-dark btn-sms" ng-click="print()"><i class="fas fa-print"></i>

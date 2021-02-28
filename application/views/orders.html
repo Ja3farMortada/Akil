@@ -23,7 +23,6 @@
                             class="fas fa-file-alt"></i>
                         Add to Invoice</button>
                 </div>
-
             </div>
         </div>
         <div class="col-3">
@@ -111,7 +110,7 @@
                                 <input id="choose" ng-change="validate()" ng-focus="select()"
                                     ng-class="{'is-invalid': isValid === false}" list="chooseCustomer"
                                     class="form-control text-center" ng-model="orderDetails.customer_phone" autofocus
-                                    spellcheck="false" required>
+                                    spellcheck="false" required ng-disabled="selectedModal == 'edit'">
                                 <datalist id="chooseCustomer">
                                     <option ng-repeat="customer in customers" ng-value="customer.customer_phone">
                                         {{customer.customer_name}}</option>

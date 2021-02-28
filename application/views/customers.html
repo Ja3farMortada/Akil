@@ -28,14 +28,15 @@
                         <i class="fas fa-search"></i>
                     </span>
                 </div>
-                <input id="debtsSearch" type="text" class="form-control col-6" placeholder="Search ..."
-                    ng-model="statementSearch">
+                <input spellcheck="false" id="debtsSearch" type="text" class="form-control col-6"
+                    placeholder="Search ..." ng-model="statementSearch">
             </div>
             <table class="table table-sm table-bordered text-center mt-3 table-hover">
                 <thead>
                     <tr>
                         <th width="68%">Customer Name</th>
-                        <th width="32%" ng-click="sortDue('customer_due')"><i class="fas" ng-show="sortDueData.key == 'customer_due'"
+                        <th width="32%" ng-click="sortDue('customer_due')"><i class="fas"
+                                ng-show="sortDueData.key == 'customer_due'"
                                 ng-class="{'fa-sort-amount-down-alt fa-fw': !sortDueData.reverse, 'fa-sort-amount-up fa-fw': sortDueData.reverse}"></i>Total
                             Due</th>
                     </tr>
@@ -48,7 +49,8 @@
                         <td>{{ customer.customer_name }}</td>
                         <td>{{ customer.customer_due.toLocaleString() }} L.L</td>
                     </tr>
-                    <tr ng-if="(customers | filter:statementSearch).length == 0 && statementSearch" class="table-active select-off">
+                    <tr ng-if="(customers | filter:statementSearch).length == 0 && statementSearch"
+                        class="table-active select-off">
                         <td colspan="2">No Matching Records Found!</td>
                     </tr>
                 </tbody>
@@ -69,20 +71,20 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-secondary text-uppercase animate__animated"
                                         ng-class="{'active': subTabSelected === 1, 'active-tab-dir': subTabSelected === 1, 'animate__fadeIn': subTabSelected === 1}"
-                                        ng-click="selectSubTab(1)"><i class="fas fa-archive fa-2x fa-fw"></i>debts
+                                        ng-click="selectSubTab(1)"><i class="fas fa-archive fa-2x fa-fw"></i> Orders
                                         archive</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-secondary text-uppercase animate__animated"
                                         ng-class="{'active': subTabSelected === 0, 'active-tab-dir': subTabSelected === 0, 'animate__fadeIn': subTabSelected === 0}"
-                                        ng-click="selectSubTab(0)"><i
-                                            class="fas fa-hand-holding-usd fa-2x fa-fw"></i>debts
+                                        ng-click="selectSubTab(0)"><i class="fas fa-hand-holding-usd fa-2x fa-fw"></i>
+                                        Due
                                         payments</a>
                                 </li>
                             </ul>
                         </div>
                         <div class="card-body pt-2">
-                            <!-- debts archive -->
+                            <!-- Orders archive -->
                             <div ng-if="subTabSelected === 1">
                                 <div class="row d-flex justify-content-between">
                                     <div class="col-6 d-flex align-items-center justify-content-center">
@@ -101,7 +103,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <table class="table table-bordered table-hover text-center table-sm mt-2">
+                                <table class="table table-bordered table-hover text-center table-sm mt-2 select-off">
                                     <thead>
                                         <tr>
                                             <th width="25%">Status</th>
@@ -112,7 +114,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr dir-paginate="data in selectedArchive | filter: searchArchive | itemsPerPage:5"
+                                        <tr dir-paginate="data in selectedArchive | filter: searchArchive | itemsPerPage:10"
                                             pagination-id="debts" class="pointer" ng-click="openOrderDetails(data)">
                                             <td>{{ data.order_status }}</td>
                                             <td>{{ data.order_date }}</td>
@@ -120,11 +122,11 @@
                                             <td>{{ data.order_value.toLocaleString() }} L.L</td>
                                         </tr>
 
-                                        <tr ng-if="selectedDetails.length == 0" class="table-active">
-                                            <td colspan="4">No Debts Records Yet!</td>
+                                        <tr ng-if="selectedArchive.length == 0" class="table-active">
+                                            <td colspan="4">No Records Yet!</td>
                                         </tr>
 
-                                        <tr ng-if="(selectedDetails | filter:searchDebts).length == 0 && searchDebts"
+                                        <tr ng-if="(selectedArchive | filter:searchArchive).length == 0 && searchArchive"
                                             class="table-active">
                                             <td colspan="4">No Matching Records Found!</td>
                                         </tr>
@@ -135,7 +137,7 @@
                                     boundary-links="false" template-url="../templates/dirPagination.tpl.html">
                                 </dir-pagination-controls>
                             </div>
-                            <!-- debts payments -->
+                            <!-- Due payments -->
                             <div ng-if="subTabSelected === 0">
                                 <div class="row">
                                     <div class="col d-flex align-items-center justify-content-center">
@@ -145,10 +147,10 @@
                                     <div class="col">
                                         <button ng-click="receivePaymentModal()"
                                             class="btn btn-outline-success float-right"><i
-                                                class="fas fa-hand-holding-usd fa-lg"></i> Receive Payment</button>
+                                                class="fas fa-hand-holding-usd fa-lg"></i> Deliver Payment</button>
                                     </div>
                                 </div>
-                                <table class="table table-bordered text-center table-sm mt-2">
+                                <table class="table table-bordered text-center table-sm mt-2 select-off">
                                     <thead>
                                         <tr>
                                             <th width="25%">Payment Amount</th>
@@ -158,7 +160,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr dir-paginate="payment in selectedPaymentDetails | itemsPerPage:5"
+                                        <tr dir-paginate="payment in selectedPaymentDetails | itemsPerPage:10"
                                             pagination-id="payments" ng-dblclick="editPaymentModal(payment)"
                                             class="pointer">
                                             <td>{{ payment.payment_amount.toLocaleString() }} L.L</td>
@@ -367,9 +369,10 @@
                     <th ng-click="sort('customer_name')"><i class="fas" ng-show="sortKey == 'customer_name'"
                             ng-class="{'fa-arrow-up': !reverse, 'fa-arrow-down': reverse}"></i> Customer Name</th>
                     <th>Phone number</th>
+                    <th>Province</th>
+                    <th>District</th>
+                    <th>Town</th>
                     <th>Address</th>
-                    <th>Address 2</th>
-                    <th>Notes</th>
                 </tr>
             </thead>
             <tbody>
@@ -378,26 +381,21 @@
                     class="pointer">
                     <td>{{customer.customer_ID}}</td>
                     <td>{{customer.customer_name}}</td>
-                    <td ng-if="customer.customer_phone">{{customer.customer_phone}}</td>
-                    <td ng-if="!customer.customer_phone"> --- </td>
-
-                    <td ng-if="customer.customer_address">{{customer.customer_address}}</td>
-                    <td ng-if="!customer.customer_address"> --- </td>
-                    <td ng-if="customer.customer_address_2">{{customer.customer_address_2}}</td>
-                    <td ng-if="!customer.customer_address_2"> --- </td>
-
-                    <td ng-if="customer.notes">{{customer.notes}}</td>
-                    <td ng-if="!customer.notes"> --- </td>
+                    <td>{{customer.customer_phone}}</td>
+                    <td>{{customer.customer_province}}</td>
+                    <td>{{customer.customer_district}}</td>
+                    <td>{{customer.customer_town}}</td>
+                    <td>{{customer.customer_address}}</td>
                 </tr>
 
                 <!-- if no data available -->
                 <tr class="table-active" ng-if="customers.length === 0">
-                    <td colspan="6">No data available in table</td>
+                    <td colspan="7">No data available in table</td>
                 </tr>
 
                 <!-- if search found nothing -->
                 <tr ng-if="(customers | filter: searchVal).length == 0 && searchVal" class="table-active select-off">
-                    <td colspan="6">No Matching Records Found!</td>
+                    <td colspan="7">No Matching Records Found!</td>
                 </tr>
             </tbody>
         </table>
@@ -432,20 +430,110 @@
 
                             <div class="row mb-2">
                                 <div class="from-group col-6">
-                                    <label>Address 1</label>
+                                    <label>Province</label>
+                                    <select class="form-control text-center"
+                                        ng-model="customerDetails.customer_province" required>
+                                        <option value=""></option>
+                                        <option value="الجنوب">الجنوب</option>
+                                        <option value="النبطية">النبطية</option>
+                                        <option value="بيروت">بيروت</option>
+                                        <option value="البقاع">البقاع</option>
+                                        <option value="جبل لبنان">جبل لبنان</option>
+                                        <option value="الشمال">الشمال</option>
+                                        <option value="بعلبك الهرمل">بعلبك الهرمل</option>
+                                        <option value="عكار">عكار</option>
+                                        <option value="كسروان جبيل">كسروان جبيل</option>
+                                    </select>
+                                </div>
+                                <div class="from-group col-6">
+                                    <label>District</label>
+                                    <select class="form-control text-center"
+                                        ng-model="customerDetails.customer_district">
+                                        <option value=""></option>
+
+                                        <option value="المتن" ng-if="customerDetails.customer_province === 'جبل لبنان'">
+                                            المتن</option>
+                                        <option value="بعبدا" ng-if="customerDetails.customer_province === 'جبل لبنان'">
+                                            بعبدا</option>
+                                        <option value="عاليه" ng-if="customerDetails.customer_province === 'جبل لبنان'">
+                                            عاليه</option>
+                                        <option value="الشوف" ng-if="customerDetails.customer_province === 'جبل لبنان'">
+                                            الشوف</option>
+
+                                        <option value="جبيل"
+                                            ng-if="customerDetails.customer_province === 'كسروان جبيل'">
+                                            جبيل</option>
+                                        <option value="كسروان"
+                                            ng-if="customerDetails.customer_province === 'كسروان جبيل'">
+                                            كسروان</option>
+
+                                        <option value="زحلة" ng-if="customerDetails.customer_province === 'البقاع'">زحلة
+                                        </option>
+                                        <option value="البقاع  الغربي"
+                                            ng-if="customerDetails.customer_province === 'البقاع'">البقاع الغربي
+                                        </option>
+                                        <option value="راشيا" ng-if="customerDetails.customer_province === 'البقاع'">
+                                            راشيا
+                                        </option>
+
+                                        <option value="الهرمل"
+                                            ng-if="customerDetails.customer_province === 'بعلبك الهرمل'">
+                                            الهرمل</option>
+                                        <option value="بعلبك"
+                                            ng-if="customerDetails.customer_province === 'بعلبك الهرمل'">
+                                            بعلبك</option>
+
+                                        <option value="طرابلس" ng-if="customerDetails.customer_province === 'الشمال'">
+                                            طرابلس
+                                        </option>
+                                        <option value="زغرتا - الزاوية"
+                                            ng-if="customerDetails.customer_province === 'الشمال'">زغرتا - الزاوية
+                                        </option>
+                                        <option value="بشري" ng-if="customerDetails.customer_province === 'الشمال'">بشري
+                                        </option>
+                                        <option value="البترون" ng-if="customerDetails.customer_province === 'الشمال'">
+                                            البترون</option>
+                                        <option value="الكورة" ng-if="customerDetails.customer_province === 'الشمال'">
+                                            الكورة
+                                        </option>
+                                        <option value="الضنية" ng-if="customerDetails.customer_province === 'الشمال'">
+                                            الضنية
+                                        </option>
+
+                                        <option value="عكار" ng-if="customerDetails.customer_province === 'عكار'">عكار
+                                        </option>
+
+                                        <option value="صور" ng-if="customerDetails.customer_province === 'الجنوب'">صور
+                                        </option>
+                                        <option value="صيدا" ng-if="customerDetails.customer_province === 'الجنوب'">صيدا
+                                        </option>
+                                        <option value="جزين" ng-if="customerDetails.customer_province === 'الجنوب'">جزين
+                                        </option>
+
+                                        <option value="بنت جبيل"
+                                            ng-if="customerDetails.customer_province === 'النبطية'">بنت
+                                            جبيل</option>
+                                        <option value="النبطية" ng-if="customerDetails.customer_province === 'النبطية'">
+                                            النبطية</option>
+                                        <option value="مرجعيون" ng-if="customerDetails.customer_province === 'النبطية'">
+                                            مرجعيون</option>
+                                        <option value="حاصبيا" ng-if="customerDetails.customer_province === 'النبطية'">
+                                            حاصبيا</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="from-group col-6">
+                                    <label>Town</label>
+                                    <input spellcheck="false" type="text" class="form-control"
+                                        ng-model="customerDetails.customer_town" required>
+                                </div>
+                                <div class="from-group col-6">
+                                    <label>Address</label>
                                     <input spellcheck="false" type="text" class="form-control"
                                         ng-model="customerDetails.customer_address" required>
                                 </div>
-                                <div class="from-group col-6">
-                                    <label>Address 2</label>
-                                    <input spellcheck="false" type="text" class="form-control"
-                                        ng-model="customerDetails.customer_address_2">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Notes</label>
-                                <input type="text" class="form-control" ng-model="customerDetails.notes"
-                                    spellcheck="false">
                             </div>
 
                         </div>

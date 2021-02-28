@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Feb 24, 2021 at 11:02 PM
+-- Generation Time: Feb 28, 2021 at 10:40 PM
 -- Server version: 5.7.23
 -- PHP Version: 7.2.10
 
@@ -52,30 +52,33 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `customer_ID` int(11) NOT NULL AUTO_INCREMENT,
   `customer_name` varchar(30) NOT NULL,
   `customer_phone` varchar(15) DEFAULT NULL,
+  `customer_province` varchar(15) DEFAULT NULL,
+  `customer_district` varchar(15) DEFAULT NULL,
+  `customer_town` varchar(20) DEFAULT NULL,
   `customer_address` varchar(100) DEFAULT NULL,
-  `customer_address_2` varchar(100) DEFAULT NULL,
-  `customer_due` float NOT NULL,
+  `customer_due` double NOT NULL,
   `notes` varchar(100) DEFAULT NULL,
   `customer_status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`customer_ID`),
   UNIQUE KEY `customer_phone` (`customer_phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=1033 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1034 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `customers`
 --
 
-INSERT INTO `customers` (`customer_ID`, `customer_name`, `customer_phone`, `customer_address`, `customer_address_2`, `customer_due`, `notes`, `customer_status`) VALUES
-(1001, 'test', '12341234', 'test', NULL, 0, NULL, 1),
-(1002, 'test 2', '81025354', 'test', NULL, 0, NULL, 1),
-(1003, 'testing 3', '03323434', 'jlasdkjf', 'alsdkjfaskldfj', 0, NULL, 1),
-(1004, 'hadi ahmad', '70846278', 'asdf', NULL, 0, NULL, 1),
-(1026, 'ali', '81923819', 'aaita el jabal, kdkal', 'عيال عاذك', 0, 'laskdjf alksdjf', 1),
-(1027, 'ahmad', '03584685', 'lasdkjf', 'laskdjf', 0, NULL, 1),
-(1028, 'hadi', '03487563', 'alsdkfj', 'asldkfj', 0, NULL, 1),
-(1029, 'mohamad', '02839423', 'lsasdlfkj', 'alskdjfa', 0, 'asdfasdf', 1),
-(1031, 'حسن', '07777777', 'مشسيبتن', NULL, 0, NULL, 1),
-(1032, 'asdfsadfasdf', '03456476', 'asdfsdaf', NULL, 0, NULL, 1);
+INSERT INTO `customers` (`customer_ID`, `customer_name`, `customer_phone`, `customer_province`, `customer_district`, `customer_town`, `customer_address`, `customer_due`, `notes`, `customer_status`) VALUES
+(1001, 'test', '12341234', 'الجنوب', 'صور', 'صور', 'البص', 0, NULL, 1),
+(1002, 'test 2', '81025354', 'test', NULL, 'شقرا', NULL, 0, NULL, 1),
+(1003, 'testing 3', '03323434', 'jlasdkjf', 'alsdkjfaskldfj', NULL, NULL, 0, NULL, 1),
+(1004, 'hadi ahmad', '70846278', 'asdf', NULL, NULL, NULL, 0, NULL, 1),
+(1026, 'ali', '81923819', 'aaita', 'عيال عاذك', NULL, NULL, 170000, 'laskdjf alksdjf', 1),
+(1027, 'ahmad', '03584685', 'lasdkjf', 'laskdjf', NULL, NULL, 250000, NULL, 1),
+(1028, 'hadi', '03487563', 'alsdkfj', 'asldkfj', NULL, NULL, 110000, NULL, 1),
+(1029, 'mohamad', '02839423', 'lsasdlfkj', 'alskdjfa', NULL, NULL, 0, 'asdfasdf', 1),
+(1031, 'حسن', '07777777', 'مشسيبتن', NULL, NULL, NULL, 400000, NULL, 1),
+(1032, 'asdfsadfasdf', '03456476', 'asdfsdaf', NULL, NULL, NULL, 0, NULL, 1),
+(1033, 'جديد', '03985648', 'النبطية', 'بنت جبيل', 'عيناتا', 'البركة', 0, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -90,45 +93,21 @@ CREATE TABLE IF NOT EXISTS `customer_payments` (
   `payment_amount` float NOT NULL,
   `payment_date` date NOT NULL,
   `payment_time` time NOT NULL,
-  `dollar_exchange` float NOT NULL,
   `payment_notes` varchar(50) DEFAULT NULL,
   `payment_status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`payment_ID`),
   KEY `customer_ID_FK` (`customer_ID_FK`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 --
 -- Dumping data for table `customer_payments`
 --
 
-INSERT INTO `customer_payments` (`payment_ID`, `customer_ID_FK`, `payment_amount`, `payment_date`, `payment_time`, `dollar_exchange`, `payment_notes`, `payment_status`) VALUES
-(1, 1, 50000, '2019-11-29', '12:52:49', 0, NULL, 1),
-(2, 1, 90000, '2019-12-07', '12:14:00', 0, NULL, 1),
-(3, 1, 80000, '2019-12-07', '12:14:46', 0, NULL, 1),
-(4, 2, 10000, '2019-12-07', '12:16:06', 0, NULL, 1),
-(5, 3, 50000, '2019-12-07', '12:17:23', 0, NULL, 1),
-(6, 3, 10000, '2019-12-07', '12:18:08', 0, NULL, 1),
-(7, 4, 100000, '2019-12-07', '12:18:18', 0, NULL, 1),
-(8, 6, 60000, '2019-12-07', '12:18:27', 0, NULL, 1),
-(9, 6, 50000, '2019-12-07', '12:18:33', 0, NULL, 1),
-(11, 3, 90000, '2019-12-07', '12:19:08', 0, NULL, 1),
-(12, 4, 50000, '2019-12-07', '12:52:07', 0, NULL, 1),
-(13, 4, 60000, '2019-12-07', '12:52:14', 0, NULL, 1),
-(14, 6, 60000, '2019-12-07', '12:52:59', 0, NULL, 1),
-(15, 1, 60000, '2019-12-08', '17:31:55', 0, NULL, 1),
-(16, 3, 70000, '2019-12-13', '23:20:10', 0, NULL, 1),
-(17, 3, 5000, '2019-12-16', '15:17:34', 0, NULL, 1),
-(18, 2, 8000, '2019-12-16', '15:24:49', 0, NULL, 1),
-(19, 2, 100000, '2019-12-16', '15:25:24', 0, NULL, 1),
-(20, 6, 100000, '2019-12-16', '22:30:22', 0, NULL, 1),
-(21, 6, 100000, '2019-12-16', '22:30:52', 0, NULL, 1),
-(22, 2, 3000, '2020-04-14', '14:06:11', 3000, NULL, 1),
-(23, 2, 3000, '2020-04-14', '14:08:16', 3000, NULL, 1),
-(24, 1, 8000, '2020-04-14', '14:08:52', 3000, NULL, 1),
-(25, 1, 10000, '2020-04-21', '23:26:24', 3000, NULL, 1),
-(26, 3, 20000, '2020-11-28', '20:54:13', 3000, '', 1),
-(27, 3, 5000, '2020-11-28', '20:54:31', 3000, '', 1),
-(28, 3, 1000, '2020-11-28', '20:54:47', 3000, '', 1);
+INSERT INTO `customer_payments` (`payment_ID`, `customer_ID_FK`, `payment_amount`, `payment_date`, `payment_time`, `payment_notes`, `payment_status`) VALUES
+(1, 1004, 4000, '2021-02-27', '03:07:32', '', 1),
+(2, 1028, 50000, '2021-02-27', '03:09:20', '', 1),
+(3, 1028, 350000, '2021-02-27', '03:09:54', '', 1),
+(4, 1028, 390000, '2021-02-27', '16:28:13', '', 1);
 
 -- --------------------------------------------------------
 
@@ -172,7 +151,16 @@ CREATE TABLE IF NOT EXISTS `drivers_invoice` (
   `invoice_status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`invoice_ID`),
   KEY `drivers_invoice_ibfk_1` (`driver_ID_FK`)
-) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1004 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `drivers_invoice`
+--
+
+INSERT INTO `drivers_invoice` (`invoice_ID`, `driver_ID_FK`, `pickup_date`, `pickup_time`, `total_value`, `invoice_isDelivered`, `invoice_status`) VALUES
+(1001, 1, '2021-02-25', '20:58:18', 1154000, 1, 1),
+(1002, 3, '2021-02-28', '17:59:23', 1596000, 1, 1),
+(1003, 2, '2021-02-28', '17:59:51', 317000, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -188,7 +176,25 @@ CREATE TABLE IF NOT EXISTS `invoice_map` (
   PRIMARY KEY (`map_ID`),
   KEY `invoice_map_ibfk_1` (`invoice_ID_FK`),
   KEY `order_ID_FK` (`order_ID_FK`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `invoice_map`
+--
+
+INSERT INTO `invoice_map` (`map_ID`, `invoice_ID_FK`, `order_ID_FK`) VALUES
+(12, 1001, 3),
+(15, 1001, 6),
+(16, 1001, 19),
+(18, 1001, 5),
+(19, 1001, 14),
+(20, 1002, 18),
+(21, 1002, 20),
+(22, 1002, 21),
+(23, 1002, 22),
+(24, 1003, 15),
+(25, 1003, 16),
+(26, 1003, 17);
 
 -- --------------------------------------------------------
 
@@ -218,17 +224,17 @@ CREATE TABLE IF NOT EXISTS `orders` (
   PRIMARY KEY (`order_ID`),
   KEY `customer_ID_FK` (`customer_ID_FK`),
   KEY `orders_ibfk_2` (`driver_ID_FK`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`order_ID`, `customer_ID_FK`, `track_number`, `order_date`, `order_time`, `destination_province`, `destination_district`, `destination_town`, `destination_address`, `recipient_name`, `recipient_phone`, `order_value`, `delivery_fee`, `order_status`, `order_notes`, `driver_ID_FK`, `order_isDeleted`) VALUES
-(3, 1026, 9856, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'عيتا الجبل', 'البركة، مقابل باتسري ناصر', 'Ali hamdan', '70896584', 154000, 10000, 'office', NULL, NULL, 0),
-(4, 1029, 234, '2021-02-16', '15:09:45', 'النبطية', 'مرجعيون', 'تبنين', 'asdfsadf', 'adsf', '00000234', 550000, 10000, 'office', NULL, NULL, 0),
-(5, 1004, 5789, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'شقرا', 'البركة، مقابل باتسري ناصر', 'Ali hamdan', '70896584', 370000, 10000, 'office', NULL, NULL, 0),
-(6, 1028, 9856, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'حاريص', 'البركة، مقابل باتسري ناصر', 'Ali hadi', '70896879', 370000, 10000, 'office', NULL, NULL, 0),
+(3, 1026, 9856, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'عيتا الجبل', 'الخرجة', 'رينغو كافيه', '70896584', 154000, 10000, 'delivered', NULL, NULL, 0),
+(4, 1029, 2354, '2021-02-16', '15:09:45', 'النبطية', 'بنت جبيل', 'تبنين', 'اليادون', 'محمد فواز', '71458791', 550000, 10000, 'office', NULL, NULL, 0),
+(5, 1004, 5789, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'شقرا', 'البركة، مقابل قهوة القهوة', 'Ali hamdan', '70896584', 370000, 10000, 'delivered', NULL, NULL, 0),
+(6, 1028, 1587, '2021-02-15', '22:06:19', 'النبطية', 'بنت جبيل', 'حاريص', 'البركة، مقابل باتسري ناصر', 'Ali hadi', '70896879', 370000, 10000, 'delivered', NULL, NULL, 0),
 (7, 1001, 5642165, '2021-02-16', '15:48:42', 'الجنوب', 'صور', 'حاريص', 'testnig', 'asdfasdf', '05464516', 60000, 10000, 'office', NULL, NULL, 0),
 (8, 1027, 89564, '2021-02-16', '15:50:36', 'بيروت', NULL, 'شقرا', 'fasdfasdf', 'asdfasdf', '01516513', 50000, 10000, 'office', NULL, NULL, 0),
 (9, 1004, 23423, '2021-02-16', '17:04:37', 'بيروت', NULL, 'تبنين', '234', 'asdf', '00000324', 12000, 10000, 'office', '', NULL, 0),
@@ -236,11 +242,15 @@ INSERT INTO `orders` (`order_ID`, `customer_ID_FK`, `track_number`, `order_date`
 (11, 1029, 788554, '2021-02-15', '17:51:51', 'عكار', 'عكار', 'صفد البطيخ', 'المنية', 'محمد مصطفى', '81789564', 79000, 10000, 'office', NULL, NULL, 0),
 (12, 1026, 234234, '2021-02-16', '17:54:46', 'البقاع', 'البقاع  الغربي', 'تبنين', 'شسيب', 'شيسب', '00000234', 120000, 10000, 'office', NULL, NULL, 0),
 (13, 1002, 234234234, '2021-02-16', '18:24:51', 'كسروان جبيل', 'جبيل', 'جبيل', 'سشيب', 'شسيبسشيب', '03897564', 50000, 12000, 'office', NULL, NULL, 0),
-(14, 1032, 13584513, '2021-02-22', '15:22:33', 'النبطية', 'بنت جبيل', 'شقرا', 'test', 'سالي عواركة', '03897564', 40000, 10000, 'office', 'test test', NULL, 0),
-(15, 1004, 7896, '2021-02-23', '23:31:14', 'النبطية', 'النبطية', 'النبطية', 'شارع نبيه بري، مقابل محطة الأيتام', 'test', '03658975', 66000, 10000, 'office', 'leave order', NULL, 0),
-(16, 1028, 6845, '2021-02-24', '01:25:26', 'الجنوب', 'صور', 'صور', 'test', 'test', '70854685', 97000, 10000, 'office', NULL, NULL, 0),
-(17, 1003, 1234, '2021-02-24', '12:41:17', 'الجنوب', 'صيدا', 'الغازية', 'الكورنيش البحري', 'ali mohamad', '81128456', 120000, 10000, 'office', NULL, NULL, 0),
-(18, 1029, 2345, '2021-02-24', '13:19:34', 'جبل لبنان', 'بعبدا', 'حارة حريك', 'بير العبد', 'test', '71148564', 156000, 10000, 'office', NULL, NULL, 0);
+(14, 1032, 13584513, '2021-02-22', '15:22:33', 'النبطية', 'بنت جبيل', 'شقرا', 'test', 'سالي عواركة', '03897564', 40000, 10000, 'delivered', 'test test', NULL, 0),
+(15, 1004, 7896, '2021-02-23', '23:31:14', 'النبطية', 'النبطية', 'النبطية', 'شارع نبيه بري، مقابل محطة الأيتام', 'test', '03658975', 70000, 10000, 'driver', 'leave order', NULL, 0),
+(16, 1028, 6845, '2021-02-24', '01:25:26', 'الجنوب', 'صور', 'صور', 'test', 'test', '70854685', 97000, 10000, 'driver', NULL, NULL, 0),
+(17, 1003, 1234, '2021-02-24', '12:41:17', 'الجنوب', 'صيدا', 'الغازية', 'الكورنيش البحري', 'ali mohamad', '81128456', 120000, 10000, 'driver', NULL, NULL, 0),
+(18, 1029, 2345, '2021-02-24', '13:19:34', 'جبل لبنان', 'بعبدا', 'حارة حريك', 'بير العبد', 'test', '71148564', 156000, 10000, 'delivered', NULL, NULL, 0),
+(19, 1026, 7896, '2021-02-26', '00:45:34', 'الجنوب', 'صور', 'العباسية', 'حي الجامعة', 'محمد حاوي', '71487241', 170000, 10000, 'delivered', NULL, NULL, 0),
+(20, 1027, 7894, '2021-02-26', '00:48:41', 'النبطية', 'النبطية', 'حاروف', 'دوار حاروف', 'هادي حرب', '70142741', 250000, 10000, 'delivered', NULL, NULL, 0),
+(21, 1031, 234567, '2021-02-26', '00:53:24', 'الجنوب', 'صور', 'صور', 'test', 'test', '81221415', 400000, 10000, 'delivered', NULL, NULL, 0),
+(22, 1028, 57475, '2021-02-26', '03:11:14', 'الجنوب', 'صور', 'صور', 'البص', 'test', '71546854', 750000, 10000, 'delivered', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -284,6 +294,56 @@ INSERT INTO `payments` (`payment_ID`, `payment_title`, `category`, `amount`, `da
 (18, 'test', 'test', 40000, '2019-04-26', '18:16:57', ''),
 (19, 'test', 'test', 60000, '2019-04-30', '17:26:38', ''),
 (20, 'ghadir', 'salary', 500000, '2019-08-11', '15:29:31', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pickup_invoice`
+--
+
+DROP TABLE IF EXISTS `pickup_invoice`;
+CREATE TABLE IF NOT EXISTS `pickup_invoice` (
+  `pickup_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `driver_ID_FK` int(15) NOT NULL,
+  `pickup_date` date NOT NULL,
+  `pickup_time` time NOT NULL,
+  `total_value` double NOT NULL,
+  `pickup_isCompleted` tinyint(1) NOT NULL DEFAULT '0',
+  `pickup_status` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`pickup_ID`),
+  KEY `pickup_invoice_ibfk_1` (`driver_ID_FK`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `pickup_invoice`
+--
+
+INSERT INTO `pickup_invoice` (`pickup_ID`, `driver_ID_FK`, `pickup_date`, `pickup_time`, `total_value`, `pickup_isCompleted`, `pickup_status`) VALUES
+(1, 1, '2021-02-28', '17:44:27', 120000, 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pickup_map`
+--
+
+DROP TABLE IF EXISTS `pickup_map`;
+CREATE TABLE IF NOT EXISTS `pickup_map` (
+  `map_ID` int(15) NOT NULL AUTO_INCREMENT,
+  `pickup_ID_FK` int(15) NOT NULL,
+  `customer_ID_FK` int(15) NOT NULL,
+  `order_count` int(11) NOT NULL,
+  `total_paid` double NOT NULL,
+  PRIMARY KEY (`map_ID`),
+  KEY `pickup_map_ibfk_1` (`pickup_ID_FK`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `pickup_map`
+--
+
+INSERT INTO `pickup_map` (`map_ID`, `pickup_ID_FK`, `customer_ID_FK`, `order_count`, `total_paid`) VALUES
+(1, 1, 1004, 5, 120000);
 
 -- --------------------------------------------------------
 
@@ -404,6 +464,12 @@ INSERT INTO `users` (`UID`, `username`, `password`, `type`, `owner`, `canAddServ
 --
 
 --
+-- Constraints for table `customer_payments`
+--
+ALTER TABLE `customer_payments`
+  ADD CONSTRAINT `customer_payments_ibfk_1` FOREIGN KEY (`customer_ID_FK`) REFERENCES `customers` (`customer_ID`);
+
+--
 -- Constraints for table `drivers_invoice`
 --
 ALTER TABLE `drivers_invoice`
@@ -422,6 +488,18 @@ ALTER TABLE `invoice_map`
 ALTER TABLE `orders`
   ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customer_ID_FK`) REFERENCES `customers` (`customer_ID`) ON DELETE NO ACTION,
   ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`driver_ID_FK`) REFERENCES `drivers` (`driver_ID`) ON DELETE NO ACTION;
+
+--
+-- Constraints for table `pickup_invoice`
+--
+ALTER TABLE `pickup_invoice`
+  ADD CONSTRAINT `pickup_invoice_ibfk_1` FOREIGN KEY (`driver_ID_FK`) REFERENCES `drivers` (`driver_ID`) ON DELETE NO ACTION;
+
+--
+-- Constraints for table `pickup_map`
+--
+ALTER TABLE `pickup_map`
+  ADD CONSTRAINT `pickup_map_ibfk_1` FOREIGN KEY (`pickup_ID_FK`) REFERENCES `pickup_invoice` (`pickup_ID`) ON DELETE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

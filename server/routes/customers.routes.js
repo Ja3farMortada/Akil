@@ -51,9 +51,9 @@ module.exports = (server, db) => {
 
     server.post('/deleteCustomer', (req, res) => {
         let query = "UPDATE customers SET customer_status = 0 WHERE ?";
-        db.query(query, [req.body.ID], function (err, results) {
-            if (err) {
-                res.status(400).send(err);
+        db.query(query, [req.body.ID], function (error) {
+            if (error) {
+                res.status(400).send(error);
             } else {
                 res.send({
                     customer_ID: req.body.ID
@@ -61,17 +61,6 @@ module.exports = (server, db) => {
             }
         });
     });
-
-    // server.get('/getCustomerDebts', (req, res) => {
-    //     let query = "SELECT customer_ID_FK as customer_ID, customers.customer_name, SUM(remaining) as remaining FROM debts INNER JOIN customers ON customer_ID_FK = customer_ID WHERE debt_status = 1 GROUP BY customers.customer_ID ORDER BY customers.customer_name ASC";
-    //     db.query(query, function (error, results) {
-    //         if (error) {
-    //             res.status(400).send(error);
-    //         } else {
-    //             res.send(results);
-    //         }
-    //     });
-    // });
 
     server.post('/getOrdersArchive', (req, res) => {
         let ID = req.body.ID;
@@ -85,6 +74,17 @@ module.exports = (server, db) => {
         });
     });
 
+    // server.get('/getTotalDue', (req, res) => {
+    //     let query = `SELECT SUM(remaining) AS remaining FROM debts WHERE item_type = 'Stock' AND debt_status = 1 UNION SELECT SUM(remaining) FROM debts WHERE item_type = 'Service' AND debt_status = 1`;
+    //     db.query(query, function (error, results) {
+    //         if (error) {
+    //             res.status(400).send(error);
+    //         } else {
+    //             res.send(results);
+    //         }
+    //     });
+    // });
+
     server.post('/getPaymentsDetails', (req, res) => {
         let ID = req.body.ID;
         let query = `SELECT * FROM customer_payments WHERE customer_ID_FK = ${ID} AND payment_status = true ORDER BY payment_ID DESC`;
@@ -97,24 +97,6 @@ module.exports = (server, db) => {
         });
     });
 
-    // server.post('/getInvoiceDetails', (req, res) => {
-    //     let ID = req.body.ID;
-    //     let type = req.body.type;
-    //     let query;
-    //     if(type == 'stock') {
-    //         query = `SELECT inv_id, stock.item_name as name, inv_det_quantity as quantity, inv_det_cost, inv_det_price as price FROM invoice_details INNER JOIN stock ON inv_det_IID = IID WHERE inv_id = ${ID}`;
-    //     } else if (type == 'service') {
-    //         query = `SELECT ser_inv_id, services.service_name as name, ser_inv_quantity as quantity, ser_inv_cost, ser_inv_price as price FROM ser_inv_details INNER JOIN services ON ser_inv_SID = SID WHERE ser_inv_id = ${ID}`;
-    //     };
-
-    //     db.query(query, function (error, results) {
-    //         if (error) {
-    //             res.status(400).end(error);
-    //         } else {
-    //             res.send(results);
-    //         }
-    //     });
-    // });
 
     server.post('/submitCustomerPayment', (req, res) => {
         let data = req.body;
@@ -123,7 +105,7 @@ module.exports = (server, db) => {
             if (error) {
                 res.status(400).send(error);
             } else {
-                let sql = `UPDATE customers SET customer_debit = customer_debit - ${data.payment_amount} WHERE customer_ID = ${data.customer_ID_FK}`;
+                let sql = `UPDATE customers SET customer_due = customer_due - ${data.payment_amount} WHERE customer_ID = ${data.customer_ID_FK}`;
                 db.query(sql, function (error) {
                     if (error) {
                         res.status(400).send(error);
@@ -145,11 +127,11 @@ module.exports = (server, db) => {
     server.post('/editCustomerPayment', (req, res) => {
         let data = req.body;
         let query = `UPDATE customer_payments SET payment_amount = ${data.payment_amount}, payment_notes = '${data.payment_notes}' WHERE payment_ID = ${data.payment_ID}`;
-        db.query(query, function (error, results) {
+        db.query(query, function (error) {
             if (error) {
                 res.status(400).send(error);
             } else {
-                let sql = `UPDATE customers SET customer_debit = customer_debit - (${data.payment_amount} - ${data.old_payment_amount}) WHERE customer_ID = ${data.customer_ID_FK}`;
+                let sql = `UPDATE customers SET customer_due = customer_due - (${data.payment_amount} - ${data.old_payment_amount}) WHERE customer_ID = ${data.customer_ID_FK}`;
                 db.query(sql, function (error) {
                     if (error) {
                         res.status(400).send(error);

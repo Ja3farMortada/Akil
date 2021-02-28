@@ -62,9 +62,9 @@ app.config(function ($routeProvider) {
             controller: 'invoicesController'
         })
 
-        .when('/stock', {
-            templateUrl: 'stock.html',
-            controller: 'stockController'
+        .when('/pickup', {
+            templateUrl: 'pickup.html',
+            controller: 'pickupController'
         })
 
         .when('/history', {
@@ -359,7 +359,7 @@ app.config(function ($mdThemingProvider) {
 // require SPA controllers
 require('../controllers/ordersController');
 require('../controllers/invoicesController');
-require('../controllers/stockController');
+require('../controllers/pickupController');
 require('../controllers/historyController');
 require('../controllers/customersController');
 require('../controllers/debtsController');
@@ -372,7 +372,7 @@ require('../controllers/settingsController');
 // require SPA Models
 require('../models/ordersFactory');
 require('../models/invoicesFactory');
-require('../models/stockFactory');
+require('../models/pickupFactory');
 require('../models/historyFactory');
 require('../models/debtsFactory');
 require('../models/paymentsFactory');

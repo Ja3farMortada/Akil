@@ -7,65 +7,13 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
     model.selectedTab = 'statement';
     model.customers = [];
     model.selectedArchive = [];
+    model.totalDue = [];
     model.selectedPaymentDetails = [];
     model.activeRow = null;
     model.sortDueData = {
         key: 'customer_due',
         reverse: true
     }
-
-    model.sortDue = keyname => {
-        model.sortDueData.key = keyname;
-        model.sortDueData.reverse = !model.sortDueData.reverse;
-    }
-
-    model.getOrdersArchive = ID => {
-        return $http.post(`${url}/getOrdersArchive`, ID).then(function (response) {
-            angular.copy(response.data, model.selectedArchive);
-        }, function (error) {
-            NotificationService.showError(error.status);
-        });
-    };
-
-
-
-    model.submitPayment = data => {
-        return $http.post(`${url}/submitCustomerPayment`, data).then(function (response) {
-            $('#receivePaymentModal').modal('hide');
-            NotificationService.showSuccess();
-            return response.data;
-        }, function (error) {
-            NotificationService.showError(error);
-        });
-    };
-
-    model.editPayment = data => {
-        return $http.post(`${url}/editCustomerPayment`, data).then(function (response) {
-            $('#editPaymentModal').modal('hide');
-            NotificationService.showSuccessToast();
-            return response.data;
-        }, function (error) {
-            NotificationService.showError(error);
-        });
-    };
-
-    model.deletePayment = data => {
-        return $http.post(`${url}/deletePayment`, data).then(function (response) {
-            $('#editPaymentModal').modal('hide');
-            NotificationService.showSuccessToast();
-            return response.data;
-        }, function (error) {
-            NotificationService.showError(error);
-        });
-    };
-
-    model.updateCustomerDebit = data => {
-        return $http.post(`${url}/updateCustomerDebit`, data).then(function (response) {
-            angular.copy(response.data, customersFactory.customers);
-        }, function (error) {
-            NotificationService.showError(error);
-        });
-    };
 
     // tab selection
     model.selectTab = function (tab) {
@@ -82,6 +30,83 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
         }
     }
 
+    // Sort function
+    model.sortDue = keyname => {
+        model.sortDueData.key = keyname;
+        model.sortDueData.reverse = !model.sortDueData.reverse;
+    }
+
+    // get orders archive
+    model.getOrdersArchive = ID => {
+        return $http.post(`${url}/getOrdersArchive`, ID).then(function (response) {
+            angular.copy(response.data, model.selectedArchive);
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+
+    // const getTotalDue = function () {
+    //     return $http.get(`${url}/getTotalDue`).then(function (response) {
+    //         angular.copy(response.data, c);
+    //     }, function (error) {
+    //         NotificationService.showError(error);
+    //     });
+    // };
+    // model.getTotalDue = getTotalDue();
+
+    model.getPaymentDetails = ID => {
+        return $http.post(`${url}/getPaymentsDetails`, ID).then(function (response) {
+            angular.copy(response.data, model.selectedPaymentDetails);
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+
+    // submit payment
+    model.submitPayment = data => {
+        return $http.post(`${url}/submitCustomerPayment`, data).then(function (response) {
+            $('#receivePaymentModal').modal('hide');
+            NotificationService.showSuccess();
+            return response.data;
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+
+    // edit payment
+    model.editPayment = data => {
+        return $http.post(`${url}/editCustomerPayment`, data).then(function (response) {
+            $('#editPaymentModal').modal('hide');
+            NotificationService.showSuccessToast();
+            return response.data;
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+
+    // delete payment
+    model.deletePayment = data => {
+        return $http.post(`${url}/deletePayment`, data).then(function (response) {
+            $('#editPaymentModal').modal('hide');
+            NotificationService.showSuccessToast();
+            return response.data;
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+
+    // update due
+    model.updateCustomerDebit = data => {
+        return $http.post(`${url}/updateCustomerDebit`, data).then(function (response) {
+            angular.copy(response.data, customersFactory.customers);
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+
+
+    //    ***************************************** CUSTOMER DETAILS MODAL *******************************
+    //    ************************************************************************************************
     const getCustomers = function () {
         return $http.get(`${url}/getCustomers`).then(function (response) {
             angular.copy(response.data, model.customers);

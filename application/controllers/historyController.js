@@ -50,17 +50,20 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
     });
     
     $scope.showOrderDetails = details => {
-        console.log(details);
         $scope.selectedInvoiceDetails = {};
         angular.copy(details, $scope.selectedInvoiceDetails);
         $('#invoiceDetailsModal').modal('show');
     };
 
     // how invoice details 
-    $scope.getInvoiceDetails = (invoiceID) => {
+    $scope.getInvoiceDetails = invoiceID => {
         historyFactory.activeRow = invoiceID;
         $scope.activeRow = invoiceID;
         historyFactory.getInvoiceDetails(invoiceID);
+    };
+
+    $scope.isActive = ID => {
+        return $scope.activeRow === ID;
     };
 
     // delete invoice
@@ -76,33 +79,6 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
     // };
 
 
-    $scope.isActive = ID => {
-        return $scope.activeRow === ID;
-    };
 
-    // print function
-    // $scope.print = function () {
-    //     let itemsForPrint = [];
-    //     if ($scope.tabSelected === 0) {
-    //         for (let i = 0; i < $scope.items.length; i++) {
-    //             itemsForPrint[i] = {
-    //                 ID: selectedInvoice.ser_inv_ID,
-    //                 name: $scope.items[i]['service_name'],
-    //                 price: $scope.items[i]['service_price'],
-    //                 quantity: $scope.items[i]['qty']
-    //             }
-    //         }
-    //     } else {
-    //         for (let i = 0; i < $scope.items.length; i++) {
-    //             itemsForPrint[i] = {
-    //                 ID: selectedInvoice.inv_ID,
-    //                 name: $scope.items[i]['item_name'],
-    //                 price: $scope.items[i]['item_price'],
-    //                 quantity: $scope.items[i]['qty']
-    //             }
-    //         }
-    //     }
-    //     ipcRenderer.send('printDocument', [itemsForPrint, $scope.totalPrice]);
-    // };
 
 }]);
