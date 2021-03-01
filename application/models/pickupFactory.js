@@ -7,7 +7,7 @@ app.factory('pickupFactory', function ($http, NotificationService) {
     model.invoices = [];
     model.invoiceDetails = [];
     model.activeRow = 0;
-   
+
     // get invoices cached function
     const getPickupInvoices = () => {
         return $http.get(`${url}/getPickupInvoices`).then(function (response) {
@@ -30,7 +30,8 @@ app.factory('pickupFactory', function ($http, NotificationService) {
     //add pickup invoice
     model.addPickupInvoice = data => {
         return $http.post(`${url}/addPickupInvoice`, data).then(function (response) {
-            NotificationService.showSuccessToast()
+            NotificationService.showSuccessToast();
+            $('#pickupInvoiceModal').modal('hide');
             return response.data;
         }, function (error) {
             NotificationService.showError(error);
@@ -60,5 +61,30 @@ app.factory('pickupFactory', function ($http, NotificationService) {
             NotificationService.showError(error);
         });
     }
+
+    // edit order
+    model.editPickupOrder = data => {
+        return $http.post(`${url}/editPickupOrder`, data).then(function (response) {
+            $('#pickupOrderModal').modal('toggle');
+            NotificationService.showSuccessToast();
+            return response.data;
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
+
+    // remove order
+    model.removeOrder = (mapID, pickupID, value) => {
+        return $http.post(`${url}/removeOrder`, {
+            map_ID: mapID,
+            pickup_ID: pickupID,
+            value: value
+        }).then(function () {
+            NotificationService.showSuccessToast();
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
+
     return model;
 });

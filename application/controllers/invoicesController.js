@@ -46,8 +46,9 @@ app.controller('invoicesController', ['$scope', 'invoiceFactory', 'historyFactor
                 for (let i = 0; i < $scope.orders.length; i++) {
                     data.array.push($scope.orders[i]['order_ID']);
                 }
-                invoiceFactory.deliverInvoice(data);
-                historyFactory.fetchDriversInvoice(historyFactory.datePickerValue);
+                invoiceFactory.deliverInvoice(data).then(function () {
+                    historyFactory.fetchDriversInvoice(historyFactory.datePickerValue);
+                });
                 $('#barcodeInput').trigger('focus');
             }
         });

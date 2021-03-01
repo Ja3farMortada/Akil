@@ -30,7 +30,7 @@
             </table>
         </div>
 
-        <div class="col-7">
+        <div class="col-7" ng-if="activeRow !== 0">
             <div class="row mb-2">
                 <div class="col-5">
                     <button ng-click="newOrderModal()" class="btn btn-outline-primary">Add Orders</button>
@@ -40,7 +40,7 @@
                     <button disabled class="btn btn-outline-danger btn-sms" ng-click="deleteInvoice()"><i
                             class="fas fa-trash-alt"></i> Delete</button>
                 </div>
-                <div class="col-3 ml-auto">
+                <div class="col-4 ml-auto">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
@@ -54,10 +54,11 @@
             </div>
             <table class="table table-bordered table-sm text-center">
                 <thead>
-                    <th>Customer Name</th>
-                    <th>Customer Phone</th>
-                    <th>Orders Count</th>
-                    <th>Total Paid</th>
+                    <th width="30%">Customer Name</th>
+                    <th width="20%">Customer Phone</th>
+                    <th width="15%">Order Count</th>
+                    <th width="20%">Total Paid</th>
+                    <th width="15%" colspan="2">More</th>
                 </thead>
                 <tbody>
                     <tr ng-repeat="data in invoiceDetails | filter:searchVal">
@@ -65,10 +66,22 @@
                         <td>{{ data.customer_phone }}</td>
                         <td>{{ data.order_count }}</td>
                         <td>{{ data.total_paid.toLocaleString() }} L.L</td>
+                        <td width="7.5%" class="btn-outline-success" ng-click="editOrderModal(data.map_ID)"><i
+                                class="fas fa-edit"></i></td>
+                        <td width="7.5%" class="btn-outline-danger"
+                            ng-click="removeOrder(data.map_ID, data.pickup_ID_FK, data.total_paid)"><i
+                                class="fas fa-times"></i></td>
                     </tr>
 
+                    <!-- if search found nothing -->
+                    <tr ng-if="(invoiceDetails | filter: searchVal).length == 0 && searchVal"
+                        class="table-active select-off">
+                        <td colspan="5">No Matching Records Found!</td>
+                    </tr>
+
+                    <!-- if no data -->
                     <tr ng-show="invoiceDetails.length == 0" class="table-active">
-                        <td colspan="4">No Data Yet!</td>
+                        <td colspan="5">No Data Yet!</td>
                     </tr>
                 </tbody>
             </table>

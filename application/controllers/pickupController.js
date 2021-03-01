@@ -1,4 +1,4 @@
-app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory', 'driversFactory', 'DateService', function ($scope, pickupFactory, customersFactory, driversFactory, DateService) {
+app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory', 'driversFactory', 'DateService', 'NotificationService', function ($scope, pickupFactory, customersFactory, driversFactory, DateService, NotificationService) {
 
     // bind with model
     $scope.customers = customersFactory.customers;
@@ -60,6 +60,7 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
         return $scope.activeRow === ID;
     };
 
+    // new order modal
     $scope.newOrderModal = () => {
         $scope.selectedModal = 'add';
         $scope.pickupDetails = {
@@ -74,6 +75,7 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
             $(this).find('[autofocus]').trigger('focus');
         });
     }
+
     function addPickupOrder() {
         var index = null;
         for (var i = 0; i < $scope.customers.length; i++) {
@@ -96,7 +98,51 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
             $scope.select();
         }
     }
-    // select on focus for new customer name
+
+    let orderIndex;
+    // edit order modal
+    $scope.editOrderModal = ID => {
+        $scope.selectedModal = 'edit';
+        orderIndex = $scope.invoiceDetails.findIndex(index => index.map_ID == ID);
+        $scope.pickupDetails = {};
+        angular.copy($scope.invoiceDetails[orderIndex], $scope.pickupDetails);
+        $('#pickupOrderModal').modal('show');
+        $('#pickupOrderModal').on('shown.bs.modal', function () {
+            $(this).find('[autofocus]').trigger('focus');
+        });
+    }
+
+    function editPickupOrder() {
+        // $scope.pickupDetails.customer_ID_FK = $scope.customers[index]['customer_ID'];
+        delete $scope.pickupDetails["customer_name"];
+        delete $scope.pickupDetails["customer_phone"];
+        delete $scope.pickupDetails["customer_province"];
+        delete $scope.pickupDetails["customer_district"];
+        delete $scope.pickupDetails["customer_town"];
+        delete $scope.pickupDetails["customer_address"];
+        pickupFactory.editPickupOrder($scope.pickupDetails).then(function (response) {
+            if (response) {
+                angular.copy(response[0], $scope.invoiceDetails[orderIndex]);
+                pickupFactory.fetchPickupInvoices();
+            }
+        });
+    }
+
+    // delete order
+    $scope.removeOrder = (mapID, pickupID, value) => {
+        NotificationService.showWarning().then(ok => {
+            if (ok) {
+                pickupFactory.removeOrder(mapID, pickupID, value).then(function () {
+                    let indexToRemove = $scope.invoiceDetails.findIndex(x => x.map_ID == mapID);
+                    $scope.invoiceDetails.splice(indexToRemove, 1);
+                    pickupFactory.fetchPickupInvoices();
+                });
+            }
+        });
+    }
+
+
+    // select on focus
     $scope.select = () => {
         $('#choose').trigger('select');
     };
@@ -111,10 +157,10 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
                 addPickupOrder();
                 break;
             case 'edit':
-                editOrder();
+                editPickupOrder();
                 break;
         }
     };
-    
+
 
 }]);

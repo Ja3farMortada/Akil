@@ -14,11 +14,18 @@ module.exports = (server, db) => {
     server.post('/addPickupInvoice', (req, res) => {
         let data = req.body;
         let query = `INSERT INTO pickup_invoice SET ?`;
-        db.query(query, data, function (error, results) {
+        db.query(query, data, function (error, result) {
             if (error) {
                 res.status(400).send(error);
             } else {
-                res.send(results[0])
+                let query2 = `SELECT pickup_invoice.*, driver_name FROM pickup_invoice INNER JOIN drivers ON driver_ID_FK = driver_ID WHERE pickup_ID = ${result.insertId}`;
+                db.query(query2, function (error, results) {
+                    if (error) {
+                        res.status(400).send(error);
+                    } else {
+                        res.send(results[0]);
+                    }
+                })
             }
         });
     });
@@ -61,4 +68,49 @@ module.exports = (server, db) => {
         });
     });
 
+    server.post('/editPickupOrder', (req, res) => {
+        let data = req.body;
+        let query = `UPDATE pickup_invoice SET total_value = total_value + ${data.total_paid} - (SELECT total_paid FROM pickup_map WHERE map_ID = ${data.map_ID}) WHERE pickup_ID = ${data.pickup_ID_FK}`;
+        db.query(query, function (error) {
+            if (error) {
+                res.status(400).send(error);
+            } else {
+                let query2 = `UPDATE pickup_map SET ? WHERE map_ID = ${data.map_ID}`;
+                db.query(query2, data, function(error) {
+                    if(error) {
+                        res.status(400).send(error);
+                    } else {
+                        let query3 = `SELECT pickup_map.*, customers.customer_name, customers.customer_phone, customers.customer_province, customers.customer_district, customers.customer_town, customers.customer_address FROM pickup_map INNER JOIN customers ON customer_ID_FK = customer_ID WHERE map_ID = ${data.map_ID}`;
+                        db.query(query3, function(error, results) {
+                            if (error) {
+                                res.status(400).send(error);
+                            } else {
+                                res.send(results);
+                            }
+                        })
+                    }
+                });
+            }
+        });
+    });
+
+    server.post('/removeOrder', (req, res) => {
+        let data = req.body;
+
+        let query = `DELETE FROM pickup_map WHERE map_ID = ${data.map_ID}`;
+        db.query(query, function (error) {
+            if (error) {
+                res.status(400).send(error);
+            } else {
+                let query2 = `UPDATE pickup_invoice SET total_value = total_value - ${data.value} WHERE pickup_ID = ${data.pickup_ID}`;
+                db.query(query2, function(error) {
+                    if (error) {
+                        res.status(400).send(error);
+                    } else {
+                        res.send('');
+                    }
+                })
+            }
+        });
+    });
 }

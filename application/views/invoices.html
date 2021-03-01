@@ -66,7 +66,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="data in orders | orderBy:sortData.key:sortData.reverse">
+                    <tr ng-repeat="data in orders | orderBy:sortData.key:sortData.reverse | filter:searchVal">
                         <td>{{data.track_number}}</td>
                         <td>{{data.customer_name}}</td>
                         <td>{{data.destination_town}}</td>
@@ -76,6 +76,10 @@
                         <td ng-if="invoice[0].invoice_isDelivered == 0" width="10%" class="btn-outline-danger"
                             ng-click="removeOrder(data.order_ID, (data.order_value + data.delivery_fee))"><i
                                 class="fas fa-times"></i> Remove</td>
+                    </tr>
+
+                    <tr ng-if="(orders | filter:searchVal).length == 0 && searchVal">
+                        <td colspan="6" class="table-active">No Matching Records Found!</td>
                     </tr>
                 </tbody>
             </table>
