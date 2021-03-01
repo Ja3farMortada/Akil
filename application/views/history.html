@@ -98,7 +98,7 @@
                 <tbody>
                     <tr ng-click="showOrderDetails(data)" ng-repeat="data in invoiceDetails| filter: searchVal">
                         <td>{{data.customer_name}}</td>
-                        <td>{{data.track_number}}</td>
+                        <td>{{data.order_ID}}</td>
                         <td>{{data.order_date}}</td>
                         <td>{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
                     </tr>
@@ -146,7 +146,7 @@
                             </tr>
                             <!-- Data Columns : -->
                             <tr>
-                                <td>{{selectedInvoiceDetails.track_number}}</td>
+                                <td>{{selectedInvoiceDetails.order_ID}}</td>
 
                                 <td>{{selectedInvoiceDetails.order_date}}</td>
 

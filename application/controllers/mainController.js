@@ -128,106 +128,14 @@ app.controller('mainController', function ($scope, $timeout, $http, $interval, r
     const package = require('../../package.json');
 
     // count reminders
-    $scope.remindersCount = remindersFactory.reminders;
+    // $scope.remindersCount = remindersFactory.reminders;
 
-    // live dollar rate
-    $('#liveDollarRate').tooltip({
-        title: "click here to refresh!",
-        trigger: "hover"
-    });
-
-    // let buyPrice;
-    // let sellPrice;
-    // $scope.checking = false;
-    // $scope.getLiveRate = function () {
-    //     $scope.checking = true;
-    //     let headers = {
-    //         headers: {
-    //             'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvbGlyYXJhdGUuY29tIiwiaWF0IjoxNTkzMDI3NzQ2LCJuYmYiOjE1OTMwMjc3NDYsImV4cCI6MTYyNTE2ODU0NiwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMiJ9fX0.cVv8n9ZLnrv02rgqTUSM_eOOtnsEN5ITHFxXqmjgYwo'
-    //         }
-    //     };
-    //     $http.get(`https://lirarate.com/wp-json/lirarate/v2/rates?currency=LBP`, headers).then(function (response) {
-    //         $scope.checking = false;
-    //         buyPrice = response.data.buy;
-    //         sellPrice = response.data.sell;
-    //         $scope.buyPrice = `${buyPrice[buyPrice.length - 1][1]} L.L `;
-    //         $scope.sellPrice = `${sellPrice[sellPrice.length - 1][1]} L.L `;
-    //         if (buyPrice[buyPrice.length - 1][1] > buyPrice[buyPrice.length - 2][1]) {
-    //             $scope.trackBuy = 'up';
-    //         } else if (buyPrice[buyPrice.length - 1][1] = buyPrice[buyPrice.length - 2][1]) {
-    //             $scope.trackBuy = 'equal';
-    //         } else if (buyPrice[buyPrice.length - 1][1] < buyPrice[buyPrice.length - 2][1]) {
-    //             $scope.trackBuy = 'down';
-    //         };
-
-    //         if (sellPrice[sellPrice.length - 1][1] > sellPrice[sellPrice.length - 2][1]) {
-    //             $scope.trackSell = 'up';
-    //         } else if (sellPrice[sellPrice.length - 1][1] = sellPrice[sellPrice.length - 2][1]) {
-    //             $scope.trackSell = 'equal';
-    //         } else if (sellPrice[sellPrice.length - 1][1] < sellPrice[sellPrice.length - 2][1]) {
-    //             $scope.trackSell = 'down';
-    //         }
-
-    //         updateLastUpdated(buyPrice[buyPrice.length - 1][0]);
-    //     }, function (error) {
-    //         console.log(error);
-    //     });
-    // };
-
-    // function updateLastUpdated(lastUpdated) {
-    //     let latestTimestamp = new Date(lastUpdated);
-    //     let current = new Date();
-    //     let timeDiff = timeDifference(current, latestTimestamp);
-    //     let latestUpdated = (timeDiff < 0) ? '' : 'Updated ' + timeDiff;
-    //     $scope.latestUpdated = latestUpdated;
-
-    //     let h = latestTimestamp.getHours(),
-    //         m = latestTimestamp.getMinutes();
-    //     let _time = (h > 12) ? (h - 12 + ':' + m + 'pm') : (h + ':' + m + 'am');
-    //     let dateString = _time;
-    //     $scope.dateString = dateString;
-    // };
-
-    // function timeDifference(current, previous) {
-
-    //     let msPerMinute = 60 * 1000;
-    //     let msPerHour = msPerMinute * 60;
-    //     let msPerDay = msPerHour * 24;
-    //     let msPerMonth = msPerDay * 30;
-    //     let msPerYear = msPerDay * 365;
-
-    //     let elapsed = current - previous;
-
-    //     if (elapsed < 0) {
-    //         console.log('time difference is negative');
-    //         console.log(elapsed);
-    //         return elapsed;
-    //     }
-
-    //     if (elapsed < msPerMinute) {
-    //         return 'a minute ago';
-    //     } else if (elapsed < msPerHour) {
-    //         return Math.round(elapsed / msPerMinute) + ' minutes ago';
-    //     } else if (elapsed < msPerDay) {
-    //         return Math.round(elapsed / msPerHour) + ' hours ago';
-    //     } else if (elapsed < msPerMonth) {
-    //         return 'approximately ' + Math.round(elapsed / msPerDay) + ' days ago';
-    //     } else if (elapsed < msPerYear) {
-    //         return 'approximately ' + Math.round(elapsed / msPerMonth) + ' months ago';
-    //     } else {
-    //         return 'approximately ' + Math.round(elapsed / msPerYear) + ' years ago';
-    //     }
-    // };
 
 
     angular.element(document).ready(() => {
         $scope.check();
         // $scope.getLiveRate();
     });
-
-    // $interval(function () {
-    //     $scope.getLiveRate();
-    // }, (10 * 60000));
 
 
     $('#successToast').toast('show');

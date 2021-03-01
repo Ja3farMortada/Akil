@@ -141,6 +141,18 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
         });
     }
 
+    $scope.deliver = () => {
+        // NotificationService.showWarning().then(ok => {
+        //     if (ok) {
+        //         pickupFactory.deliver($scope.activeRow).then(function () {
+        //             let indexToDeliver = $scope.invoiceDetails.findIndex(x => x.map_ID == mapID);
+        //             $scope.invoices.splice(indexToDeliver, 1);
+        //             // pickupFactory.fetchPickupInvoices();
+        //         });
+        //     }
+        // });
+    }
+
 
     // select on focus
     $scope.select = () => {

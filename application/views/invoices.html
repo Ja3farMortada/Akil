@@ -67,7 +67,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="data in orders | orderBy:sortData.key:sortData.reverse | filter:searchVal">
-                        <td>{{data.track_number}}</td>
+                        <td>{{data.order_ID}}</td>
                         <td>{{data.customer_name}}</td>
                         <td>{{data.destination_town}}</td>
                         <td>{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
@@ -121,7 +121,7 @@
                             </tr>
                             <!-- Data Columns : -->
                             <tr>
-                                <td>{{selectedInvoiceInfo.track_number}}</td>
+                                <td>{{selectedInvoiceInfo.order_ID}}</td>
 
                                 <td>{{selectedInvoiceInfo.order_date}}</td>
 

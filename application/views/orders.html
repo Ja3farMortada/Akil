@@ -64,7 +64,7 @@
                     </div>
                 </td>
                 <td>{{order.customer_name}} : {{order.customer_phone}}</td>
-                <td>{{order.track_number}}</td>
+                <td>{{order.order_ID}}</td>
                 <td>{{order.recipient_name}} : {{order.recipient_phone}}</td>
                 <td>{{order.destination_province}}, {{order.destination_district}}, {{order.destination_town}}</td>
                 <td>{{(order.order_value + order.delivery_fee).toLocaleString()}} L.L</td>
@@ -118,11 +118,6 @@
                                 <div ng-if="isValid === false" class="invalid-feedback">
                                     Please choose a correct phone number!
                                 </div>
-                            </div>
-                            <div class="form-group col-3">
-                                <label>Invoice Number</label>
-                                <input type="number" class="form-control text-center"
-                                    ng-model="orderDetails.track_number" min="0" required>
                             </div>
                             <div class="form-group col-3">
                                 <label>Recipient Name</label>
@@ -377,7 +372,7 @@
                             </tr>
                             <!-- Data Columns : -->
                             <tr>
-                                <td>{{orderInfo.track_number}}</td>
+                                <td>{{orderInfo.order_ID}}</td>
                                 <td>{{orderInfo.order_date}}</td>
                                 <td class="cus_border_right">{{orderInfo.order_time}}</td>
                                 <td>{{orderInfo.recipient_name}}</td>
