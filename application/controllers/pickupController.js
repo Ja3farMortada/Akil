@@ -1,4 +1,8 @@
-app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory', 'driversFactory', 'DateService', 'NotificationService', function ($scope, pickupFactory, customersFactory, driversFactory, DateService, NotificationService) {
+const {
+    ipcRenderer
+} = require("electron");
+
+app.controller('pickupController', ['$scope', '$timeout', 'pickupFactory', 'customersFactory', 'driversFactory', 'DateService', 'NotificationService', function ($scope, $timeout, pickupFactory, customersFactory, driversFactory, DateService, NotificationService) {
 
     // bind with model
     $scope.customers = customersFactory.customers;
@@ -99,8 +103,8 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
         }
     }
 
-    let orderIndex;
     // edit order modal
+    let orderIndex;
     $scope.editOrderModal = ID => {
         $scope.selectedModal = 'edit';
         orderIndex = $scope.invoiceDetails.findIndex(index => index.map_ID == ID);
@@ -142,15 +146,22 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
     }
 
     $scope.deliver = () => {
-        // NotificationService.showWarning().then(ok => {
-        //     if (ok) {
-        //         pickupFactory.deliver($scope.activeRow).then(function () {
-        //             let indexToDeliver = $scope.invoiceDetails.findIndex(x => x.map_ID == mapID);
-        //             $scope.invoices.splice(indexToDeliver, 1);
-        //             // pickupFactory.fetchPickupInvoices();
-        //         });
-        //     }
-        // });
+        // console.log($scope.invoiceDetails)
+        NotificationService.showWarning().then(ok => {
+            if (ok) {
+                pickupFactory.deliverPickup($scope.activeRow, $scope.invoiceDetails).then(function (response) {
+                    let indexToDeliver = $scope.invoices.findIndex(x => x.pickup_ID == $scope.activeRow);
+                    $scope.invoices.splice(indexToDeliver, 1);
+                    for (let i = 0; i < response.length; i++) {
+                        customersFactory.submitPayment(response[i]);
+                    }
+                    $timeout( function () {
+                        customersFactory.fetchCustomers();
+                        // customersFactory.getPaymentDetails(customersFactory.activeRow);
+                    }, 1500);
+                });
+            }
+        });
     }
 
 
@@ -163,6 +174,16 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
         $scope.isValid = true;
     };
 
+    // sorting in table
+    $scope.sortData = {
+        key: ['customer_province', 'customer_district', 'customer_town'],
+        reverse: true
+    };
+    $scope.sort = keyname => {
+        $scope.sortData.key = keyname;
+        $scope.sortData.reverse = !$scope.sortData.reverse;
+    }
+
     $scope.submitOrder = () => {
         switch ($scope.selectedModal) {
             case 'add':
@@ -174,5 +195,10 @@ app.controller('pickupController', ['$scope', 'pickupFactory', 'customersFactory
         }
     };
 
+    // print
+    $scope.print = () => {
+        let index = $scope.invoices.findIndex(x => x.pickup_ID == $scope.activeRow)
+        ipcRenderer.send('printPickup', [$scope.invoices[index], $scope.invoiceDetails, $scope.sortData]);
+    }
 
 }]);

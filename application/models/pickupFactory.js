@@ -86,5 +86,18 @@ app.factory('pickupFactory', function ($http, NotificationService) {
         });
     }
 
+    // deliver
+    model.deliverPickup = (pickupID, details) => {
+        return $http.post(`${url}/deliverPickup`, {
+            pickup_ID: pickupID,
+            details: details
+        }).then(function (response) {
+            NotificationService.showSuccessToast();
+            return response.data;
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
+
     return model;
 });

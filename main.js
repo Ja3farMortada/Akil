@@ -70,14 +70,32 @@ ipcMain.on('printDocument', function (event, invoice) {
     });
     printWindow.loadFile('application/templates/print-invoice.html');
     printWindow.show();
-    printWindow.webContents.on('did-finish-load', function () {
-        printWindow.webContents.send('printDocument', invoice);
+    printWindow.webContents.on('did-finish-load', async function () {
+        await printWindow.webContents.send('printDocument', invoice);
+        printWindow.webContents.print(function() {
+            printWindow.close()
+        });
+    })
+});
+ipcMain.on('printPickup', function (event, invoice) {
+    printWindow = new BrowserWindow({
+        width: 1200,
+        height: 1000,
+        webPreferences: {
+            nodeIntegration: true,
+            nativeWindowOpen: true
+        }
+    });
+    printWindow.loadFile('application/printTemplates/print-pickup.html');
+    printWindow.show();
+    printWindow.webContents.on('did-finish-load', async function () {
+        await printWindow.webContents.send('printPickup', invoice);
+        printWindow.webContents.print(function() {
+            printWindow.close()
+        });
     })
 });
 
-ipcMain.on('closeDocument', () => {
-    printWindow.close()
-});
 
 
 // auto update module

@@ -9,8 +9,8 @@
 
             <table class="table table-bordered table-hover table-sm text-center">
                 <thead>
-                    <th width="25%">Invoice #</th>
-                    <th width="30%">Driver Name</th>
+                    <th width="20%">Invoice #</th>
+                    <th width="35%">Driver Name</th>
                     <th width="20%">Date</th>
                     <th width="25%">Total Value</th>
                 </thead>
@@ -33,15 +33,16 @@
         <div class="col-7" ng-if="activeRow !== 0">
             <div class="row mb-2">
                 <div class="col-5">
-                    <button ng-click="newOrderModal()" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Add Orders</button>
-                    <button disabled class="btn btn-outline-dark btn-sms" ng-click="print()"><i
-                            class="fas fa-print"></i>
+                    <button ng-click="newOrderModal()" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Add
+                        Orders</button>
+                    <button ng-click="print()" class="btn btn-outline-dark btn-sms"><i class="fas fa-print"></i>
                         Print</button>
                     <!-- <button disabled class="btn btn-outline-danger btn-sms" ng-click="deleteInvoice()"><i
                             class="fas fa-trash-alt"></i> Delete</button> -->
                 </div>
                 <div class="col-auto">
-                    <button disabled class="btn btn-outline-success" ng-click="deliver()"><i class="fas fa-check-circle"></i> Mark As Delivered</button>
+                    <button ng-click="deliver()" class="btn btn-outline-success"><i
+                            class="fas fa-check-circle"></i> Mark As Delivered</button>
                 </div>
                 <div class="col-4 ml-auto">
                     <div class="input-group">
@@ -57,16 +58,22 @@
             </div>
             <table class="table table-bordered table-sm text-center">
                 <thead>
-                    <th width="30%">Customer Name</th>
+                    <th width="25%">Customer Name</th>
                     <th width="20%">Customer Phone</th>
-                    <th width="15%">Order Count</th>
-                    <th width="20%">Total Paid</th>
+                    <th width="15%"
+                        ng-click="sort(['customer_province', 'customer_district', 'customer_town'])"><i
+                            class="fas"
+                            ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Town
+                    </th>
+                    <th width="10%"># Orders</th>
+                    <th width="15%">Total Paid</th>
                     <th width="15%" colspan="2">More</th>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="data in invoiceDetails | filter:searchVal">
+                    <tr ng-repeat="data in invoiceDetails | filter:searchVal | orderBy:sortData.key:sortData.reverse">
                         <td>{{ data.customer_name }}</td>
                         <td>{{ data.customer_phone }}</td>
+                        <td>{{ data.customer_town }}</td>
                         <td>{{ data.order_count }}</td>
                         <td>{{ data.total_paid.toLocaleString() }} L.L</td>
                         <td width="7.5%" class="btn-outline-success" ng-click="editOrderModal(data.map_ID)"><i
@@ -79,12 +86,12 @@
                     <!-- if search found nothing -->
                     <tr ng-if="(invoiceDetails | filter: searchVal).length == 0 && searchVal"
                         class="table-active select-off">
-                        <td colspan="5">No Matching Records Found!</td>
+                        <td colspan="6">No Matching Records Found!</td>
                     </tr>
 
                     <!-- if no data -->
                     <tr ng-show="invoiceDetails.length == 0" class="table-active">
-                        <td colspan="5">No Data Yet!</td>
+                        <td colspan="6">No Data Yet!</td>
                     </tr>
                 </tbody>
             </table>

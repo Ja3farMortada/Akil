@@ -62,7 +62,7 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
             "payment_amount": null,
             "payment_date": DateService.getDate(),
             "payment_time": DateService.getTime(),
-            "payment_notes": ''
+            "payment_notes": null
         };
         $('#receivePaymentModal').on('shown.bs.modal', function () {
             $(this).find('[autofocus]').trigger('focus');
