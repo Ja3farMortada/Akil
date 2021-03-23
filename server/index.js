@@ -1,5 +1,6 @@
-const server = require('express')();
-const bodyParser = require('body-parser');
+const express = require('express');
+const server = express();
+// const bodyParser = require('body-parser');
 
 const loginRoutes = require('./routes/login.routes');
 const ordersRoutes = require('./routes/orders.routes');
@@ -13,10 +14,11 @@ const settingsRoutes = require('./routes/settings.routes');
 
 var connection = require('./database');
 
-server.use(bodyParser.urlencoded({
+
+server.use(express.urlencoded({
     extended: false
 }));
-server.use(bodyParser.json());
+server.use(express.json());
 
 loginRoutes(server, connection);
 ordersRoutes(server, connection);
