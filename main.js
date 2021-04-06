@@ -96,6 +96,25 @@ ipcMain.on('printPickup', function (event, invoice) {
     })
 });
 
+ipcMain.on('printStatement', function (event, data) {
+    printWindow = new BrowserWindow({
+        width: 1200,
+        height: 1000,
+        webPreferences: {
+            nodeIntegration: true,
+            nativeWindowOpen: true
+        }
+    });
+    printWindow.loadFile('application/printTemplates/print-statement.html');
+    printWindow.show();
+    printWindow.webContents.on('did-finish-load', async function () {
+        await printWindow.webContents.send('printStatement', data);
+        printWindow.webContents.print(function() {
+            printWindow.close()
+        });
+    })
+});
+
 
 
 // auto update module

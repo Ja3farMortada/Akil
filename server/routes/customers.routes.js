@@ -74,16 +74,17 @@ module.exports = (server, db) => {
         });
     });
 
-    // server.get('/getTotalDue', (req, res) => {
-    //     let query = `SELECT SUM(remaining) AS remaining FROM debts WHERE item_type = 'Stock' AND debt_status = 1 UNION SELECT SUM(remaining) FROM debts WHERE item_type = 'Service' AND debt_status = 1`;
-    //     db.query(query, function (error, results) {
-    //         if (error) {
-    //             res.status(400).send(error);
-    //         } else {
-    //             res.send(results);
-    //         }
-    //     });
-    // });
+    server.post('/printCustomerStatement', (req, res) => {
+        let data = req.body;
+        let query = `SELECT 'Order' prefix, order_value AS value, order_currency AS currency, order_date AS date FROM orders WHERE customer_ID_FK = ${data.customer_ID} AND order_date >= '${data.start_date}' AND order_date <= '${data.end_date}' AND order_isDeleted = false UNION SELECT 'Payment', payment_amount AS value, payment_currency AS currency, payment_date AS date FROM customer_payments WHERE customer_ID_FK = ${data.customer_ID} AND payment_date >= '${data.start_date}' AND payment_date <= '${data.end_date}' AND payment_status = true ORDER BY date ASC`;
+        db.query(query, function (error, results) {
+            if (error) {
+                res.status(400).send(error);
+            } else {
+                res.send(results);
+            }
+        });
+    });
 
     server.post('/getPaymentsDetails', (req, res) => {
         let ID = req.body.ID;
@@ -105,7 +106,12 @@ module.exports = (server, db) => {
             if (error) {
                 res.status(400).send(error);
             } else {
-                let sql = `UPDATE customers SET customer_due = customer_due - ${data.payment_amount} WHERE customer_ID = ${data.customer_ID_FK}`;
+                let sql;
+                if (data.payment_currency == 'lira') {
+                    sql = `UPDATE customers SET customer_due = customer_due - ${data.payment_amount} WHERE customer_ID = ${data.customer_ID_FK}`;
+                } else {
+                    sql = `UPDATE customers SET customer_due_dollar = customer_due_dollar - ${data.payment_amount} WHERE customer_ID = ${data.customer_ID_FK}`;
+                }
                 db.query(sql, function (error) {
                     if (error) {
                         res.status(400).send(error);
@@ -131,7 +137,12 @@ module.exports = (server, db) => {
             if (error) {
                 res.status(400).send(error);
             } else {
-                let sql = `UPDATE customers SET customer_due = customer_due - (${data.payment_amount} - ${data.old_payment_amount}) WHERE customer_ID = ${data.customer_ID_FK}`;
+                let sql;
+                if (data.payment_currency == 'lira') {
+                    sql = `UPDATE customers SET customer_due = customer_due - (${data.payment_amount} - ${data.old_payment_amount}) WHERE customer_ID = ${data.customer_ID_FK}`;
+                } else {
+                    sql = `UPDATE customers SET customer_due_dollar = customer_due_dollar - (${data.payment_amount} - ${data.old_payment_amount}) WHERE customer_ID = ${data.customer_ID_FK}`;
+                }
                 db.query(sql, function (error) {
                     if (error) {
                         res.status(400).send(error);

@@ -38,7 +38,12 @@ module.exports = (server, db) => {
             if (error) {
                 res.status(400).send(error);
             } else {
-                let query2 = `UPDATE customers SET customer_due = customer_due + ${order.order_value} WHERE customer_ID = ${order.customer_ID_FK}`;
+                let query2;
+                if (order.order_currency == 'lira') {
+                    query2 = `UPDATE customers SET customer_due = customer_due + ${order.order_value} WHERE customer_ID = ${order.customer_ID_FK}`;
+                } else {
+                    query2 = `UPDATE customers SET customer_due_dollar = customer_due_dollar + ${order.order_value} WHERE customer_ID = ${order.customer_ID_FK}`;
+                }
                 db.query(query2, function (error) {
                     if (error) {
                         res.status(400).send(error);
@@ -59,7 +64,12 @@ module.exports = (server, db) => {
 
     server.post('/editOrder', (req, res) => {
         let order = req.body;
-        let query = `UPDATE customers SET customer_due = customer_due + ${order.order_value} - (SELECT order_value FROM orders WHERE order_ID = ${order.order_ID}) WHERE customer_ID = ${order.customer_ID_FK}`;
+        let query;
+        if (order.order_currency == 'lira') {
+            query = `UPDATE customers SET customer_due = customer_due + ${order.order_value} - (SELECT order_value FROM orders WHERE order_ID = ${order.order_ID}) WHERE customer_ID = ${order.customer_ID_FK}`;
+        } else {
+            query = `UPDATE customers SET customer_due_dollar = customer_due_dollar + ${order.order_value} - (SELECT order_value FROM orders WHERE order_ID = ${order.order_ID}) WHERE customer_ID = ${order.customer_ID_FK}`;
+        }
         db.query(query, function (error) {
             if (error) {
                 res.status(400).send(error);

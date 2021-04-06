@@ -34,11 +34,15 @@
             <table class="table table-sm table-bordered text-center mt-3 table-hover">
                 <thead>
                     <tr>
-                        <th width="68%">Customer Name</th>
-                        <th width="32%" ng-click="sortDue('customer_due')"><i class="fas"
+                        <th width="40%">Customer Name</th>
+                        <th width="30%" ng-click="sortDue('customer_due')"><i class="fas"
                                 ng-show="sortDueData.key == 'customer_due'"
                                 ng-class="{'fa-sort-amount-down-alt fa-fw': !sortDueData.reverse, 'fa-sort-amount-up fa-fw': sortDueData.reverse}"></i>Total
-                            Due</th>
+                            Due L.L</th>
+                        <th width="30%" ng-click="sortDue('customer_due_dollar')"><i class="fas"
+                                ng-show="sortDueData.key == 'customer_due_dollar'"
+                                ng-class="{'fa-sort-amount-down-alt fa-fw': !sortDueData.reverse, 'fa-sort-amount-up fa-fw': sortDueData.reverse}"></i>Total
+                            Due $</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,6 +52,7 @@
                         ng-class="{'table-active': isActive(customer.customer_ID)}">
                         <td>{{ customer.customer_name }}</td>
                         <td>{{ customer.customer_due.toLocaleString() }} L.L</td>
+                        <td>{{ customer.customer_due_dollar.toLocaleString() }} $</td>
                     </tr>
                     <tr ng-if="(customers | filter:statementSearch).length == 0 && statementSearch"
                         class="table-active select-off">
@@ -87,9 +92,15 @@
                             <!-- Orders archive -->
                             <div ng-if="subTabSelected === 1">
                                 <div class="row d-flex justify-content-between">
-                                    <div class="col-6 d-flex align-items-center justify-content-center">
+                                    <div class="col-5 d-flex align-items-center justify-content-center">
                                         <h4 class="mb-0"><i class="fas fa-user-circle fa-lg text-dark"></i>
                                             {{customers[activeRow].customer_name}}</h4>
+                                    </div>
+                                    <!-- print statement -->
+                                    <div class="col">
+                                        <button class="btn btn-outline-dark"
+                                            ng-click="printStatementModal(customers[activeRow])"><i
+                                                class="fas fa-print fa-fw"></i> Print Statement</button>
                                     </div>
                                     <div class="col-4">
                                         <div class="input-group">
@@ -119,7 +130,11 @@
                                             <td>{{ data.order_status }}</td>
                                             <td>{{ data.order_date }}</td>
                                             <td>{{ data.recipient_name }}</td>
-                                            <td>{{ data.order_value.toLocaleString() }} L.L</td>
+
+                                            <td ng-if="data.order_currency == 'lira'">
+                                                {{ data.order_value.toLocaleString() }} L.L</td>
+                                            <td ng-if="data.order_currency == 'dollar'">
+                                                {{ data.order_value.toLocaleString() }} $</td>
                                         </tr>
 
                                         <tr ng-if="selectedArchive.length == 0" class="table-active">
@@ -144,6 +159,10 @@
                                         <h4 class="mb-0"><i class="fas fa-user-circle fa-lg text-dark"></i>
                                             {{customers[activeRow].customer_name}}</h4>
                                     </div>
+                                    <!-- print statement -->
+                                    <button class="btn btn-outline-dark"
+                                        ng-click="printStatementModal(customers[activeRow])"><i
+                                            class="fas fa-print fa-fw"></i> Print Statement</button>
                                     <div class="col">
                                         <button ng-click="receivePaymentModal()"
                                             class="btn btn-outline-success float-right"><i
@@ -163,7 +182,11 @@
                                         <tr dir-paginate="payment in selectedPaymentDetails | itemsPerPage:10"
                                             pagination-id="payments" ng-dblclick="editPaymentModal(payment)"
                                             class="pointer">
-                                            <td>{{ payment.payment_amount.toLocaleString() }} L.L</td>
+                                            <td ng-if="payment.payment_currency == 'lira'">
+                                                {{ payment.payment_amount.toLocaleString() }} L.L</td>
+                                            <td ng-if="payment.payment_currency == 'dollar'">
+                                                {{ payment.payment_amount.toLocaleString() }} $</td>
+
                                             <td>{{ payment.payment_date }}</td>
                                             <td>{{ payment.payment_time }}</td>
 
@@ -187,6 +210,42 @@
         </div>
     </div>
 
+    <!-- Print Statement Modal -->
+    <div class="modal fade" id="printStatementModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Print Statement</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <form ng-submit="print()">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <label>From:</label>
+                                <input id="startDatepicker" class="form-control text-center" ng-model="printDetails.start_date" required>
+                            </div>
+                            <div class="col-6">
+                                <label>To:</label>
+                                <input id="endDatepicker" class="form-control text-center" ng-model="printDetails.end_date" required>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                                class="fas fa-times"></i>
+                            Cancel</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i>
+                            Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Receive Payment modal -->
     <div class="modal fade" id="receivePaymentModal">
         <div class="modal-dialog">
@@ -199,10 +258,20 @@
                 <form ng-submit="submitPayment()">
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <label class="mb-1">Payment Amount:</label>
-                        <input type="number" class="form-control" placeholder="Amount" min="1000"
-                            max="{{customers[activeRow]['customer_due']}}" ng-model="paymentData.payment_amount"
-                            autofocus required>
+                        <div class="row">
+                            <div class="col-6">
+                                <label>Select Account:</label>
+                                <select class="form-control text-center" ng-model="paymentData.payment_currency">
+                                    <option value="lira">Lebanese Pound L.L</option>
+                                    <option value="dollar">US Dollar $</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="mb-1">Payment Amount:</label>
+                                <input type="number" class="form-control" placeholder="Amount" min="0"
+                                    ng-model="paymentData.payment_amount" autofocus required>
+                            </div>
+                        </div>
                         <label class="mb-1 mt-3">Notes:</label>
                         <input type="text" spellcheck="false" class="form-control" placeholder="Notes"
                             ng-model="paymentData.payment_notes">
@@ -233,7 +302,7 @@
                     <!-- Modal body -->
                     <div class="modal-body">
                         <label class="mb-1">Payment Amount:</label>
-                        <input type="number" class="form-control" placeholder="Amount" min="1000"
+                        <input type="number" class="form-control" placeholder="Amount"
                             ng-model="paymentData.payment_amount" autofocus required>
                         <label class="mb-1 mt-3">Notes:</label>
                         <input type="text" spellcheck="false" class="form-control" placeholder="Notes"
@@ -253,6 +322,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Order details modal -->
     <div class="modal fade" id="orderDetailsModal">
@@ -304,19 +374,27 @@
 
                                 <td class="cus_border_right">{{selectedOrderDetails.destination_town}}</td>
 
-                                <td>{{selectedOrderDetails.order_value.toLocaleString()}} L.L</td>
+                                <!-- <td>{{selectedOrderDetails.order_value.toLocaleString()}} L.L</td> -->
+                                <td ng-if="selectedOrderDetails.order_currency == 'lira'">
+                                    {{selectedOrderDetails.order_value.toLocaleString()}} L.L</td>
+                                <td ng-if="selectedOrderDetails.order_currency == 'dollar'">
+                                    {{selectedOrderDetails.order_value.toLocaleString()}} $</td>
 
                                 <td>{{selectedOrderDetails.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
                             <!-- third row -->
                             <tr>
-                                <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes
+                                <td colspan="3" class="text-wrap order_note_col cus_border_right"><b>Notes
                                         :</b> {{selectedOrderDetails.order_notes}}</td>
-                                <td colspan="5" class="cus_border_right align-middle"><b>Address :</b>
+                                <td colspan="5" class="cus_border_right"><b>Address :</b>
                                     {{selectedOrderDetails.destination_address}}</td>
-                                <td colspan="2" class="align-middle"><b>Total :</b>
+
+                                <td ng-if="selectedOrderDetails.order_currency == 'lira'" colspan="2"><b>Total:</b>
                                     {{(selectedOrderDetails.order_value + selectedOrderDetails.delivery_fee).toLocaleString()}}
                                     L.L</td>
+                                <td ng-if="selectedOrderDetails.order_currency == 'dollar'" colspan="2"><b>Total:</b>
+                                    {{ selectedOrderDetails.order_value.toLocaleString() }} $ +
+                                    {{ selectedOrderDetails.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
                         </tbody>
                     </table>

@@ -15,7 +15,7 @@ app.controller('printController', function ($scope) {
         $scope.$digest($scope.invoice = data[0]);
         $scope.$digest($scope.data = data[1]);
         $scope.$digest($scope.sortData = data[2]);
-        console.log($scope.sortData)
+        // console.log($scope.sortData)
     });
 
     function getDate() {

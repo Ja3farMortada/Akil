@@ -42,14 +42,20 @@
         <thead>
             <tr>
                 <th width="3%">#</th>
-                <th width="20%" ng-click="sort('customer_name')"><i class="fas" ng-show="sortData.key == 'customer_name'"
-                        ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Customer Name | Phone</th>
+                <th width="19%" ng-click="sort('customer_name')"><i class="fas"
+                        ng-show="sortData.key == 'customer_name'"
+                        ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Customer
+                    Name | Phone</th>
                 <th width="10%" ng-click="sort('order_ID')"><i class="fas" ng-show="sortData.key == 'order_ID'"
-                        ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Order Number</th>
-                <th width="20%">Recipient | Phone</th>
-                <th width="17%" ng-click="sort(['destination_province', 'destination_district', 'destination_town'])"><i class="fas" ng-show="sortData.key == ['destination_province', 'destination_district', 'destination_town']"
-                    ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Address</th>
-                <th width="10%">Total Value</th>
+                        ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Order
+                    Number</th>
+                <th width="19%">Recipient | Phone</th>
+                <th width="17%" ng-click="sort(['destination_province', 'destination_district', 'destination_town'])"><i
+                        class="fas"
+                        ng-show="sortData.key == ['destination_province', 'destination_district', 'destination_town']"
+                        ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Address
+                </th>
+                <th width="12%">Total Value</th>
                 <th width="10%">Notes</th>
                 <th width="10%" colspan="2">More</th>
             </tr>
@@ -67,7 +73,12 @@
                 <td>{{order.order_ID}}</td>
                 <td>{{order.recipient_name}} : {{order.recipient_phone}}</td>
                 <td>{{order.destination_province}}, {{order.destination_district}}, {{order.destination_town}}</td>
-                <td>{{(order.order_value + order.delivery_fee).toLocaleString()}} L.L</td>
+
+                <td ng-if="order.order_currency == 'lira'">{{(order.order_value + order.delivery_fee).toLocaleString()}}
+                    L.L</td>
+                <td ng-if="order.order_currency == 'dollar'">{{order.order_value.toLocaleString()}} $ +
+                    {{ order.delivery_fee.toLocaleString()}} L.L</td>
+
                 <td ng-if="order.order_notes" class="text-nowrap">{{order.order_notes}}</td>
                 <td ng-if="!order.order_notes"> --- </td>
                 <td width="5%" class="btn-outline-info" ng-click="openInfoModal(order.order_ID)"><i
@@ -82,7 +93,8 @@
             </tr>
 
             <!-- if search found nothing -->
-            <tr ng-if="(orders | filter: searchVal.value).length == 0 && searchVal.value" class="table-active select-off">
+            <tr ng-if="(orders | filter: searchVal.value).length == 0 && searchVal.value"
+                class="table-active select-off">
                 <td colspan="8">No Matching Records Found!</td>
             </tr>
         </tbody>
@@ -127,7 +139,12 @@
                             <div class="form-group col-3">
                                 <label>Recipient Phone</label>
                                 <input type="text" class="form-control text-center"
-                                    ng-model="orderDetails.recipient_phone" min="0" max="999999999" required>
+                                    ng-model="orderDetails.recipient_phone" required>
+                            </div>
+                            <div class="form-group col-3">
+                                <label>Order Date</label>
+                                <input id="modelDatepicker" type="text" class="form-control text-center"
+                                    ng-model="orderDetails.order_date" required>
                             </div>
                         </div>
 
@@ -228,19 +245,33 @@
                         <!-- Third row -->
                         <div class="row">
                             <div class="form-group col-3">
+                                <label>Order Currency</label>
+                                <select class="form-control text-center" ng-model="orderDetails.order_currency"
+                                    required ng-disabled="selectedModal == 'edit'">
+                                    <option value="lira" selected>Lebanese Pound L.L</option>
+                                    <option value="dollar">US Dollar $</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-3">
                                 <label>Order Value</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control text-center"
+                                        ng-model="orderDetails.order_value" min="0" required>
+                                    <div class="input-group-append">
+                                        <span ng-if="orderDetails.order_currency == 'lira'"
+                                            class="input-group-text">L.L</span>
+                                        <span ng-if="orderDetails.order_currency == 'dollar'"
+                                            class="input-group-text">$</span>
+                                    </div>
+                                </div>
+                                <!-- <label>Order Value</label>
                                 <input spellcheck="false" type="number" class="form-control text-center"
-                                    ng-model="orderDetails.order_value" min="0" required>
+                                    ng-model="orderDetails.order_value" min="0" required> -->
                             </div>
                             <div class="form-group col-3">
                                 <label>Delivery fee</label>
                                 <input type="number" class="form-control text-center"
                                     ng-model="orderDetails.delivery_fee" min="0" required>
-                            </div>
-                            <div class="form-group col-3">
-                                <label>Order Date</label>
-                                <input id="modelDatepicker" type="text" class="form-control text-center"
-                                    ng-model="orderDetails.order_date" required>
                             </div>
                             <div class="form-group col-3">
                                 <label>Notes</label>
@@ -380,16 +411,26 @@
                                 <td>{{orderInfo.destination_province}}</td>
                                 <td>{{orderInfo.destination_district}}</td>
                                 <td class="cus_border_right">{{orderInfo.destination_town}}</td>
-                                <td>{{orderInfo.order_value.toLocaleString()}} L.L</td>
+
+                                <td ng-if="orderInfo.order_currency == 'lira'">
+                                    {{orderInfo.order_value.toLocaleString()}} L.L</td>
+                                <td ng-if="orderInfo.order_currency == 'dollar'">
+                                    {{orderInfo.order_value.toLocaleString()}} $</td>
+
                                 <td>{{orderInfo.delivery_fee.toLocaleString()}} L.L</td>
+
                             </tr>
                             <!-- third row -->
                             <tr>
                                 <td colspan="3" class="cus_border_right"><b>Notes:</b> {{orderInfo.order_notes}}</td>
                                 <td colspan="5" class="cus_border_right"><b>Address:</b>
                                     {{orderInfo.destination_address}}</td>
-                                <td colspan="2"><b>Total:</b>
+
+                                <td ng-if="orderInfo.order_currency == 'lira'" colspan="2"><b>Total:</b>
                                     {{(orderInfo.order_value + orderInfo.delivery_fee).toLocaleString()}} L.L</td>
+                                <td ng-if="orderInfo.order_currency == 'dollar'" colspan="2"><b>Total:</b>
+                                    {{ orderInfo.order_value.toLocaleString() }} $ +
+                                    {{ orderInfo.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
                         </tbody>
                     </table>

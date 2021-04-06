@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Print Statement</title>
+</head>
+
+<link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+<style type="text/css" media="print">
+    /* @page {
+        size: landscape
+    } */
+</style>
+
+<script>
+    var $ = jQuery = require('jquery');
+    var angular = require('angular');
+    const {
+        ipcRenderer
+    } = require('electron');
+
+    // Barcode generator
+    // var JsBarcode = require('jsbarcode');
+
+    const app = angular.module('printApp', []);
+
+    app.controller('printController', function ($scope) {
+
+        ipcRenderer.on('printStatement', function (event, data) {
+            // console.log(data)
+            $scope.$digest($scope.customer = data[0]);
+            $scope.$digest($scope.data = data[1]);
+            $scope.$digest($scope.dates = data[2]);
+            let liraOrders = 0;
+            let liraPayments = 0;
+            let dollarOrders = 0;
+            let dollarPayments = 0;
+            for (let i = 0; i < $scope.data.length; i++) {
+                if ($scope.data[i].currency == 'lira') {
+                    if ($scope.data[i].prefix == 'Order') {
+                        liraOrders += $scope.data[i].value;
+                    } else {
+                        liraPayments += $scope.data[i].value;
+                    }
+                } else if ($scope.data[i].currency == 'dollar') {
+                    if ($scope.data[i].prefix == 'Order') {
+                        dollarOrders += $scope.data[i].value;
+                    } else {
+                        dollarPayments += $scope.data[i].value;
+                    }
+                }
+            }
+            $scope.$digest($scope.totalOrders = {
+                lira: liraOrders,
+                dollar: dollarOrders
+            });
+            $scope.$digest($scope.totalPayments = {
+                lira: liraPayments,
+                dollar: dollarPayments
+            });
+        });
+
+        function getDate() {
+            var d = new Date();
+            months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+            return d.getDate() + '-' + months[d.getMonth()] + '-' + d.getFullYear();
+        };
+
+    });
+</script>
+
+<body>
+    <div ng-app="printApp" ng-controller="printController" class="container-fluid invisibles" ng-cloak>
+        <div class="text-center">
+            <h1 style="font-family: Courier New"><b>YARALI</b></h1>
+            <h5 style="font-family: Courier New"><b>Customer Statement</b></h5>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <h5 style="font-family: Courier New"><b>Name:</b>{{ customer.customer_name }}</h5>
+                <h5 style="font-family: Courier New"><b>Phone:</b>{{ customer.customer_phone }}</h5>
+
+                <h5 style="font-family: Courier New"><b>From:</b>{{ dates.start_date }}</h5>
+                <h5 style="font-family: Courier New"><b>To:</b>{{ dates.end_date }}</h5>
+            </div>
+
+            <div class="col-4 ml-auto">
+                <table class="table table-bordered text-center table-sm">
+                    <thead>
+                        <tr class="bg-secondary">
+                            <th width="50%" style="border: 2px solid #000000 !important;">Lira Account</th>
+                            <th width="50%" style="border: 2px solid #000000 !important;">Dollar Account</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-weight-bold" style="border: 2px solid #000000 !important;">
+                                {{ customer.customer_due.toLocaleString() }} L.L</td>
+                            <td class="font-weight-bold" style="border: 2px solid #000000 !important;">
+                                {{ customer.customer_due_dollar.toLocaleString() }} $</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <br><br>
+
+        <div>
+            <table class="table table-bordered table-striped table-sm text-center">
+                <thead>
+                    <tr>
+                        <th style="border: 2px solid #000000 !important;">#</th>
+                        <th style="border: 2px solid #000000 !important;">Transaction Type</th>
+                        <th style="border: 2px solid #000000 !important;">Value</th>
+                        <!-- <th style="border: 2px solid #000000 !important;">Delivery Charge</th> -->
+                        <th style="border: 2px solid #000000 !important;">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="data in data">
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ data.prefix }}</td>
+
+                        <td ng-if="data.currency == 'lira'">{{ data.value.toLocaleString() }} L.L</td>
+                        <td ng-if="data.currency == 'dollar'">{{ data.value.toLocaleString() }} $</td>
+
+                        <!-- <td ng-if="data.delivery">{{ data.delivery.toLocaleString() }} L.L</td>
+                        <td ng-if="!data.delivery"> --- </td> -->
+
+                        <td>{{ data.date }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-rights">
+                <!-- <h5 style="font-family: Courier New"><b>Total Orders in Lira:</b> {{ totalOrders.lira.toLocaleString() }} L.L</h5>
+                <h5 style="font-family: Courier New"><b>Total Orders in USD:</b> {{ totalOrders.dollar.toLocaleString() }} $</h5> -->
+                <!-- <h5 style="font-family: Courier New"><b>To:</b>{{ dates.end_date }}</h5> -->
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

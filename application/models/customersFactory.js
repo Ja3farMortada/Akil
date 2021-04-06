@@ -45,15 +45,7 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
         });
     };
 
-    // const getTotalDue = function () {
-    //     return $http.get(`${url}/getTotalDue`).then(function (response) {
-    //         angular.copy(response.data, c);
-    //     }, function (error) {
-    //         NotificationService.showError(error);
-    //     });
-    // };
-    // model.getTotalDue = getTotalDue();
-
+    // get payment details
     model.getPaymentDetails = ID => {
         return $http.post(`${url}/getPaymentsDetails`, ID).then(function (response) {
             angular.copy(response.data, model.selectedPaymentDetails);
@@ -103,6 +95,16 @@ app.factory('customersFactory', function ($http, NotificationService, ordersFact
             NotificationService.showError(error);
         });
     };
+
+    // Print Statement
+    model.printStatement = data => {
+        return $http.post(`${url}/printCustomerStatement`, data).then(function (response) {
+            // angular.copy(response.data, customersFactory.customers);
+            return response.data;
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
 
 
     //    ***************************************** CUSTOMER DETAILS MODAL *******************************

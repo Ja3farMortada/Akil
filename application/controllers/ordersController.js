@@ -56,7 +56,8 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
             driver_ID_FK: null,
             pickup_date: DateService.getDate(),
             pickup_time: DateService.getTime(),
-            total_value: null
+            total_value: null,
+            total_dollar: null
         };
         $('#chooseDriver').modal('show');
     }
@@ -64,14 +65,21 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
         if ($scope.orderInvoice.driver_ID_FK) {
             let orderIDArray = [];
             let invoiceTotalValue = 0;
+            let totalDollar = 0;
             for (let i = 0; i < $scope.orders.length; i++) {
                 if ($scope.orders[i]['selected']) {
-                    invoiceTotalValue += ($scope.orders[i]['order_value'] + $scope.orders[i]['delivery_fee']);
-                    orderIDArray.push($scope.orders[i]['order_ID']);
+                    if ($scope.orders[i]['order_currency'] == 'lira') {
+                        invoiceTotalValue += ($scope.orders[i]['order_value'] + $scope.orders[i]['delivery_fee']);
+                        orderIDArray.push($scope.orders[i]['order_ID']);
+                    } else {
+                        invoiceTotalValue += $scope.orders[i]['delivery_fee'];
+                        totalDollar += $scope.orders[i]['order_value'];
+                    }
                 }
             }
-            if (invoiceTotalValue > 0) {
+            if (invoiceTotalValue > 0 || totalDollar > 0) {
                 $scope.orderInvoice.total_value = invoiceTotalValue;
+                $scope.orderInvoice.total_dollar = totalDollar;
                 ordersFactory.exportOrders([orderIDArray, $scope.orderInvoice]).then(function (response) {
                     invoiceFactory.getScannedInvoice(parseInt(response));
                     invoiceFactory.getScannedInvoiceOrders(parseInt(response));
@@ -125,6 +133,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
             destination_address: null,
             recipient_name: null,
             recipient_phone: null,
+            order_currency: 'lira',
             order_value: null,
             delivery_fee: 10000,
             order_status: 'office',

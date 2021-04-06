@@ -1,3 +1,5 @@
+const { ipcRenderer } = require("electron");
+
 app.controller('customersController', ['$scope', 'customersFactory', 'DateService', 'NotificationService', function ($scope, customersFactory, DateService, NotificationService) {
 
     // tab selection
@@ -55,10 +57,57 @@ app.controller('customersController', ['$scope', 'customersFactory', 'DateServic
         }
     };
 
+    // Print Statement
+    $scope.printStatementModal = customer => {
+        $scope.printDetails = {
+            customer_ID: customer.customer_ID,
+            start_date: moment().clone().startOf('month').format('YYYY-MM-DD'),
+            end_date: moment().format('YYYY-MM-DD')
+        }
+        // start datepicker
+        $('#startDatepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            maxDate: $scope.printDetails.end_date,
+            onSelect: function (selected) {
+                var d = $('#startDatepicker').datepicker({
+                    dateFormat: 'yy-mm-dd'
+                }).val();
+                $scope.$digest($scope.printDetails.start_date = d);
+                $('#endDatepicker').datepicker("option","minDate", selected)
+            }
+        }).datepicker();
+
+        // end datepicker
+        $('#endDatepicker').datepicker({
+            dateFormat: 'yy-mm-dd',
+            minDate: $scope.printDetails.start_date,
+            onSelect: function (selected) {
+                var d = $('#endDatepicker').datepicker({
+                    dateFormat: 'yy-mm-dd'
+                }).val();
+                $scope.$digest($scope.printDetails.end_date = d);
+                $('#startDatepicker').datepicker("option","maxDate", selected)
+            }
+        }).datepicker();
+
+        // open Modal
+        $('#printStatementModal').modal('show')
+    }
+    $scope.print = () => {
+        customersFactory.printStatement($scope.printDetails).then(function (response) {
+            if (response) {
+                // console.log(response)
+                ipcRenderer.send('printStatement', [$scope.customers[$scope.activeRow] ,response, $scope.printDetails]);
+                $('#printStatementModal').modal('hide');
+            }
+        })
+    }
+
     // open payment modal
     $scope.receivePaymentModal = () => {
         $scope.paymentData = {
             "customer_ID_FK": $scope.customers[$scope.activeRow].customer_ID,
+            "payment_currency": 'lira',
             "payment_amount": null,
             "payment_date": DateService.getDate(),
             "payment_time": DateService.getTime(),
