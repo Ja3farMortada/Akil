@@ -43,6 +43,7 @@ app.controller('pickupController', ['$scope', '$timeout', 'pickupFactory', 'cust
             pickup_date: DateService.getDate(),
             pickup_time: DateService.getTime(),
             total_value: 0
+            // total_value_dollar: 0
         }
         $('#pickupInvoiceModal').modal('show');
     }

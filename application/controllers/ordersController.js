@@ -69,12 +69,12 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
             for (let i = 0; i < $scope.orders.length; i++) {
                 if ($scope.orders[i]['selected']) {
                     if ($scope.orders[i]['order_currency'] == 'lira') {
-                        invoiceTotalValue += ($scope.orders[i]['order_value'] + $scope.orders[i]['delivery_fee']);
-                        orderIDArray.push($scope.orders[i]['order_ID']);
+                        invoiceTotalValue += $scope.orders[i]['order_value'];
                     } else {
-                        invoiceTotalValue += $scope.orders[i]['delivery_fee'];
                         totalDollar += $scope.orders[i]['order_value'];
                     }
+                    invoiceTotalValue += $scope.orders[i]['delivery_fee'];
+                    orderIDArray.push($scope.orders[i]['order_ID']);
                 }
             }
             if (invoiceTotalValue > 0 || totalDollar > 0) {
@@ -102,14 +102,21 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
     $scope.addToInvoice = () => {
         let orderIDArray = [];
         let ordersTotalValue = 0;
+        let dollarTotalValue = 0;
         for (let i = 0; i < $scope.orders.length; i++) {
             if ($scope.orders[i]['selected']) {
-                ordersTotalValue += ($scope.orders[i]['order_value'] + $scope.orders[i]['delivery_fee']);
+                if ($scope.orders[i]['order_currency'] == 'lira') {
+                    ordersTotalValue += $scope.orders[i]['order_value'];
+                } else {
+                    dollarTotalValue += $scope.orders[i]['order_value'];
+                }
+                ordersTotalValue += $scope.orders[i]['delivery_fee'];
                 orderIDArray.push($scope.orders[i]['order_ID']);
             }
         }
-        if (ordersTotalValue > 0) {
+        if (ordersTotalValue > 0 || dollarTotalValue > 0) {
             $scope.selectedInvoice.total_value = ordersTotalValue;
+            $scope.selectedInvoice.total_dollar = dollarTotalValue;
             ordersFactory.addToInvoice([orderIDArray, $scope.selectedInvoice]).then(function () {
                 invoiceFactory.getScannedInvoice($scope.selectedInvoice.invoice_ID);
                 invoiceFactory.getScannedInvoiceOrders($scope.selectedInvoice.invoice_ID);
@@ -135,7 +142,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
             recipient_phone: null,
             order_currency: 'lira',
             order_value: null,
-            delivery_fee: 10000,
+            delivery_fee: 15000,
             order_status: 'office',
             order_notes: null
         };

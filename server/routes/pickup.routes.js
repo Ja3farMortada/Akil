@@ -125,26 +125,24 @@ module.exports = (server, db) => {
     });
 
     server.post('/deliverPickup', (req, res) => {
-        let pickup_ID = req.body.pickup_ID;
-        let data = req.body.details;
-        let query = `UPDATE pickup_invoice SET pickup_isCompleted = true WHERE pickup_ID = ${pickup_ID}`;
-        db.query(query, [{
-            customer_ID: 1001,
-            customer_due: 120000
-        }], function (error) {
-            if (error) {
-                res.status(400).send(error);
-            } else {
-                let list = Array.from(data).map(function (customer) {
-                    return {
-                        customer_ID_FK: customer.customer_ID_FK,
-                        payment_amount: customer.total_paid,
-                        payment_date: getDate(),
-                        payment_time: getTime()
-                    }
-                });
-                res.send(list);
-            }
-        });
+        console.log(req.body)
+        // let pickup_ID = req.body.pickup_ID;
+        // let data = req.body.details;
+        // let query = `UPDATE pickup_invoice SET pickup_isCompleted = true WHERE pickup_ID = ${pickup_ID}`;
+        // db.query(query, function (error) {
+        //     if (error) {
+        //         res.status(400).send(error);
+        //     } else {
+        //         let list = Array.from(data).map(function (customer) {
+        //             return {
+        //                 customer_ID_FK: customer.customer_ID_FK,
+        //                 payment_amount: customer.total_paid,
+        //                 payment_date: getDate(),
+        //                 payment_time: getTime()
+        //             }
+        //         });
+        //         res.send(list);
+        //     }
+        // });
     });
 }

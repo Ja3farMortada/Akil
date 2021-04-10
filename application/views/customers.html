@@ -374,12 +374,13 @@
 
                                 <td class="cus_border_right">{{selectedOrderDetails.destination_town}}</td>
 
-                                <!-- <td>{{selectedOrderDetails.order_value.toLocaleString()}} L.L</td> -->
+
                                 <td ng-if="selectedOrderDetails.order_currency == 'lira'">
                                     {{selectedOrderDetails.order_value.toLocaleString()}} L.L</td>
                                 <td ng-if="selectedOrderDetails.order_currency == 'dollar'">
                                     {{selectedOrderDetails.order_value.toLocaleString()}} $</td>
 
+                                    
                                 <td>{{selectedOrderDetails.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
                             <!-- third row -->

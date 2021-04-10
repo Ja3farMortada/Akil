@@ -26,6 +26,7 @@
                 <li class="list-group-item"><b>Date:</b> {{invoice[0].pickup_date}}</li>
                 <li class="list-group-item"><b>Driver:</b> {{invoice[0].driver_name}}</li>
                 <li class="list-group-item"><b>Total Value:</b> {{invoice[0].total_value.toLocaleString()}} L.L</li>
+                <li class="list-group-item"><b>Total Dollar:</b> {{invoice[0].total_dollar.toLocaleString()}} $</li>
                 <li ng-if="invoice[0].invoice_isDelivered == 0" class="list-group-item bg-danger"><b>Status:</b> Not
                     Delivered</li>
                 <li ng-if="invoice[0].invoice_isDelivered == 1" class="list-group-item bg-success"><b>Status:</b>
@@ -36,8 +37,7 @@
         <div class="col-9">
             <div class="row mb-2">
                 <div class="col-5">
-                    <button class="btn btn-outline-dark btn-sms" ng-click="print()"><i
-                            class="fas fa-print"></i>
+                    <button class="btn btn-outline-dark btn-sms" ng-click="print()"><i class="fas fa-print"></i>
                         Print</button>
                     <button ng-if="invoice[0].invoice_isDelivered == 0" class="btn btn-outline-success btn-sms"
                         ng-click="deliverInvoice()"><i class="fas fa-clipboard-check"></i> Mark As Delivered</button>
@@ -59,8 +59,11 @@
                     <tr>
                         <th width="15%">Order Number</th>
                         <th width="25%">Customer Name</th>
-                        <th width="20%" ng-click="sort(['destination_province', 'destination_district', 'destination_town'])"><i class="fas"
-                            ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Destination</th>
+                        <th width="20%"
+                            ng-click="sort(['destination_province', 'destination_district', 'destination_town'])"><i
+                                class="fas"
+                                ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i>
+                            Destination</th>
                         <th width="20%">Order Total Value</th>
                         <th colspan="2" width="20%">Actions</th>
                     </tr>
@@ -70,7 +73,10 @@
                         <td>{{data.order_ID}}</td>
                         <td>{{data.customer_name}}</td>
                         <td>{{data.destination_town}}</td>
-                        <td>{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
+
+                        <td ng-if="data.order_currency == 'lira'">{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
+                        <td ng-if="data.order_currency == 'dollar'">{{ data.order_value.toLocaleString() }} $ + {{ data.delivery_fee.toLocaleString() }} L.L</td>
+
                         <td width="10%" class="btn-outline-info" ng-click="openInfoModal(data)"><i
                                 class="fas fa-info-circle"></i> Info</td>
                         <td ng-if="invoice[0].invoice_isDelivered == 0" width="10%" class="btn-outline-danger"
@@ -137,16 +143,29 @@
 
                                 <td class="cus_border_right">{{selectedInvoiceInfo.destination_town}}</td>
 
-                                <td>{{selectedInvoiceInfo.order_value.toLocaleString()}} L.L</td>
+                                <td ng-if="selectedInvoiceInfo.order_currency == 'lira'">
+                                    {{selectedInvoiceInfo.order_value.toLocaleString()}} L.L</td>
+                                <td ng-if="selectedInvoiceInfo.order_currency == 'dollar'">
+                                    {{selectedInvoiceInfo.order_value.toLocaleString()}} $</td>
 
                                 <td>{{selectedInvoiceInfo.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
-                             <!-- third row -->
-                        <tr>
-                            <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes :</b> {{selectedInvoiceInfo.order_notes}}</td>
-                            <td colspan="5" class="cus_border_right align-middle"><b>Address :</b> {{selectedInvoiceInfo.destination_address}}</td>
-                            <td colspan="2" class="align-middle"><b>Total :</b> {{(selectedInvoiceInfo.order_value + selectedInvoiceInfo.delivery_fee).toLocaleString()}} L.L</td>
-                        </tr>
+                            <!-- third row -->
+                            <tr>
+                                <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes
+                                        :</b> {{selectedInvoiceInfo.order_notes}}</td>
+                                <td colspan="5" class="cus_border_right align-middle"><b>Address :</b>
+                                    {{selectedInvoiceInfo.destination_address}}</td>
+
+                                <td ng-if="selectedInvoiceInfo.order_currency == 'lira'" colspan="2"
+                                    class="align-middle"><b>Total :</b>
+                                    {{(selectedInvoiceInfo.order_value + selectedInvoiceInfo.delivery_fee).toLocaleString()}}
+                                    L.L</td>
+                                <td ng-if="selectedInvoiceInfo.order_currency == 'dollar'" colspan="2"
+                                    class="align-middle"><b>Total :</b>
+                                    {{selectedInvoiceInfo.order_value.toLocaleString() }} $ +
+                                    {{ selectedInvoiceInfo.delivery_fee.toLocaleString() }} L.L</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

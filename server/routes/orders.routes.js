@@ -125,7 +125,7 @@ module.exports = (server, db) => {
     server.post('/addToInvoice', (req, res) => {
         let array = req.body[0];
         let data = req.body[1];
-        let query = `UPDATE drivers_invoice SET total_value = total_value + ${data.total_value} WHERE invoice_ID = ${data.invoice_ID}`;
+        let query = `UPDATE drivers_invoice SET total_value = total_value + ${data.total_value}, total_dollar = total_dollar + ${data.total_dollar} WHERE invoice_ID = ${data.invoice_ID}`;
         db.query(query, data, function (error) {
             if (error) {
                 res.status(400).send(error);
