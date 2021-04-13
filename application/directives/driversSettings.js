@@ -1,4 +1,4 @@
-app.directive('driversSettings', function (driversFactory) {
+app.directive('driversSettings', function (DriversFactory) {
     return {
         restrict: 'E',
         templateUrl: '../templates/driversSettings.html',
@@ -7,7 +7,7 @@ app.directive('driversSettings', function (driversFactory) {
         },
         link: function (scope) {
 
-            scope.drivers = driversFactory.drivers;
+            scope.drivers = DriversFactory.drivers;
 
             scope.openNewDriverModal = () => {
                 scope.selectedModal = 'add';
@@ -38,11 +38,11 @@ app.directive('driversSettings', function (driversFactory) {
             };
 
             function addDriver() {
-                driversFactory.addDriver(scope.driverDetails);
+                DriversFactory.addDriver(scope.driverDetails);
             };
 
             function editDriver() {
-                driversFactory.editDriver(scope.driverDetails).then(function (response) {
+                DriversFactory.editDriver(scope.driverDetails).then(function (response) {
                     angular.copy(response[0], scope.drivers[index]);
                 })
             };

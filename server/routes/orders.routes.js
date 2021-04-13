@@ -93,6 +93,29 @@ module.exports = (server, db) => {
         });
     });
 
+    // addToDriver
+    server.post('/addToDriver', (req, res) => {
+        let array = req.body[0];
+        let data = req.body[1];
+        let query = `INSERT INTO driver_orders (order_ID_FK, driver_ID_FK, op_date, op_time) VALUES ?`;
+        db.query(query, [Array.from(array).map(function (order_ID) {
+            return [order_ID, data.driver_ID_FK, data.op_date, data.op_time];
+        })], function (error) {
+            if (error) {
+                res.status(400).send(error);
+            } else {
+                let query2 = `UPDATE orders SET order_status = 'driver' WHERE order_ID IN (?)`;
+                db.query(query2, [array], function (error) {
+                    if (error) {
+                        res.status(400).send(error);
+                    } else {
+                        res.send('');
+                    }
+                });
+            }
+        });
+    });
+
     server.post('/exportOrders', (req, res) => {
         let array = req.body[0];
         let data = req.body[1];

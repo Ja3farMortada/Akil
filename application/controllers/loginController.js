@@ -60,5 +60,4 @@ app.controller('loginController', function ($scope, $http, $timeout, Notificatio
     };
 });
 
-var swal = require('sweetalert');
 require('../services/notificationService');

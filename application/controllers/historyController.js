@@ -5,6 +5,7 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
 
     // bind invoices with model factory
     $scope.driversInvoice = historyFactory.driversInvoice;
+    $scope.driverOrders = historyFactory.driverOrders;
     $scope.invoiceDetails = historyFactory.invoiceDetails;
     $scope.activeRow = historyFactory.activeRow;
 
@@ -46,6 +47,7 @@ app.controller('historyController', ['$scope', 'historyFactory', 'DateService', 
     $scope.$watch('datePickerValue', function (newValue, oldValue) {
         if (newValue !== oldValue) {
             historyFactory.fetchDriversInvoice($scope.datePickerValue);
+            historyFactory.fetchDriverOrders($scope.datePickerValue);
         }
     });
     

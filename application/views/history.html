@@ -16,27 +16,28 @@
         </ul>
     </div>
 
+    <!-- date input -->
+    <div class="container row mb-2 mt-2 col-6">
+        <label class="col-1 col-form-label">Date:</label>
+        <div class="col-4">
+            <input type="text" class="form-control text-center" id="invoiceDatePicker">
+        </div>
+        <div class="col-2">
+            <button class="btn btn-info" ng-click="today()">today</button>
+        </div>
+    </div>
 
     <div class="row mt-3" ng-show="tabSelected == 0">
         <!-- invoices table -->
         <div class="col-5">
-            <!-- date input -->
-            <div class="container-fluid row mb-2">
-                <label class="col-1 col-form-label">Date:</label>
-                <div class="col-5">
-                    <input type="text" class="form-control text-center" id="invoiceDatePicker">
-                </div>
-                <div class="col-3">
-                    <button class="btn btn-info" ng-click="today()">today</button>
-                </div>
-            </div>
             <!-- invoices -->
             <table class="table table-bordered text-center table-hover table-sm">
                 <thead style="user-select: none">
                     <tr>
                         <th width="15%">Invoice #</th>
-                        <th width="35%">Driver</th>
-                        <th width="30%">Total Value</th>
+                        <th width="25%">Driver</th>
+                        <th width="20%">Total Value</th>
+                        <th width="20%">Total Dollar</th>
                         <th width="20%">Status</th>
                     </tr>
                 </thead>
@@ -47,7 +48,9 @@
                         ng-class="{'table-active': isActive(data.invoice_ID)}">
                         <td>{{data.invoice_ID}}</td>
                         <td>{{data.driver_name}}</td>
+
                         <td>{{data.total_value.toLocaleString()}} L.L</td>
+                        <td>{{data.total_dollar.toLocaleString()}} $</td>
 
                         <td ng-if="data.invoice_isDelivered == 0" class="text-danger">Not Delivered</td>
                         <td ng-if="data.invoice_isDelivered == 1" class="text-success">Delivered</td>
@@ -55,7 +58,7 @@
 
                     <!-- if no records -->
                     <tr ng-if="driversInvoice.length == 0">
-                        <td colspan="4" class="table-active">No Records Yet!</td>
+                        <td colspan="5" class="table-active">No Records Yet!</td>
                     </tr>
                 </tbody>
             </table>
@@ -69,7 +72,8 @@
         <div class="col-7" ng-show="invoiceDetails.length > 0">
             <div class="row justify-content-betweens mb-2">
                 <div class="col-5">
-                    <button disabled class="btn btn-outline-dark btn-sms" ng-click="print()"><i class="fas fa-print"></i>
+                    <button disabled class="btn btn-outline-dark btn-sms" ng-click="print()"><i
+                            class="fas fa-print"></i>
                         Print</button>
                     <button disabled class="btn btn-outline-danger btn-sms" ng-click="deleteInvoice()"><i
                             class="fas fa-trash-alt"></i> Delete</button>
@@ -100,11 +104,16 @@
                         <td>{{data.customer_name}}</td>
                         <td>{{data.order_ID}}</td>
                         <td>{{data.order_date}}</td>
-                        <td>{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
+
+                        <td ng-if="data.order_currency == 'lira'">
+                            {{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
+                        <td ng-if="data.order_currency == 'dollar'">{{data.order_value.toLocaleString()}} $ +
+                            {{ data.delivery_fee.toLocaleString() }} L.L</td>
                     </tr>
 
                     <!-- if search is empty -->
-                    <tr ng-if="(invoiceDetails | filter: searchVal).length == 0 && searchVal" class="table-active select-off">
+                    <tr ng-if="(invoiceDetails | filter: searchVal).length == 0 && searchVal"
+                        class="table-active select-off">
                         <td colspan="4">No Matching Records Found!</td>
                     </tr>
                 </tbody>
@@ -112,8 +121,56 @@
         </div>
     </div>
 
-     <!-- invoice details modal -->
-     <div class="modal fade" id="invoiceDetailsModal">
+    <div ng-if="tabSelected == 1">
+        <table class="table table-bordered table-striped table-sm text-center">
+            <thead>
+                <tr>
+                    <th width="10%">Status</th>
+                    <th width="15%">Driver</th>
+                    <th width="15%">Customer Name</th>
+                    <th width="10%">Order Date</th>
+                    <th width="10%">Destination</th>
+                    <th width="10%">Phone</th>
+                    <!-- <th width="15%">Date Picked</th> -->
+                    <th width="15%">Order Value</th>
+                    <th width="10%">Delivery</th>
+                    <th width="5%">More</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr dir-paginate="data in driverOrders | filter: searchVal.value | itemsPerPage:10">
+                    <td class="text-danger" ng-if="data.order_status == 'driver'">Not Delivered</td>
+                    <td class="text-success" ng-if="data.order_status == 'delivered'">Delivered</td>
+
+                    <td>{{ data.driver_name }}</td>
+                    <td>{{ data.customer_name }}</td>
+                    <td>{{ data.order_date }}</td>
+                    <td>{{ data.destination_town }}</td>
+                    <td>{{ data.recipient_phone }}</td>
+                    <!-- <td>{{ data.op_date }}</td> -->
+
+                    <td ng-if="data.order_currency == 'lira'">{{ data.order_value.toLocaleString() }} L.L</td>
+                    <td ng-if="data.order_currency == 'dollar'">{{ data.order_value.toLocaleString() }} $</td>
+
+                    <td>{{ data.delivery_fee.toLocaleString() }} L.L</td>
+
+                    <td width="4%" ng-click="showOrderDetails(data)" class="btn-outline-info"><i
+                            class="fas fa-info-circle"></i></td>
+                </tr>
+
+                <tr>
+                    <td colspan="11" class="table-active" ng-if="driverOrders.length === 0 && !searchVal.value">No data
+                        available in table !</td>
+                </tr>
+            </tbody>
+        </table>
+        <dir-pagination-controls max-size="5" direction-links="true" boundary-links="false"
+            template-url="../templates/dirPagination.tpl.html">
+        </dir-pagination-controls>
+    </div>
+
+    <!-- invoice details modal -->
+    <div class="modal fade" id="invoiceDetailsModal">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <!-- Modal Header -->
@@ -162,16 +219,29 @@
 
                                 <td class="cus_border_right">{{selectedInvoiceDetails.destination_town}}</td>
 
-                                <td>{{selectedInvoiceDetails.order_value.toLocaleString()}} L.L</td>
+                                <td ng-if="selectedInvoiceDetails.order_currency == 'lira'">
+                                    {{selectedInvoiceDetails.order_value.toLocaleString()}} L.L</td>
+                                <td ng-if="selectedInvoiceDetails.order_currency == 'dollar'">
+                                    {{ selectedInvoiceDetails.order_value.toLocaleString() }} $</td>
 
                                 <td>{{selectedInvoiceDetails.delivery_fee.toLocaleString()}} L.L</td>
                             </tr>
-                             <!-- third row -->
-                        <tr>
-                            <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes :</b> {{selectedInvoiceDetails.order_notes}}</td>
-                            <td colspan="5" class="cus_border_right align-middle"><b>Address :</b> {{selectedInvoiceDetails.destination_address}}</td>
-                            <td colspan="2" class="align-middle"><b>Total :</b> {{(selectedInvoiceDetails.order_value + selectedInvoiceDetails.delivery_fee).toLocaleString()}} L.L</td>
-                        </tr>
+                            <!-- third row -->
+                            <tr>
+                                <td colspan="3" class="text-wrap order_note_col cus_border_right align-middle"><b>Notes
+                                        :</b> {{selectedInvoiceDetails.order_notes}}</td>
+                                <td colspan="5" class="cus_border_right align-middle"><b>Address :</b>
+                                    {{selectedInvoiceDetails.destination_address}}</td>
+
+                                <td ng-if="selectedInvoiceDetails.order_currency == 'lira'" colspan="2"
+                                    class="align-middle"><b>Total :</b>
+                                    {{(selectedInvoiceDetails.order_value + selectedInvoiceDetails.delivery_fee).toLocaleString()}}
+                                    L.L</td>
+                                <td ng-if="selectedInvoiceDetails.order_currency == 'dollar'" colspan="2"
+                                    class="align-middle"><b>Total :</b>
+                                    {{ selectedInvoiceDetails.order_value.toLocaleString() }} L.L +
+                                    {{ selectedInvoiceDetails.delivery_fee.toLocaleString() }} L.L</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

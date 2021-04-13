@@ -1,11 +1,11 @@
 app.controller('paymentsController', ['$scope', 'paymentsFactory', 'DateService', function ($scope, paymentsFactory, DateService) {
 
     // bind data with model factory
-    $scope.assets = paymentsFactory.assets;
+    // $scope.assets = paymentsFactory.assets;
     $scope.todaysTotalPayments = paymentsFactory.todaysTotalPayments;
     $scope.payments = paymentsFactory.payments;
     $scope.totalSum = paymentsFactory.totalSum;
-    paymentsFactory.createChart();
+    // paymentsFactory.createChart();
 
     // tab selection
     $scope.selectedTab = paymentsFactory.selectedTab;
@@ -92,16 +92,16 @@ app.controller('paymentsController', ['$scope', 'paymentsFactory', 'DateService'
         $('#check').trigger('blur');
         paymentsFactory.getPayments().then(function () {
             $scope.totalSum = {
-                totalWhish: calcSum('WHISH'),
-                totalTalaco: calcSum('TALACO'),
-                totalMhabib: calcSum('MOHAMAD HABIB'),
-                totalRent: calcSum('RENT'),
-                totalBills: calcSum('BILLS'),
-                totalMwazafin: calcSum('MWAZAFIN'),
-                totalOther: calcSum('OTHER')
+                // totalWhish: calcSum('WHISH'),
+                // totalTalaco: calcSum('TALACO'),
+                // totalMhabib: calcSum('MOHAMAD HABIB'),
+                // totalRent: calcSum('RENT'),
+                // totalBills: calcSum('BILLS'),
+                totalMwazafin: calcSum('gas'),
+                totalOther: calcSum('other')
             }
             paymentsFactory.totalSum = $scope.totalSum;
-            paymentsFactory.createChart();
+            // paymentsFactory.createChart();
         });
     };
 
@@ -115,36 +115,36 @@ app.controller('paymentsController', ['$scope', 'paymentsFactory', 'DateService'
     };
 
 
-    $scope.$watchGroup(['todaysTotalPayments.payments', 'assets.assets '], function () {
-        if ($scope.todaysTotalPayments != undefined && $scope.assets) {
-            if (typeof globalChart !== 'undefined') {
-                globalChart.destroy();
-            };
-            var ctx = $('#myChart');
-            globalChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: [
-                        "Today's Total Payments",
-                        "Assets",
-                    ],
-                    datasets: [{
-                        // label: "my first chart",
-                        backgroundColor: [
-                            '#343a40', // bootstrap dark
-                            // '#ffc107', // bootstrap warning
-                            '#28a745' // bootstrab success
-                        ],
-                        // borderColor: 'rgb(255, 99, 132)',
-                        data: [
-                            paymentsFactory.todaysTotalPayments.payments,
-                            paymentsFactory.assets.assets
-                        ]
-                    }]
-                }
+    // $scope.$watchGroup(['todaysTotalPayments.payments', 'assets.assets '], function () {
+    //     if ($scope.todaysTotalPayments != undefined && $scope.assets) {
+    //         if (typeof globalChart !== 'undefined') {
+    //             globalChart.destroy();
+    //         };
+    //         var ctx = $('#myChart');
+    //         globalChart = new Chart(ctx, {
+    //             type: 'doughnut',
+    //             data: {
+    //                 labels: [
+    //                     "Today's Total Payments",
+    //                     "Assets",
+    //                 ],
+    //                 datasets: [{
+    //                     // label: "my first chart",
+    //                     backgroundColor: [
+    //                         '#343a40', // bootstrap dark
+    //                         // '#ffc107', // bootstrap warning
+    //                         '#28a745' // bootstrab success
+    //                     ],
+    //                     // borderColor: 'rgb(255, 99, 132)',
+    //                     data: [
+    //                         paymentsFactory.todaysTotalPayments.payments,
+    //                         paymentsFactory.assets.assets
+    //                     ]
+    //                 }]
+    //             }
 
-            });
-        }
-    });
+    //         });
+    //     }
+    // });
 
 }]);

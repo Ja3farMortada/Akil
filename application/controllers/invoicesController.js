@@ -31,14 +31,17 @@ app.controller('invoicesController', ['$scope', 'invoiceFactory', 'historyFactor
 
     // deliver invoice
     $scope.deliverInvoice = () => {
-        swal({
+        Swal.fire({
             title: "WARNING",
-            text: "Are you sure you want to proceed?",
+            text: "Are you sure you want to mark orders as delivered?",
             icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete) {
+            showCancelButton: true,
+            showConfirmButton: true,
+            focusCancel: true,
+            confirmButtonText: `Yes`,
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
                 let data = {
                     array: [],
                     invoice_ID: $scope.invoice[0].invoice_ID
@@ -56,14 +59,17 @@ app.controller('invoicesController', ['$scope', 'invoiceFactory', 'historyFactor
 
     // remove order from invoice
     $scope.removeOrder = function (ID, value) {
-        swal({
+        Swal.fire({
             title: "WARNING",
             text: "Are you sure you want to remove order?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete) {
+            icon: "error",
+            showCancelButton: true,
+            showConfirmButton: true,
+            focusCancel: true,
+            confirmButtonText: `Yes`,
+        })
+        .then((result) => {
+            if (result.isConfirmed) {
                 invoiceFactory.removeOrder(ID, value);
             }
         });

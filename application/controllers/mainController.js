@@ -10,7 +10,7 @@ var moment = require('moment');
 moment().format();
 
 // require sweetalert
-var swal = require('sweetalert');
+var Swal = require('../../node_modules/sweetalert2/dist/sweetalert2');
 
 // require bootstrap 4
 // require('popper.js');
@@ -57,6 +57,11 @@ app.config(function ($routeProvider) {
             controller: 'ordersController'
         })
 
+        .when('/drivers', {
+            templateUrl: 'drivers.html',
+            controller: 'driversController'
+        })
+
         .when('/invoices', {
             templateUrl: 'invoices.html',
             controller: 'invoicesController'
@@ -75,11 +80,6 @@ app.config(function ($routeProvider) {
         .when('/customers', {
             templateUrl: 'customers.html',
             controller: 'customersController'
-        })
-
-        .when('/debts', {
-            templateUrl: 'debts.html',
-            controller: 'debtsController'
         })
 
         .when('/payments', {
@@ -230,38 +230,22 @@ app.controller('mainController', function ($scope, $timeout, $http, $interval, r
     };
 
     $scope.logout = function () {
-        swal({
-                title: "WARNING",
+        Swal.fire({
+                title: "Logout?",
                 text: "Are you sure you want to logout?",
-                icon: "",
-                buttons: true,
-                dangerMode: true
+                icon: "question",
+                showCancelButton: true,
+                showConfirmButton: true,
+                focusCancel: true,
+                confirmButtonText: `Logout`,
             })
-            .then((willDelete) => {
-                if (willDelete) {
+            .then((result) => {
+                if (result.isConfirmed) {
                     localStorage.removeItem('setting');
                     window.location.replace('login.html');
                 }
             });
     };
-});
-
-// Theming for AngularJS Materials
-app.config(function ($mdThemingProvider) {
-    // red, pink, purple, deep-purple, indigo, blue, light-blue, cyan, teal, green, light-green, lime, yellow, amber, orange, deep-orange, brown, grey, blue-grey
-    $mdThemingProvider.theme('default')
-        .primaryPalette('grey', {
-            'default': 'A400', // by default use shade 400 from the pink palette for primary intentions
-            'hue-1': '100', // use shade 100 for the <code>md-hue-1</code> class
-            'hue-2': '600', // use shade 600 for the <code>md-hue-2</code> class
-            'hue-3': 'A100' // use shade A100 for the <code>md-hue-3</code> class
-        })
-        .accentPalette('indigo', {
-            'default': '800' // use shade 200 for default, and keep all other shades the same
-        })
-        .warnPalette('green', {
-            'default': '800'
-        });
 });
 
 // require SPA controllers
@@ -270,7 +254,7 @@ require('../controllers/invoicesController');
 require('../controllers/pickupController');
 require('../controllers/historyController');
 require('../controllers/customersController');
-// require('../controllers/debtsController');
+require('../controllers/driversController');
 require('../controllers/paymentsController');
 require('../controllers/reportsController');
 require('../controllers/remindersController');
@@ -289,7 +273,7 @@ require('../models/settingsFactory');
 require('../models/accountFactory');
 require('../models/generalFactory');
 require('../models/customersFactory');
-require('../models/driversFactory');
+require('../models/DriversFactory');
 require('../models/stockModel');
 
 //require Application Services

@@ -2,11 +2,11 @@ const {
     ipcRenderer
 } = require("electron");
 
-app.controller('pickupController', ['$scope', '$timeout', 'pickupFactory', 'customersFactory', 'driversFactory', 'DateService', 'NotificationService', function ($scope, $timeout, pickupFactory, customersFactory, driversFactory, DateService, NotificationService) {
+app.controller('pickupController', ['$scope', '$timeout', 'pickupFactory', 'customersFactory', 'DriversFactory', 'DateService', 'NotificationService', function ($scope, $timeout, pickupFactory, customersFactory, DriversFactory, DateService, NotificationService) {
 
     // bind with model
     $scope.customers = customersFactory.customers;
-    $scope.drivers = driversFactory.drivers;
+    $scope.drivers = DriversFactory.drivers;
 
     $scope.invoices = pickupFactory.invoices;
     $scope.invoiceDetails = pickupFactory.invoiceDetails;

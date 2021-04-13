@@ -20,23 +20,24 @@
 
     <!-- global position -->
     <div class="container-fluid d-flex justify-content-center" ng-show="selectedTab === 'global'">
-        <div class="col-6">
-            <canvas id="myChart"></canvas>
+        <!-- <div class="col-6"> -->
+            <!-- <canvas id="myChart"></canvas> -->
             <div class="row">
-                <div class="col-6 text-center">
+                <!-- <div class="col-6 text-center">
                     <h4>Total Assets:</h4>
                     <h4 class="text-success">{{assets.assets.toLocaleString()}} L.L</h4>
                     <button class="btn btn-outline-success" ng-click="openAddMoneyModal()"><i
                             class="fas fa-plus fa-lg"></i></button>
-                </div>
-                <div class="col-6 text-center">
+                </div> -->
+                <div class="col-auto text-center">
+                    <button class="btn btn-outline-primary" ng-click="openAddPaymentModal()"><i
+                            class="fas fa-plus fa-lg"></i> New Payment</button>
+                            <br><br>
                     <h4>Today's Total Payments:</h4>
                     <h4 class="text-dark">{{ todaysTotalPayments.payments.toLocaleString() || 0}} L.L</h4>
-                    <button class="btn btn-outline-dark" ng-click="openAddPaymentModal()"><i
-                            class="fas fa-plus fa-lg"></i></button>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </div>
 
 
@@ -100,39 +101,41 @@
                 template-url="../templates/dirPagination.tpl.html">
             </dir-pagination-controls>
         </div>
-        <div class="col-4">
+        <!-- <div class="col-4">
             <canvas id="paymentsChart"></canvas>
             <div class=" mt-3">
-                <!-- <div class="card-header text-center">
-                    <h5 class="font-weight-bold">Total Payments by Categories</h5>
-                </div> -->
-                <!-- <div class="card-body"> -->
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-warning">
-                            Whish<span>{{totalSum.totalWhish.toLocaleString()}} L.L</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-info">
-                            Talaco<span>{{totalSum.totalTalaco.toLocaleString()}} L.L</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-danger">
-                            Mohamad Habib<span>{{totalSum.totalMhabib.toLocaleString()}} L.L</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-success">
-                            Rent<span>{{totalSum.totalRent.toLocaleString()}} L.L</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-pink">
-                            Bills<span>{{totalSum.totalBills.toLocaleString()}} L.L</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-primary">
-                            Mwazafin<span>{{totalSum.totalMwazafin.toLocaleString()}} L.L</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-secondary">
-                            Other<span>{{totalSum.totalOther.toLocaleString()}} L.L</span>
-                        </li>
-                    </ul>
-                <!-- </div> -->
+                <ul class="list-group">
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-warning">
+                        Whish<span>{{totalSum.totalWhish.toLocaleString()}} L.L</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-info">
+                        Talaco<span>{{totalSum.totalTalaco.toLocaleString()}} L.L</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-danger">
+                        Mohamad Habib<span>{{totalSum.totalMhabib.toLocaleString()}} L.L</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-success">
+                        Rent<span>{{totalSum.totalRent.toLocaleString()}} L.L</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-pink">
+                        Bills<span>{{totalSum.totalBills.toLocaleString()}} L.L</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-primary">
+                        Mwazafin<span>{{totalSum.totalMwazafin.toLocaleString()}} L.L</span>
+                    </li>
+                    <li
+                        class="list-group-item d-flex justify-content-between align-items-center font-weight-bold text-secondary">
+                        Other<span>{{totalSum.totalOther.toLocaleString()}} L.L</span>
+                    </li>
+                </ul>
             </div>
-        </div>
+        </div> -->
     </div>
 
 
@@ -187,13 +190,13 @@
                         <label>Category</label>
                         <select class="form-control" ng-model="newPayment.category" required>
                             <option value="">---</option>
-                            <option value="WHISH">WHISH</option>
-                            <option value="TALACO">TALACO</option>
-                            <option value="MOHAMAD HABIB">MOHAMAD HABIB</option>
+                            <option value="gas">Gas</option>
+                            <option value="other">Other</option>
+                            <!-- <option value="MOHAMAD HABIB">MOHAMAD HABIB</option>
                             <option value="RENT">RENT</option>
                             <option value="BILLS">BILLS</option>
                             <option value="MWAZAFIN">MWAZAFIN</option>
-                            <option value="OTHER">OTHER</option>
+                            <option value="OTHER">OTHER</option> -->
                         </select>
                         <label>Amount</label>
                         <input class="form-control" ng-model="newPayment.amount" type="number" autocomplete="off"

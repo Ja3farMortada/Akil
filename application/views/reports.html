@@ -1,3 +1,45 @@
 <div class="container-fluid">
-    
+    <div class="d-flex mt-2">
+        <label class="col-form-label">Show Reports From:</label>
+        <input type="text" id="startDatepicker" class="text-center form-control col-2 mx-2" ng-model="dates.start_date">
+        <label class="col-form-label ml-3">To:</label>
+        <input type="text" id="endDatepicker" class="text-center form-control col-2 mx-2" ng-model="dates.end_date">
+        <button class="btn btn-outline-primary ml-3" ng-click="getReports()" id="check">Check</button>
+    </div>
+
+    <div class="col-4 mt-5" ng-if="reports.length > 0">
+        <table class="table table-bordered table-striped table-sm text-center">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Number of Orders</th>
+                    <th>Total Delivery</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="text-success">Delivered</th>
+                    <td>{{ reports[0]['count'] }}</td>
+                    <td>{{ reports[0]['sum'].toLocaleString() || 0 }} L.L</td>
+                </tr>
+                <tr>
+                    <th class="text-warning">Driver</th>
+                    <td>{{ reports[1]['count'] }}</td>
+                    <td>{{ reports[1]['sum'].toLocaleString() || 0 }} L.L</td>
+                </tr>
+                <tr>
+                    <th class="text-danger">Office</th>
+                    <td>{{ reports[2]['count'] }}</td>
+                    <td>{{ reports[2]['sum'].toLocaleString() || 0 }} L.L</td>
+                </tr>
+                <tr>
+                    <th class="bg-secondary">Total</th>
+                    <td>{{ reports[0]['count'] + reports[1]['count'] + reports[2]['count'] }}</td>
+                    <td>{{ (reports[0]['sum'] + reports[1]['sum'] + reports[2]['sum']).toLocaleString() || 0 }} L.L</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h5><b>Total Payments:</b> {{ reports[3]['sum'].toLocaleString() || 0 }} L.L</h5>
+    </div>
 </div>

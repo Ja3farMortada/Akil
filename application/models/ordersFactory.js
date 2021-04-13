@@ -109,6 +109,18 @@ app.factory('ordersFactory', function ($http, NotificationService) {
     //     });
     // };
 
+    // addToDriver
+    model.addToDriver = data => {
+        return $http.post(`${url}/addToDriver`, data).then(function (response) {
+            $('#chooseDriver').modal('toggle');
+            model.fetchOrders();
+            NotificationService.showSuccess();
+            return (response.data)
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+
     // export orders
     model.exportOrders = item => {
         return $http.post(`${url}/exportOrders`, item).then(function (response) {

@@ -17,11 +17,13 @@
                             class="fas fa-shopping-bag"></i> New Order</button>
                 </div>
                 <div class="col-auto ml-auto">
-                    <button class="btn btn-outline-primary" ng-click="exportOrders()"><i class="fas fa-truck"></i>
+                    <!-- <button class="btn btn-outline-primary" ng-click="exportOrders()"><i class="fas fa-truck"></i>
                         New Invoice</button>
                     <button class="btn btn-outline-info" ng-click="openAddToInvoiceModal()"><i
                             class="fas fa-file-alt"></i>
-                        Add to Invoice</button>
+                        Add to Invoice</button> -->
+                        <button class="btn btn-outline-primary" ng-click="addToDriver()"><i class="fas fa-truck"></i>
+                            Add to Driver</button>
                 </div>
             </div>
         </div>
@@ -42,10 +44,10 @@
         <thead>
             <tr>
                 <th width="3%">#</th>
-                <th width="19%" ng-click="sort('customer_name')"><i class="fas"
+                <th width="14%" ng-click="sort('customer_name')"><i class="fas"
                         ng-show="sortData.key == 'customer_name'"
                         ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Customer
-                    Name | Phone</th>
+                    Name</th>
                 <th width="10%" ng-click="sort('order_ID')"><i class="fas" ng-show="sortData.key == 'order_ID'"
                         ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Order
                     Number</th>
@@ -55,9 +57,10 @@
                         ng-show="sortData.key == ['destination_province', 'destination_district', 'destination_town']"
                         ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i> Address
                 </th>
-                <th width="12%">Total Value</th>
+                <th width="10%">Order Value</th>
+                <th width="10%">Delivery</th>
                 <th width="10%">Notes</th>
-                <th width="10%" colspan="2">More</th>
+                <th width="7%" colspan="2">More</th>
             </tr>
         </thead>
         <tbody>
@@ -69,22 +72,22 @@
                             ng-model="order.selected">
                     </div>
                 </td>
-                <td>{{order.customer_name}} : {{order.customer_phone}}</td>
+                <td>{{order.customer_name}}</td>
                 <td>{{order.order_ID}}</td>
                 <td>{{order.recipient_name}} : {{order.recipient_phone}}</td>
                 <td>{{order.destination_province}}, {{order.destination_district}}, {{order.destination_town}}</td>
 
-                <td ng-if="order.order_currency == 'lira'">{{(order.order_value + order.delivery_fee).toLocaleString()}}
-                    L.L</td>
-                <td ng-if="order.order_currency == 'dollar'">{{order.order_value.toLocaleString()}} $ +
-                    {{ order.delivery_fee.toLocaleString()}} L.L</td>
+                <td ng-if="order.order_currency == 'lira'">{{ order.order_value.toLocaleString() }} L.L</td>
+                <td ng-if="order.order_currency == 'dollar'">{{ order.order_value.toLocaleString() }} $</td>
+
+                <td>{{ order.delivery_fee.toLocaleString() }} L.L</td>
 
                 <td ng-if="order.order_notes" class="text-nowrap">{{order.order_notes}}</td>
                 <td ng-if="!order.order_notes"> --- </td>
-                <td width="5%" class="btn-outline-info" ng-click="openInfoModal(order.order_ID)"><i
-                        class="fas fa-info-circle"></i> Info</td>
-                <td width="5%" class="btn-outline-success" ng-click="openEditOrderModal(order.order_ID)"><i
-                        class="fas fa-edit"></i> Edit</td>
+                <td width="3.5%" class="btn-outline-info" ng-click="openInfoModal(order.order_ID)"><i
+                        class="fas fa-info-circle"></i></td>
+                <td width="3.5%" class="btn-outline-success" ng-click="openEditOrderModal(order.order_ID)"><i
+                        class="fas fa-edit"></i></td>
             </tr>
 
             <!-- if no data available -->
@@ -246,8 +249,8 @@
                         <div class="row">
                             <div class="form-group col-3">
                                 <label>Order Currency</label>
-                                <select class="form-control text-center" ng-model="orderDetails.order_currency"
-                                    required ng-disabled="selectedModal == 'edit'">
+                                <select class="form-control text-center" ng-model="orderDetails.order_currency" required
+                                    ng-disabled="selectedModal == 'edit'">
                                     <option value="lira" selected>Lebanese Pound L.L</option>
                                     <option value="dollar">US Dollar $</option>
                                 </select>
@@ -305,21 +308,21 @@
                     </button>
                 </div>
                 <!-- body -->
-                <form ng-submit="submitExport()">
+                <form ng-submit="submitAddToDriver()">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-6">
                                 <label>Driver Name</label>
-                                <select class="form-control" ng-model="orderInvoice.driver_ID_FK" required>
+                                <select class="form-control" ng-model="driverOrder.driver_ID_FK" required>
                                     <option value=""> --- </option>
                                     <option ng-repeat="driver in drivers" ng-value="driver.driver_ID">
                                         {{driver.driver_name}}</option>
                                 </select>
                             </div>
                             <div class="col-6">
-                                <label>Invoice Date:</label>
+                                <label>Date:</label>
                                 <input id="driverDatepicker" type="text" class="form-control text-center"
-                                    ng-model="orderInvoice.pickup_date" required>
+                                    ng-model="driverOrder.op_date" required>
                             </div>
                         </div>
                         <br>

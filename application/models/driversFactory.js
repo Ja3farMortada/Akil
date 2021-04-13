@@ -1,12 +1,68 @@
-app.factory('driversFactory', function ($http, NotificationService) {
+app.factory('DriversFactory', function ($http, NotificationService) {
 
     // define URL
     const url = `http://${keys.host}:${keys.port}`;
 
     var model = {};
-   
+
+    model.selectedDriverID = null;
     model.drivers = [];
-    
+    model.driverOrders = [];
+    model.liraStatement = {};
+    model.dollarStatement = {};
+
+    // get driver orders
+    model.getDriverOrders = ID => {
+        return $http.post(`${url}/getDriverOrders`, {
+            driver_ID: ID
+        }).then(function (response) {
+            angular.copy(response.data, model.driverOrders);
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
+
+    // getDriverStatement
+    model.getTotalLira = ID => {
+        return $http.post(`${url}/getTotalLira`, {
+            driver_ID: ID
+        }).then(function (response) {
+            angular.copy(response.data, model.liraStatement);
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
+    model.getTotalDollar = ID => {
+        return $http.post(`${url}/getTotalDollar`, {
+            driver_ID: ID
+        }).then(function (response) {
+            angular.copy(response.data, model.dollarStatement);
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
+
+    // deliver order
+    model.deliverOrder = ID => {
+        return $http.post(`${url}/deliverOrder`, {
+            order_ID: ID
+        }).then(function () {
+            NotificationService.showSuccess();
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
+    // remove order
+    model.removeOrder = ID => {
+        return $http.post(`${url}/removeOrderFromDriver`, {
+            order_ID: ID
+        }).then(function () {
+            NotificationService.showSuccess();
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    }
+
 
     const getDrivers = function () {
         return $http.get(`${url}/getDrivers`).then(function (response) {

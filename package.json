@@ -1,6 +1,6 @@
 {
     "name": "yarali",
-    "version": "0.10.0",
+    "version": "0.11.0",
     "description": "YARALI system",
     "main": "main.js",
     "scripts": {
@@ -31,6 +31,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.14.0",
+        "@sweetalert2/themes": "^4.0.3",
         "angular": "^1.8.2",
         "angular-animate": "^1.8.0",
         "angular-aria": "^1.8.0",
@@ -54,7 +55,7 @@
         "mysql": "^2.18.1",
         "mysqldump": "^3.2.0",
         "popper.js": "^1.16.1",
-        "sweetalert": "^2.1.2",
+        "sweetalert2": "^10.16.0",
         "update-electron-app": "^1.5.0"
     },
     "devDependencies": {

@@ -58,13 +58,14 @@
                 <thead>
                     <tr>
                         <th width="15%">Order Number</th>
-                        <th width="25%">Customer Name</th>
-                        <th width="20%"
+                        <th width="20%">Customer Name</th>
+                        <th width="15%"
                             ng-click="sort(['destination_province', 'destination_district', 'destination_town'])"><i
                                 class="fas"
                                 ng-class="{'fa-arrow-up': !sortData.reverse, 'fa-arrow-down': sortData.reverse}"></i>
                             Destination</th>
-                        <th width="20%">Order Total Value</th>
+                        <th width="15%">Phone</th>
+                        <th width="15%">Order Total Value</th>
                         <th colspan="2" width="20%">Actions</th>
                     </tr>
                 </thead>
@@ -73,9 +74,12 @@
                         <td>{{data.order_ID}}</td>
                         <td>{{data.customer_name}}</td>
                         <td>{{data.destination_town}}</td>
+                        <td>{{data.recipient_phone}}</td>
 
-                        <td ng-if="data.order_currency == 'lira'">{{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
-                        <td ng-if="data.order_currency == 'dollar'">{{ data.order_value.toLocaleString() }} $ + {{ data.delivery_fee.toLocaleString() }} L.L</td>
+                        <td ng-if="data.order_currency == 'lira'">
+                            {{(data.order_value + data.delivery_fee).toLocaleString()}} L.L</td>
+                        <td ng-if="data.order_currency == 'dollar'">{{ data.order_value.toLocaleString() }} $ +
+                            {{ data.delivery_fee.toLocaleString() }} L.L</td>
 
                         <td width="10%" class="btn-outline-info" ng-click="openInfoModal(data)"><i
                                 class="fas fa-info-circle"></i> Info</td>

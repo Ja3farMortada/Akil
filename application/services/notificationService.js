@@ -7,42 +7,35 @@ app.service('NotificationService', ['$timeout', function ($timeout) {
 
     this.showSuccess = () => {
         successAudio.play();
-        swal({
-            title: 'Success',
+        Swal.fire({
+            title: ' ',
             text: 'Process Completed Successfully!',
             icon: 'success',
-            timer: 1200,
-            buttons: false
+            position: 'bottom-end',
+            toast: true,
+            background: 'green',
+            timer: 2000,
+            showConfirmButton: false
         });
     };
 
     this.showError = error => {
-        swal({
+        Swal.fire({
             title: 'ERROR!',
             text: `${error.data.sqlMessage}`,
-            icon: 'error',
-            dangerMode: true
+            icon: 'error'
         });
     };
 
-    this.showErrorText = text => {
-        swal({
-            title: 'ERROR!',
-            text: text,
-            icon: 'error',
-            dangerMode: true
-        });
-    }
-
-    this.showWarning = () => {
-        return swal({
-            title: "WARNING",
-            text: "Are you sure you want to proceed?",
-            icon: "error",
-            buttons: true,
-            dangerMode: true
-        });
-    };
+    // this.showWarning = () => {
+    //     return swal({
+    //         title: "WARNING",
+    //         text: "Are you sure you want to proceed?",
+    //         icon: "error",
+    //         buttons: true,
+    //         dangerMode: true
+    //     });
+    // };
 
     this.showSuccessToast = () => {
         $('#successToast').toast('show');

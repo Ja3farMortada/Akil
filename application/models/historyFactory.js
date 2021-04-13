@@ -4,9 +4,10 @@ app.factory('historyFactory', ['$http', 'NotificationService', 'DateService', fu
     const url = `http://${keys.host}:${keys.port}`;
 
     var model = {};
-    model.tabSelected = 0;
+    model.tabSelected = 1;
     model.datePickerValue = DateService.getDate();
     model.driversInvoice = [];
+    model.driverOrders = [];
     model.invoiceDetails = [];
     model.activeRow = 0;
     // model.totalServices = [];
@@ -49,6 +50,19 @@ app.factory('historyFactory', ['$http', 'NotificationService', 'DateService', fu
             }
         }).then(function (response) {
             angular.copy(response.data, model.driversInvoice);
+        }, function (error) {
+            NotificationService.showError(error);
+        });
+    };
+    // fetch services invoices
+    model.fetchDriverOrders = date => {
+        return $http.get(`${url}/fetchDriverOrders`, {
+            params: {
+                "date": date
+            }
+        }).then(function (response) {
+            console.log(response.data)
+            angular.copy(response.data, model.driverOrders);
         }, function (error) {
             NotificationService.showError(error);
         });

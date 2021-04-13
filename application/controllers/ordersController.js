@@ -1,4 +1,4 @@
-app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory', 'driversFactory', 'invoiceFactory', 'historyFactory', 'DateService', function ($scope, ordersFactory, customersFactory, driversFactory, invoiceFactory, historyFactory, DateService) {
+app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory', 'DriversFactory', 'invoiceFactory', 'historyFactory', 'DateService', function ($scope, ordersFactory, customersFactory, DriversFactory, invoiceFactory, historyFactory, DateService) {
 
     $('#search').trigger('focus');
 
@@ -6,7 +6,7 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
     $scope.searchVal = ordersFactory.searchVal;
     $scope.orders = ordersFactory.orders;
     $scope.customers = customersFactory.customers;
-    $scope.drivers = driversFactory.drivers;
+    $scope.drivers = DriversFactory.drivers;
     $scope.invoices = invoiceFactory.invoices;
     let towns = ordersFactory.towns;
 
@@ -50,6 +50,33 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
         $scope.orders[selectedIndex]['selected'] = !$scope.orders[selectedIndex]['selected'];
     }
 
+    // Add To Driver
+    let orderArray = [];
+    $scope.addToDriver = () => {
+        orderArray = [];
+        for (let i = 0; i < $scope.orders.length; i++) {
+            if ($scope.orders[i]['selected']) {
+                orderArray.push($scope.orders[i]['order_ID']);
+            }
+        }
+        if (orderArray.length > 0) {
+            $scope.driverOrder = {
+                driver_ID_FK: null,
+                op_date: DateService.getDate(),
+                op_time: DateService.getTime()
+            }
+            $('#chooseDriver').modal('show');
+        }
+    }
+    $scope.submitAddToDriver = () => {
+        ordersFactory.addToDriver([orderArray, $scope.driverOrder]).then(function () {
+            DriversFactory.getDriverOrders($scope.driverOrder.driver_ID_FK);
+            DriversFactory.getTotalLira($scope.driverOrder.driver_ID_FK);
+            DriversFactory.getTotalDollar($scope.driverOrder.driver_ID_FK);
+            DriversFactory.selectedDriverID = $scope.driverOrder.driver_ID_FK;
+        });
+    }
+
     // open choose driver for exporting orders
     $scope.exportOrders = () => {
         $scope.orderInvoice = {
@@ -62,32 +89,30 @@ app.controller('ordersController', ['$scope', 'ordersFactory', 'customersFactory
         $('#chooseDriver').modal('show');
     }
     $scope.submitExport = () => {
-        if ($scope.orderInvoice.driver_ID_FK) {
-            let orderIDArray = [];
-            let invoiceTotalValue = 0;
-            let totalDollar = 0;
-            for (let i = 0; i < $scope.orders.length; i++) {
-                if ($scope.orders[i]['selected']) {
-                    if ($scope.orders[i]['order_currency'] == 'lira') {
-                        invoiceTotalValue += $scope.orders[i]['order_value'];
-                    } else {
-                        totalDollar += $scope.orders[i]['order_value'];
-                    }
-                    invoiceTotalValue += $scope.orders[i]['delivery_fee'];
-                    orderIDArray.push($scope.orders[i]['order_ID']);
+        let orderIDArray = [];
+        let invoiceTotalValue = 0;
+        let totalDollar = 0;
+        for (let i = 0; i < $scope.orders.length; i++) {
+            if ($scope.orders[i]['selected']) {
+                if ($scope.orders[i]['order_currency'] == 'lira') {
+                    invoiceTotalValue += $scope.orders[i]['order_value'];
+                } else {
+                    totalDollar += $scope.orders[i]['order_value'];
                 }
+                invoiceTotalValue += $scope.orders[i]['delivery_fee'];
+                orderIDArray.push($scope.orders[i]['order_ID']);
             }
-            if (invoiceTotalValue > 0 || totalDollar > 0) {
-                $scope.orderInvoice.total_value = invoiceTotalValue;
-                $scope.orderInvoice.total_dollar = totalDollar;
-                ordersFactory.exportOrders([orderIDArray, $scope.orderInvoice]).then(function (response) {
-                    invoiceFactory.getScannedInvoice(parseInt(response));
-                    invoiceFactory.getScannedInvoiceOrders(parseInt(response));
-                    invoiceFactory.fetchInvoices();
-                    historyFactory.fetchDriversInvoice(DateService.getDate());
-                    // historyFactory
-                });
-            }
+        }
+        if (invoiceTotalValue > 0 || totalDollar > 0) {
+            $scope.orderInvoice.total_value = invoiceTotalValue;
+            $scope.orderInvoice.total_dollar = totalDollar;
+            ordersFactory.exportOrders([orderIDArray, $scope.orderInvoice]).then(function (response) {
+                invoiceFactory.getScannedInvoice(parseInt(response));
+                invoiceFactory.getScannedInvoiceOrders(parseInt(response));
+                invoiceFactory.fetchInvoices();
+                historyFactory.fetchDriversInvoice(DateService.getDate());
+                // historyFactory
+            });
         }
     }
 
